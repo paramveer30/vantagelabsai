@@ -4,7 +4,7 @@ export type ProcessStep = {
   description: string;
 };
 
-export const process: ProcessStep[] = [
+export const processSteps: ProcessStep[] = [
   {
     step: 1,
     title: "Discovery Call",
