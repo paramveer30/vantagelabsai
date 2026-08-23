@@ -36,6 +36,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# raw design drafts — curated assets live in public/brand/
+/vantyage lab logos/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
