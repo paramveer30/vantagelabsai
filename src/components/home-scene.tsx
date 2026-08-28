@@ -87,7 +87,7 @@ export function HomeScene() {
   if (reducedMotion || isSmallScreen) return <StaticHome />;
 
   return (
-    <div ref={runwayRef} className="relative h-[300vh]">
+    <div ref={runwayRef} className="relative" style={{ height: "300vh" }}>
       <div className="sticky top-0 flex h-screen items-center overflow-hidden">
         <div className="absolute inset-0">
           <VCloud progressRef={progressRef} />
@@ -100,10 +100,11 @@ export function HomeScene() {
               : "pointer-events-none translate-y-3 opacity-0"
           }`}
         >
-          <div className="ml-auto max-w-2xl md:w-[52%]">
+          <div className="ml-auto max-w-[46rem] md:w-[62%]">
             <p className="eyebrow">VantageLabsAI</p>
-            <h1 className="display mt-5 text-4xl font-semibold sm:text-5xl">
-              {headline}
+            <h1 className="display mt-5 text-4xl font-semibold sm:text-[2.6rem]">
+              We build the software
+              <br className="hidden sm:block" /> your business is missing.
             </h1>
             <p className="mt-6 text-pretty text-lg text-muted">{intro}</p>
             <p className="eyebrow mt-10 animate-pulse">Scroll ↓</p>
@@ -111,7 +112,8 @@ export function HomeScene() {
         </Container>
 
         <div
-          className={`absolute inset-0 flex items-center justify-center transition-all duration-700 ${
+          style={{ paddingTop: "17vh" }}
+          className={`absolute inset-0 flex items-start justify-center transition-all duration-700 ${
             phase === "exploded"
               ? "opacity-100"
               : "pointer-events-none scale-95 opacity-0"
