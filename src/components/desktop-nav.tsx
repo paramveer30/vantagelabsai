@@ -59,42 +59,36 @@ const apps: App[] = [
   },
 ];
 
+// Sits inside the particle monitor: a small menu bar and desktop icons,
+// aligned top-left like a real desktop. No wrapping panel — the particle
+// monitor is the frame.
 export function DesktopNav() {
   return (
-    <div className="flex h-[64vh] w-[min(880px,74vw)] flex-col overflow-hidden rounded-xl border border-white/15 bg-background/45 shadow-[0_0_70px_-12px_rgba(58,208,255,0.4)] backdrop-blur-md">
-      <div className="flex items-center gap-2 border-b border-white/10 bg-white/[0.03] px-4 py-2.5">
-        <span className="h-2.5 w-2.5 rounded-full bg-accent" />
-        <span className="font-mono text-xs uppercase tracking-[0.22em] text-muted">
+    <div className="relative h-[46vh] w-[min(880px,66vw)]">
+      <div className="absolute left-0 top-0 flex items-center gap-2">
+        <span className="h-2 w-2 rounded-full bg-accent shadow-[0_0_10px_2px_rgba(58,208,255,0.6)]" />
+        <span className="font-mono text-[0.7rem] uppercase tracking-[0.22em] text-muted">
           VantageLabsAI
         </span>
       </div>
 
-      <div className="relative flex-1 overflow-hidden">
-        <svg
-          aria-hidden
-          viewBox="0 0 100 100"
-          className="pointer-events-none absolute left-1/2 top-1/2 h-[78%] -translate-x-1/2 -translate-y-1/2 text-brand/10"
-          fill="currentColor"
-        >
-          <path d="M8 12 44 88h12L92 12H74L50 64 26 12Z" />
-        </svg>
-
-        <ul className="absolute left-6 top-6 grid grid-cols-2 gap-x-8 gap-y-6 sm:grid-cols-3">
-          {apps.map((app) => (
-            <li key={app.href}>
-              <Link
-                href={app.href}
-                className="group flex w-20 flex-col items-center gap-2 text-center"
-              >
-                <span className="grid h-16 w-16 place-items-center rounded-2xl border border-white/15 bg-white/[0.06] text-accent transition-all group-hover:-translate-y-0.5 group-hover:border-accent group-hover:bg-white/[0.12]">
-                  {app.icon}
-                </span>
-                <span className="text-xs text-foreground/80">{app.label}</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <ul className="absolute left-0 top-12 flex flex-col gap-5">
+        {apps.map((app) => (
+          <li key={app.href}>
+            <Link
+              href={app.href}
+              className="group flex items-center gap-4"
+            >
+              <span className="pixel-tile grid h-16 w-16 shrink-0 place-items-center rounded-xl text-accent transition-transform group-hover:-translate-y-0.5 group-hover:text-white">
+                {app.icon}
+              </span>
+              <span className="display text-2xl font-semibold text-foreground/85 transition-colors group-hover:text-foreground [text-shadow:0_1px_10px_rgba(6,8,16,0.95)]">
+                {app.label}
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

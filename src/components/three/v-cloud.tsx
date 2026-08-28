@@ -32,19 +32,42 @@ function vGeometry() {
   }).center();
 }
 
-// A blocky desktop computer: screen slab, neck, base. Sampled by surface
-// area so the big screen faces get the most particles.
+function bar(w: number, h: number, x: number, y: number) {
+  const g = new THREE.BoxGeometry(w, h, 0.16);
+  g.translate(x, y, 0);
+  return g.toNonIndexed();
+}
+
+// A desktop monitor made only of particles: a thin bezel frame, a stand,
+// and the brand V floating on the screen as the wallpaper.
 function computerGeometry() {
-  const screen = new THREE.BoxGeometry(4.6, 3.0, 0.22);
-  screen.translate(0, 0.2, 0);
-  const inner = new THREE.BoxGeometry(4.0, 2.4, 0.24); // denser screen face
-  inner.translate(0, 0.2, 0.02);
-  const neck = new THREE.BoxGeometry(0.5, 0.55, 0.35);
-  neck.translate(0, -1.55, 0);
-  const foot = new THREE.BoxGeometry(2.0, 0.2, 0.9);
-  foot.translate(0, -1.9, 0);
-  const merged = mergeGeometries([screen, inner, neck, foot]);
-  return merged ?? screen;
+  const w = 3.9;
+  const h = 2.4;
+  const t = 0.13;
+  const frame = [
+    bar(w, t, 0, h / 2 - t / 2),
+    bar(w, t, 0, -h / 2 + t / 2),
+    bar(t, h, -w / 2 + t / 2, 0),
+    bar(t, h, w / 2 - t / 2, 0),
+  ];
+
+  const neck = new THREE.BoxGeometry(0.44, 0.42, 0.3).toNonIndexed();
+  neck.translate(0, -h / 2 - 0.28, 0);
+  const foot = new THREE.BoxGeometry(1.7, 0.16, 0.8).toNonIndexed();
+  foot.translate(0, -h / 2 - 0.52, 0);
+
+  const v = vGeometry();
+  v.scale(1, 1, 0.3);
+  const box = new THREE.Box3().setFromBufferAttribute(
+    v.attributes.position as THREE.BufferAttribute,
+  );
+  const s = (h * 0.58) / (box.max.y - box.min.y);
+  v.scale(s, s, s);
+  v.translate(0.75, -0.05, 0.05); // sit on the right half of the screen
+
+  const merged = mergeGeometries([...frame, neck, foot, v]);
+  if (merged) merged.translate(0, 0.32, 0); // centre monitor + stand in view
+  return merged ?? v;
 }
 
 function sample(geo: THREE.BufferGeometry, out: Float32Array) {
@@ -124,7 +147,7 @@ function Cloud({ progressRef }: { progressRef: RefObject<number> }) {
 
     pts.position.x = -1.7 * (1 - travel);
     pts.position.y = -Math.sin(Math.min(travel, 1) * Math.PI) * 0.9 * (1 - form);
-    pts.scale.setScalar(1.1 + travel * 0.26 + form * 0.14);
+    pts.scale.setScalar(1.1 + travel * 0.2 - form * 0.42);
 
     const sway = Math.sin(t * 0.3) * 0.35 + travel * Math.PI * 2.4 + explode * t * 0.3;
     pts.rotation.y = THREE.MathUtils.lerp(sway, 0, form);
@@ -182,7 +205,7 @@ function Cloud({ progressRef }: { progressRef: RefObject<number> }) {
             vAlpha = uFade * mix(1.0, 0.5, uExplode);
             vec4 mv = modelViewMatrix * vec4(pos, 1.0);
             float twinkle = 0.75 + 0.55 * sin(uTime + aSeed);
-            gl_PointSize = (34.0 / -mv.z) * twinkle * (1.0 + uExplode * 0.6) * (1.0 - uForm * 0.35);
+            gl_PointSize = (34.0 / -mv.z) * twinkle * (1.0 + uExplode * 0.6) * (1.0 - uForm * 0.15);
             gl_Position = projectionMatrix * mv;
           }
         `}
