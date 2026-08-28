@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Container } from "@/components/container";
+import { HeroVisual } from "@/components/hero-visual";
 import { industries } from "@/content/industries";
 import { services } from "@/content/services";
 import { site } from "@/lib/site";
@@ -7,8 +8,11 @@ import { site } from "@/lib/site";
 export default function Home() {
   return (
     <>
-      <section className="border-b border-border">
-        <Container className="py-32">
+      <section className="relative overflow-hidden border-b border-border">
+        <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[42%] md:block">
+          <HeroVisual />
+        </div>
+        <Container className="relative py-32">
           <p className="eyebrow text-accent">Custom Software &amp; AI</p>
           <h1 className="display mt-5 max-w-4xl text-5xl font-semibold md:text-7xl">
             Build any software.{" "}
