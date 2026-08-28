@@ -4,6 +4,10 @@ export const site = {
   description:
     "VantageLabsAI builds custom software, AI integrations, and ongoing support for businesses of any size — from local shops to technical founders.",
   url: "https://vantagelabsai.com",
+  email: "hello@vantagelabsai.com",
+  // Set once the Calendly account exists; until then the contact page
+  // shows the message form only.
+  calendlyUrl: "",
 } as const;
 
 export const nav = [
