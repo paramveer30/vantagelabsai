@@ -64,22 +64,19 @@ const apps: App[] = [
 // monitor is the frame.
 export function DesktopNav() {
   return (
-    <div className="relative h-[46vh] w-[min(880px,66vw)]">
-      <div className="absolute left-0 top-0 flex items-center gap-2">
+    <div className="relative flex w-[min(1120px,54vw)] flex-col gap-6 pl-[3vw]">
+      <div className="flex items-center gap-2">
         <span className="h-2 w-2 rounded-full bg-accent shadow-[0_0_10px_2px_rgba(58,208,255,0.6)]" />
         <span className="font-mono text-[0.7rem] uppercase tracking-[0.22em] text-muted">
           VantageLabsAI
         </span>
       </div>
 
-      <ul className="absolute left-0 top-12 flex flex-col gap-5">
+      <ul className="flex flex-col gap-4">
         {apps.map((app) => (
           <li key={app.href}>
-            <Link
-              href={app.href}
-              className="group flex items-center gap-4"
-            >
-              <span className="pixel-tile grid h-16 w-16 shrink-0 place-items-center rounded-xl text-accent transition-transform group-hover:-translate-y-0.5 group-hover:text-white">
+            <Link href={app.href} className="group flex items-center gap-4">
+              <span className="pixel-tile grid h-14 w-14 shrink-0 place-items-center rounded-xl text-accent transition-transform group-hover:-translate-y-0.5 group-hover:text-white">
                 {app.icon}
               </span>
               <span className="display text-2xl font-semibold text-foreground/85 transition-colors group-hover:text-foreground [text-shadow:0_1px_10px_rgba(6,8,16,0.95)]">
