@@ -12,29 +12,32 @@ export default function Home() {
     <>
       <section className="relative flex min-h-[88vh] items-center">
         <Container>
-          <div className="max-w-xl md:ml-[46%]">
-            <p className="eyebrow text-accent">VantageLabsAI</p>
-            <h1 className="display mt-4 text-4xl font-semibold sm:text-5xl">
-              We build the software your business is missing.
-            </h1>
-            <p className="mt-5 text-lg text-muted">
-              A small engineering team that designs, builds, and maintains
-              custom software and AI tools — for local businesses and technical
-              founders alike.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-4">
-              <Link
-                href="/contact"
-                className="rounded-full bg-brand px-6 py-3 text-sm font-medium text-brand-foreground transition-all hover:bg-brand-hover hover:shadow-[0_0_40px_-8px_rgba(58,208,255,0.55)]"
-              >
-                Book a call
-              </Link>
-              <Link
-                href="#services"
-                className="rounded-full border border-white/15 px-6 py-3 text-sm font-medium transition-colors hover:bg-white/5"
-              >
-                What we do
-              </Link>
+          <div className="grid items-center gap-10 md:grid-cols-[0.8fr_1.2fr]">
+            <div className="hidden md:block" aria-hidden />
+            <div className="relative max-w-2xl before:absolute before:-inset-x-10 before:-inset-y-8 before:-z-10 before:rounded-[48px] before:bg-background/45 before:blur-2xl">
+              <p className="eyebrow reveal text-accent">VantageLabsAI</p>
+              <h1 className="display reveal reveal-2 mt-4 text-balance text-4xl font-semibold sm:text-5xl">
+                We build the software your business is missing.
+              </h1>
+              <p className="reveal reveal-3 mt-5 text-pretty text-lg text-muted">
+                A small engineering team that designs, builds, and maintains
+                custom software and AI tools — for local businesses and
+                technical founders alike.
+              </p>
+              <div className="reveal reveal-4 mt-8 flex flex-wrap gap-4">
+                <Link
+                  href="/contact"
+                  className="rounded-full bg-brand px-6 py-3 text-sm font-medium text-brand-foreground transition-all hover:bg-brand-hover hover:shadow-[0_0_40px_-8px_rgba(58,208,255,0.55)]"
+                >
+                  Book a call
+                </Link>
+                <Link
+                  href="#services"
+                  className="rounded-full border border-white/15 px-6 py-3 text-sm font-medium transition-colors hover:bg-white/5"
+                >
+                  What we do
+                </Link>
+              </div>
             </div>
           </div>
         </Container>
