@@ -38,12 +38,13 @@ function bar(w: number, h: number, x: number, y: number) {
   return g.toNonIndexed();
 }
 
-// A desktop monitor made only of particles: a thin bezel frame, a stand,
-// and the brand V floating on the screen as the wallpaper.
-function computerGeometry() {
-  const w = 3.9;
-  const h = 2.4;
-  const t = 0.13;
+// The monitor: thin bezel frame, a stand, and the brand V on the right of
+// the screen as the wallpaper. The desktop icons are drawn as real UI on
+// top of this (see DesktopNav).
+function monitorGeometry() {
+  const w = 4.4;
+  const h = 2.7;
+  const t = 0.14;
   const frame = [
     bar(w, t, 0, h / 2 - t / 2),
     bar(w, t, 0, -h / 2 + t / 2),
@@ -51,22 +52,22 @@ function computerGeometry() {
     bar(t, h, w / 2 - t / 2, 0),
   ];
 
-  const neck = new THREE.BoxGeometry(0.44, 0.42, 0.3).toNonIndexed();
-  neck.translate(0, -h / 2 - 0.28, 0);
-  const foot = new THREE.BoxGeometry(1.7, 0.16, 0.8).toNonIndexed();
-  foot.translate(0, -h / 2 - 0.52, 0);
+  const neck = new THREE.BoxGeometry(0.46, 0.44, 0.3).toNonIndexed();
+  neck.translate(0, -h / 2 - 0.3, 0);
+  const foot = new THREE.BoxGeometry(1.9, 0.16, 0.85).toNonIndexed();
+  foot.translate(0, -h / 2 - 0.56, 0);
 
   const v = vGeometry();
   v.scale(1, 1, 0.3);
-  const box = new THREE.Box3().setFromBufferAttribute(
+  const vb = new THREE.Box3().setFromBufferAttribute(
     v.attributes.position as THREE.BufferAttribute,
   );
-  const s = (h * 0.58) / (box.max.y - box.min.y);
+  const s = (h * 0.55) / (vb.max.y - vb.min.y);
   v.scale(s, s, s);
-  v.translate(0.75, -0.05, 0.05); // sit on the right half of the screen
+  v.translate(0.95, -0.05, 0.05);
 
   const merged = mergeGeometries([...frame, neck, foot, v]);
-  if (merged) merged.translate(0, 0.32, 0); // centre monitor + stand in view
+  if (merged) merged.translate(0, 0.34, 0); // centre monitor + stand in view
   return merged ?? v;
 }
 
@@ -88,7 +89,7 @@ function useParticleData() {
     const seed = new Float32Array(COUNT);
 
     sample(vGeometry(), base);
-    sample(computerGeometry(), computer);
+    sample(monitorGeometry(), computer);
 
     const c = new THREE.Color();
     let minY = Infinity;
@@ -140,16 +141,17 @@ function Cloud({ progressRef }: { progressRef: RefObject<number> }) {
     scrub.current += (progressRef.current - scrub.current) * 0.12;
     const p = scrub.current;
 
-    const travel = smoothstep((p - 0.12) / 0.32);
-    const burst = smoothstep((p - 0.3) / 0.2);
-    const form = smoothstep((p - 0.5) / 0.3);
+    const travel = smoothstep((p - 0.06) / 0.3);
+    const burst = smoothstep((p - 0.22) / 0.22);
+    const form = smoothstep((p - 0.4) / 0.34);
     const explode = burst * (1 - form);
 
     pts.position.x = -1.7 * (1 - travel);
     pts.position.y = -Math.sin(Math.min(travel, 1) * Math.PI) * 0.9 * (1 - form);
     pts.scale.setScalar(1.1 + travel * 0.2 - form * 0.42);
 
-    const sway = Math.sin(t * 0.3) * 0.35 + travel * Math.PI * 2.4 + explode * t * 0.3;
+    const sway =
+      Math.sin(t * 0.3) * 0.35 + travel * Math.PI * 2.4 + explode * t * 0.3;
     pts.rotation.y = THREE.MathUtils.lerp(sway, 0, form);
     pts.rotation.z = THREE.MathUtils.lerp(
       travel * 0.3 * Math.sin(t * 0.6) + explode * 0.4,
@@ -197,7 +199,7 @@ function Cloud({ progressRef }: { progressRef: RefObject<number> }) {
             vColor = aColor;
             vec3 vpos = mix(position, aScatter, uExplode);
             vec3 pos = mix(vpos, aComputer, uForm);
-            pos += 0.04 * (1.0 - uForm * 0.7) * vec3(
+            pos += 0.04 * (1.0 - uForm * 0.85) * vec3(
               sin(uTime * 0.8 + aSeed),
               cos(uTime * 0.7 + aSeed * 1.3),
               sin(uTime * 0.6 + aSeed * 0.7)
@@ -205,7 +207,8 @@ function Cloud({ progressRef }: { progressRef: RefObject<number> }) {
             vAlpha = uFade * mix(1.0, 0.5, uExplode);
             vec4 mv = modelViewMatrix * vec4(pos, 1.0);
             float twinkle = 0.75 + 0.55 * sin(uTime + aSeed);
-            gl_PointSize = (34.0 / -mv.z) * twinkle * (1.0 + uExplode * 0.6) * (1.0 - uForm * 0.15);
+            gl_PointSize = (34.0 / -mv.z) * twinkle
+              * (1.0 + uExplode * 0.6) * (1.0 - uForm * 0.15);
             gl_Position = projectionMatrix * mv;
           }
         `}
