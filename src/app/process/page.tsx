@@ -3,7 +3,11 @@ import { Container } from "@/components/container";
 import { PageHero } from "@/components/page-hero";
 import { processSteps } from "@/content/process";
 
-export const metadata: Metadata = { title: "Process" };
+export const metadata: Metadata = {
+  title: "Process",
+  description:
+    "How we work: discovery call, plan and design, build and iterate, launch and support.",
+};
 
 export default function ProcessPage() {
   return (

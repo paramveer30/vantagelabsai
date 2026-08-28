@@ -3,7 +3,11 @@ import { Container } from "@/components/container";
 import { PageHero } from "@/components/page-hero";
 import { industries } from "@/content/industries";
 
-export const metadata: Metadata = { title: "Industries" };
+export const metadata: Metadata = {
+  title: "Industries",
+  description:
+    "Restaurants, retail, clinics, veterinary practices, professional services, and startups — the businesses we build software for.",
+};
 
 export default function IndustriesPage() {
   return (

@@ -3,7 +3,11 @@ import { Container } from "@/components/container";
 import { PageHero } from "@/components/page-hero";
 import { services } from "@/content/services";
 
-export const metadata: Metadata = { title: "Services" };
+export const metadata: Metadata = {
+  title: "Services",
+  description:
+    "Custom software and web apps, AI and automation integration, and ongoing support and maintenance.",
+};
 
 export default function ServicesPage() {
   return (
