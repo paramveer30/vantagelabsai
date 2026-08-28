@@ -259,3 +259,58 @@
     animation-duration: 0.01s;
   }
 }
+
+/* Parkour stick figure that runs the desktop */
+.pk {
+  color: var(--accent);
+  filter: drop-shadow(0 0 4px rgba(58, 208, 255, 0.9));
+}
+.pk .limb {
+  transform-box: fill-box;
+  transform-origin: top center;
+}
+.pk.run .arm1 {
+  animation: pk-swing 0.32s ease-in-out infinite alternate;
+}
+.pk.run .arm2 {
+  animation: pk-swing 0.32s ease-in-out infinite alternate reverse;
+}
+.pk.run .leg1 {
+  animation: pk-stride 0.32s ease-in-out infinite alternate;
+}
+.pk.run .leg2 {
+  animation: pk-stride 0.32s ease-in-out infinite alternate reverse;
+}
+.pk.jump .arm1 {
+  transform: rotate(155deg);
+}
+.pk.jump .arm2 {
+  transform: rotate(120deg);
+}
+.pk.jump .leg1 {
+  transform: rotate(38deg);
+}
+.pk.jump .leg2 {
+  transform: rotate(-22deg);
+}
+@keyframes pk-swing {
+  from {
+    transform: rotate(-32deg);
+  }
+  to {
+    transform: rotate(32deg);
+  }
+}
+@keyframes pk-stride {
+  from {
+    transform: rotate(-42deg);
+  }
+  to {
+    transform: rotate(42deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pk {
+    display: none;
+  }
+}

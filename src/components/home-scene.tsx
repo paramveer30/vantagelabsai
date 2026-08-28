@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { Container } from "@/components/container";
 import { DesktopNav } from "@/components/desktop-nav";
+import { ParkourFigure } from "@/components/parkour-figure";
 import { useMediaQuery, usePrefersReducedMotion } from "@/lib/media";
 
 const VCloud = dynamic(() => import("@/components/three/v-cloud"), {
@@ -121,6 +122,7 @@ export function HomeScene() {
           }`}
         >
           <DesktopNav active={phase === "exploded"} />
+          <ParkourFigure active={phase === "exploded"} />
         </div>
       </div>
     </div>
