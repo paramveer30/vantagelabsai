@@ -3,13 +3,13 @@
 import dynamic from "next/dynamic";
 import { useMediaQuery, usePrefersReducedMotion } from "@/lib/media";
 
-const HeroScene = dynamic(() => import("@/components/three/hero-object"), {
-  ssr: false,
-});
+const StarfieldScene = dynamic(
+  () => import("@/components/three/starfield-scene"),
+  { ssr: false },
+);
 
-// Fixed behind the whole site. The body's radial gradient covers the same
-// space whenever the animated scene is skipped, so content never depends
-// on this rendering.
+// Fixed behind every page. The body's radial gradient covers the same
+// space whenever the animated scene is skipped.
 export function SiteBackground() {
   const reducedMotion = usePrefersReducedMotion();
   const isSmallScreen = useMediaQuery("(max-width: 768px)");
@@ -18,7 +18,7 @@ export function SiteBackground() {
 
   return (
     <div aria-hidden className="pointer-events-none fixed inset-0 -z-10">
-      <HeroScene />
+      <StarfieldScene />
     </div>
   );
 }
