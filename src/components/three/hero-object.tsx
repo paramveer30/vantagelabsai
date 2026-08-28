@@ -146,6 +146,13 @@ function ParticleV() {
     const prog = shatterProgress(t);
     m.uniforms.uTime.value = t;
     m.uniforms.uProgress.value = prog;
+
+    // Fade and lift the mark as the hero scrolls away so the rest of the
+    // page reads over a calm starfield instead of the full letter.
+    const scrolled = typeof window === "undefined" ? 0 : window.scrollY;
+    const fade = Math.max(0, Math.min(1, 1 - scrolled / 620));
+    m.uniforms.uFade.value += (fade - m.uniforms.uFade.value) * 0.1;
+
     pts.rotation.y = Math.sin(t * 0.3) * 0.4 + state.pointer.x * 0.3;
     pts.rotation.x = THREE.MathUtils.lerp(
       pts.rotation.x,
@@ -153,6 +160,7 @@ function ParticleV() {
       0.04,
     );
     pts.rotation.z = prog * Math.sin(t * 0.8) * 0.5;
+    pts.position.y = (1 - m.uniforms.uFade.value) * 2.2;
   });
 
   return (
@@ -168,13 +176,18 @@ function ParticleV() {
         transparent
         depthWrite={false}
         blending={THREE.AdditiveBlending}
-        uniforms={{ uTime: { value: 0 }, uProgress: { value: 0 } }}
+        uniforms={{
+          uTime: { value: 0 },
+          uProgress: { value: 0 },
+          uFade: { value: 1 },
+        }}
         vertexShader={`
           attribute vec3 aScatter;
           attribute vec3 aColor;
           attribute float aSeed;
           uniform float uTime;
           uniform float uProgress;
+          uniform float uFade;
           varying vec3 vColor;
           varying float vAlpha;
           void main() {
@@ -185,7 +198,7 @@ function ParticleV() {
               cos(uTime * 0.7 + aSeed * 1.3),
               sin(uTime * 0.6 + aSeed * 0.7)
             );
-            vAlpha = mix(1.0, 0.4, uProgress);
+            vAlpha = mix(1.0, 0.4, uProgress) * uFade;
             vec4 mv = modelViewMatrix * vec4(pos, 1.0);
             float twinkle = 0.7 + 0.6 * sin(uTime + aSeed);
             gl_PointSize = (26.0 / -mv.z) * twinkle * (1.0 + uProgress * 0.6);

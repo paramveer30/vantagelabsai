@@ -9,7 +9,7 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur">
+    <header className="sticky top-0 z-40 bg-background/60 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
         <Link href="/" className="flex items-center gap-2">
           <Image
@@ -51,7 +51,7 @@ export function SiteHeader() {
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-label="Toggle menu"
-          className="flex h-9 w-9 items-center justify-center rounded-md border border-border md:hidden"
+          className="flex h-9 w-9 items-center justify-center rounded-md border border-white/15 md:hidden"
         >
           <span className="sr-only">Toggle menu</span>
           {open ? "✕" : "☰"}
@@ -59,7 +59,7 @@ export function SiteHeader() {
       </div>
 
       {open && (
-        <nav className="flex flex-col gap-1 border-t border-border px-6 py-4 md:hidden">
+        <nav className="flex flex-col gap-1 bg-background/80 px-6 py-4 backdrop-blur-xl md:hidden">
           {nav.map((item) => (
             <Link
               key={item.href}
