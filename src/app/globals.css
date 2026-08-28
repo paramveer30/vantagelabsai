@@ -1,22 +1,26 @@
 @import "tailwindcss";
 
 /*
- * Palette pulled from the VantageLabsAI logo (public/brand/) — deep
- * navy base with a blue-to-cyan gradient mark. Kept to a dark theme
- * site-wide rather than just the hero, so the logo isn't dropped onto
- * a mismatched white background.
+ * Dark "lab" palette — near-black navy base with the blue→cyan brand
+ * gradient from the logo. Surfaces layer (background < surface <
+ * surface-2) so panels sit over the animated background without hard
+ * edges; borders are faint white rather than a fixed navy so they read
+ * against whatever moves behind them.
  */
 :root {
-  --background: #0a0e1a;
-  --foreground: #f4f6fb;
-  --muted: #93a0b8;
-  --border: #1f2740;
-  --surface: #10162b;
+  --background: #060810;
+  --foreground: #eef2fb;
+  --muted: #8b98b4;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.16);
+  --surface: #0c1120;
+  --surface-2: #121a2e;
 
-  --brand: #2563eb;
-  --brand-hover: #3b82f6;
+  --brand: #2f6bff;
+  --brand-hover: #4f83ff;
   --brand-foreground: #ffffff;
-  --accent: #38bdf8;
+  --accent: #3ad0ff;
+  --glow: rgba(58, 208, 255, 0.35);
 }
 
 @theme inline {
@@ -24,7 +28,9 @@
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
   --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
   --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
 
   --color-brand: var(--brand);
   --color-brand-hover: var(--brand-hover);
@@ -35,7 +41,76 @@
   --font-mono: var(--font-geist-mono);
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
+@layer base {
+  body {
+    background:
+      radial-gradient(
+        1100px 560px at 50% -12%,
+        rgba(47, 107, 255, 0.14),
+        transparent 70%
+      ),
+      var(--background);
+    color: var(--foreground);
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--accent) 28%, transparent);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+}
+
+@layer utilities {
+  .display {
+    font-family: var(--font-display), var(--font-geist-sans), sans-serif;
+    letter-spacing: -0.02em;
+  }
+
+  .eyebrow {
+    font-family: var(--font-geist-mono), ui-monospace, monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-size: 0.72rem;
+  }
+
+  .text-gradient {
+    background: linear-gradient(
+      96deg,
+      var(--foreground) 0%,
+      var(--accent) 55%,
+      var(--brand) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .glass {
+    background: color-mix(in oklab, var(--surface) 72%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+  }
+
+  .card-glow {
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease,
+      transform 0.2s ease;
+  }
+  .card-glow:hover {
+    border-color: var(--border-strong);
+    box-shadow: 0 24px 60px -28px var(--glow);
+    transform: translateY(-2px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card-glow:hover {
+      transform: none;
+    }
+  }
 }

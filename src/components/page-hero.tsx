@@ -10,10 +10,12 @@ export function PageHero({
   subtitle: string;
 }) {
   return (
-    <Container className="py-20">
-      <p className="text-sm font-medium text-accent">{eyebrow}</p>
-      <h1 className="mt-2 text-4xl font-semibold tracking-tight">{title}</h1>
-      <p className="mt-4 max-w-2xl text-muted">{subtitle}</p>
+    <Container className="py-24">
+      <p className="eyebrow text-accent">{eyebrow}</p>
+      <h1 className="display mt-4 text-4xl font-semibold md:text-5xl">
+        {title}
+      </h1>
+      <p className="mt-5 max-w-2xl text-lg text-muted">{subtitle}</p>
     </Container>
   );
 }
