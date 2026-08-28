@@ -120,7 +120,7 @@ export function HomeScene() {
               : "pointer-events-none opacity-0"
           }`}
         >
-          <DesktopNav />
+          <DesktopNav active={phase === "exploded"} />
         </div>
       </div>
     </div>

@@ -61,29 +61,35 @@ const apps: App[] = [
   },
 ];
 
-// Real desktop UI drawn on top of the particle monitor's screen (left
-// half — the V wallpaper fills the right).
-export function DesktopNav() {
+// Holographic desktop UI drawn on the particle monitor's screen (left
+// half — the V wallpaper fills the right). `active` triggers the
+// staggered power-on when the computer finishes forming.
+export function DesktopNav({ active }: { active: boolean }) {
   return (
-    <div
-      className="absolute"
-      style={{ left: "calc(50vw - 36vh)", top: "20vh" }}
-    >
-      <div className="mb-6 flex items-center gap-2">
-        <span className="h-2 w-2 rounded-full bg-accent shadow-[0_0_10px_2px_rgba(58,208,255,0.7)]" />
-        <span className="font-mono text-[0.7rem] uppercase tracking-[0.24em] text-muted">
-          VantageLabsAI
+    <div className="absolute" style={{ left: "calc(50vw - 36vh)", top: "20vh" }}>
+      <div
+        className={`mb-6 flex items-center gap-2 ${active ? "holo-in" : "opacity-0"}`}
+      >
+        <span className="h-2 w-2 rounded-full bg-accent shadow-[0_0_10px_2px_rgba(58,208,255,0.8)]" />
+        <span className="font-mono text-[0.7rem] uppercase tracking-[0.24em] text-accent/80">
+          VantageLabsAI · online
         </span>
       </div>
 
       <ul className="flex flex-col gap-5">
-        {apps.map((app) => (
-          <li key={app.href}>
+        {apps.map((app, i) => (
+          <li
+            key={app.href}
+            className={active ? "holo-in" : "opacity-0"}
+            style={active ? { animationDelay: `${0.12 + i * 0.09}s` } : undefined}
+          >
             <Link href={app.href} className="group flex items-center gap-4">
-              <span className="grid h-16 w-16 place-items-center rounded-2xl border border-accent/40 bg-gradient-to-br from-white/[0.12] to-white/[0.02] text-accent shadow-[0_0_30px_-6px_rgba(58,208,255,0.6),inset_0_1px_0_rgba(255,255,255,0.12)] backdrop-blur-md transition-all duration-200 group-hover:-translate-y-0.5 group-hover:border-accent group-hover:text-white group-hover:shadow-[0_0_46px_-4px_rgba(58,208,255,0.95),inset_0_1px_0_rgba(255,255,255,0.22)]">
-                {app.icon}
+              <span className="holo hud relative grid h-16 w-16 place-items-center rounded-xl text-accent transition-all duration-200 group-hover:-translate-y-0.5 group-hover:text-white">
+                <span className="drop-shadow-[0_0_8px_rgba(58,208,255,0.7)]">
+                  {app.icon}
+                </span>
               </span>
-              <span className="display text-2xl font-semibold text-foreground/90 [text-shadow:0_1px_12px_rgba(6,8,16,0.9)] transition-colors group-hover:text-foreground">
+              <span className="display text-2xl font-semibold text-foreground/90 [text-shadow:0_0_18px_rgba(58,208,255,0.35),0_1px_10px_rgba(6,8,16,0.9)] transition-colors group-hover:text-foreground">
                 {app.label}
               </span>
             </Link>

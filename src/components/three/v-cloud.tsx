@@ -130,13 +130,19 @@ function Cloud({ progressRef }: { progressRef: RefObject<number> }) {
   const scrub = useRef(0);
   const { base, computer, scatter, color, seed } = useParticleData();
 
-  useFrame((_, delta) => {
+  useFrame((state, delta) => {
     const m = mat.current;
     const pts = points.current;
     if (!m || !pts) return;
 
     const t = m.uniforms.uTime.value + delta;
     m.uniforms.uTime.value = t;
+
+    // Follow the cursor (NDC) with a little easing so the field parts
+    // around it smoothly.
+    const pr = m.uniforms.uPointer.value as THREE.Vector2;
+    pr.x += (state.pointer.x - pr.x) * 0.1;
+    pr.y += (state.pointer.y - pr.y) * 0.1;
 
     scrub.current += (progressRef.current - scrub.current) * 0.12;
     const p = scrub.current;
@@ -183,6 +189,7 @@ function Cloud({ progressRef }: { progressRef: RefObject<number> }) {
           uExplode: { value: 0 },
           uForm: { value: 0 },
           uFade: { value: 1 },
+          uPointer: { value: new THREE.Vector2(0, 0) },
         }}
         vertexShader={`
           attribute vec3 aComputer;
@@ -193,6 +200,7 @@ function Cloud({ progressRef }: { progressRef: RefObject<number> }) {
           uniform float uExplode;
           uniform float uForm;
           uniform float uFade;
+          uniform vec2 uPointer;
           varying vec3 vColor;
           varying float vAlpha;
           void main() {
@@ -209,7 +217,18 @@ function Cloud({ progressRef }: { progressRef: RefObject<number> }) {
             float twinkle = 0.75 + 0.55 * sin(uTime + aSeed);
             gl_PointSize = (34.0 / -mv.z) * twinkle
               * (1.0 + uExplode * 0.6) * (1.0 - uForm * 0.15);
-            gl_Position = projectionMatrix * mv;
+            vec4 clip = projectionMatrix * mv;
+
+            // Part the field around the cursor — strong on the loose hero
+            // V, gentle once the monitor has formed so it stays readable.
+            vec2 sp = clip.xy / clip.w;
+            float pd = distance(sp, uPointer);
+            float push = smoothstep(0.32, 0.0, pd) * (1.0 - uForm * 0.82);
+            clip.xy += normalize(sp - uPointer + 1e-4) * push * clip.w * 0.08;
+            gl_PointSize *= 1.0 + push * 1.6;
+            vAlpha *= 1.0 + push * 0.5;
+
+            gl_Position = clip;
           }
         `}
         fragmentShader={`
@@ -218,8 +237,9 @@ function Cloud({ progressRef }: { progressRef: RefObject<number> }) {
           void main() {
             float d = length(gl_PointCoord - 0.5);
             if (d > 0.5) discard;
-            float a = smoothstep(0.5, 0.05, d) * vAlpha;
-            gl_FragColor = vec4(vColor, a);
+            float core = smoothstep(0.5, 0.32, d);
+            float halo = smoothstep(0.5, 0.0, d) * 0.4;
+            gl_FragColor = vec4(vColor * (1.0 + core * 0.6), (core + halo) * vAlpha);
           }
         `}
       />
