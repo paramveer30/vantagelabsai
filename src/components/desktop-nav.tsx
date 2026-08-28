@@ -64,7 +64,7 @@ const apps: App[] = [
 // monitor is the frame.
 export function DesktopNav() {
   return (
-    <div className="relative flex w-[min(1120px,54vw)] flex-col gap-4 pl-[3vw]">
+    <div className="flex flex-col gap-4">
       <div className="flex items-center gap-2">
         <span className="h-2 w-2 rounded-full bg-accent shadow-[0_0_10px_2px_rgba(58,208,255,0.6)]" />
         <span className="font-mono text-[0.7rem] uppercase tracking-[0.22em] text-muted">

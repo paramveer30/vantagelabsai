@@ -112,14 +112,24 @@ export function HomeScene() {
         </Container>
 
         <div
-          style={{ paddingTop: "17vh" }}
-          className={`absolute inset-0 flex items-start justify-center transition-all duration-700 ${
+          className={`absolute inset-0 transition-all duration-700 ${
             phase === "exploded"
               ? "opacity-100"
               : "pointer-events-none scale-95 opacity-0"
           }`}
         >
-          <DesktopNav />
+          {/* Anchored to the particle monitor's inner screen (left half;
+              the V wallpaper fills the right). See the projection notes. */}
+          <div
+            className="absolute"
+            style={{
+              left: "calc(50vw - 35vh)",
+              top: "25vh",
+              width: "min(34vh, 42vw)",
+            }}
+          >
+            <DesktopNav />
+          </div>
         </div>
       </div>
     </div>
