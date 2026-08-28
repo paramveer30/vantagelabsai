@@ -13,9 +13,13 @@ export function HeroVisual() {
 
   if (reducedMotion || isSmallScreen) {
     return (
-      <div className="absolute right-[-10%] top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-brand/20 blur-3xl" />
+      <div className="absolute inset-0 bg-[radial-gradient(60%_50%_at_30%_45%,rgba(47,107,255,0.22),transparent_70%)]" />
     );
   }
 
-  return <HeroObject />;
+  return (
+    <div className="absolute inset-0">
+      <HeroObject />
+    </div>
+  );
 }

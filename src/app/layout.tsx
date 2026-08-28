@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
+import { SiteFooter } from "@/components/site-footer";
+import { SiteHeader } from "@/components/site-header";
 import { site } from "@/lib/site";
 import "./globals.css";
 
@@ -50,11 +52,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
-        {/* background-iteration branch: chrome hidden while we tune the bg */}
-        {/* <SiteBackground /> */}
-        {/* <SiteHeader /> */}
+        <SiteHeader />
         <main className="flex-1">{children}</main>
-        {/* <SiteFooter /> */}
+        <SiteFooter />
       </body>
     </html>
   );

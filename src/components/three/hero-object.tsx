@@ -6,8 +6,9 @@ import { MeshSurfaceSampler } from "three/examples/jsm/math/MeshSurfaceSampler.j
 import { Canvas, useFrame } from "@react-three/fiber";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 
-const COUNT = 22000;
-const BG_COUNT = 3500;
+const COUNT = 24000;
+const STAR_COUNT = 2600;
+const DUST_COUNT = 500;
 
 const LOW = new THREE.Color("#0b4fd6");
 const MID = new THREE.Color("#2aa8ee");
@@ -28,15 +29,40 @@ function smoothstep(x: number) {
   return c * c * (3 - 2 * c);
 }
 
-// Timeline for the shatter/reform loop: hold assembled, blow apart, hold
-// scattered, pull back together, repeat.
+// Soft round sprite so pointsMaterial doesn't render hard squares.
+function makeDotTexture() {
+  const size = 64;
+  const canvas = document.createElement("canvas");
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext("2d");
+  if (ctx) {
+    const g = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+    g.addColorStop(0, "rgba(255,255,255,1)");
+    g.addColorStop(1, "rgba(255,255,255,0)");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, size, size);
+  }
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+let sharedDot: THREE.Texture | null = null;
+function dotTexture() {
+  if (!sharedDot) sharedDot = makeDotTexture();
+  return sharedDot;
+}
+
+// Assembled most of the cycle, a quick blow-apart, a brief hold, then a
+// slower pull back together.
 function shatterProgress(time: number) {
   const cycle = 22;
   const p = (time % cycle) / cycle;
-  if (p < 0.6) return 0; // assembled, held
-  if (p < 0.72) return smoothstep((p - 0.6) / 0.12); // blow apart
-  if (p < 0.82) return 1; // dispersed, brief
-  return 1 - smoothstep((p - 0.82) / 0.18); // pull back together
+  if (p < 0.6) return 0;
+  if (p < 0.72) return smoothstep((p - 0.6) / 0.12);
+  if (p < 0.82) return 1;
+  return 1 - smoothstep((p - 0.82) / 0.18);
 }
 
 function vShape() {
@@ -71,10 +97,10 @@ function useParticleData() {
 
     const p = new THREE.Vector3();
     const c = new THREE.Color();
-
+    const pts: THREE.Vector3[] = [];
     let minY = Infinity;
     let maxY = -Infinity;
-    const pts: THREE.Vector3[] = [];
+
     for (let i = 0; i < COUNT; i++) {
       sampler.sample(p);
       pts.push(p.clone());
@@ -87,12 +113,12 @@ function useParticleData() {
       base.set([pt.x, pt.y, pt.z], i * 3);
 
       const dir = pt.clone().normalize();
-      const dist = 1.4 + hashUnit(i) * 3.2;
+      const dist = 2 + hashUnit(i) * 5;
       scatter.set(
         [
-          pt.x + dir.x * dist + (hashUnit(i * 2.1) - 0.5),
-          pt.y + dir.y * dist + (hashUnit(i * 3.7) - 0.5),
-          pt.z + dir.z * dist + (hashUnit(i * 5.3) - 0.5) * 2,
+          pt.x + dir.x * dist + (hashUnit(i * 2.1) - 0.5) * 1.5,
+          pt.y + dir.y * dist + (hashUnit(i * 3.7) - 0.5) * 1.5,
+          pt.z + dir.z * dist + (hashUnit(i * 5.3) - 0.5) * 3,
         ],
         i * 3,
       );
@@ -117,18 +143,20 @@ function ParticleV() {
     const pts = points.current;
     if (!m || !pts) return;
     const t = m.uniforms.uTime.value + delta;
+    const prog = shatterProgress(t);
     m.uniforms.uTime.value = t;
-    m.uniforms.uProgress.value = shatterProgress(t);
-    pts.rotation.y = Math.sin(t * 0.3) * 0.45 + state.pointer.x * 0.3;
+    m.uniforms.uProgress.value = prog;
+    pts.rotation.y = Math.sin(t * 0.3) * 0.4 + state.pointer.x * 0.3;
     pts.rotation.x = THREE.MathUtils.lerp(
       pts.rotation.x,
-      state.pointer.y * 0.2,
+      state.pointer.y * 0.18,
       0.04,
     );
+    pts.rotation.z = prog * Math.sin(t * 0.8) * 0.5;
   });
 
   return (
-    <points ref={points}>
+    <points ref={points} scale={1.1} position={[-1.7, 0, 0]}>
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" args={[base, 3]} />
         <bufferAttribute attach="attributes-aScatter" args={[scatter, 3]} />
@@ -157,9 +185,10 @@ function ParticleV() {
               cos(uTime * 0.7 + aSeed * 1.3),
               sin(uTime * 0.6 + aSeed * 0.7)
             );
-            vAlpha = mix(1.0, 0.55, uProgress);
+            vAlpha = mix(1.0, 0.4, uProgress);
             vec4 mv = modelViewMatrix * vec4(pos, 1.0);
-            gl_PointSize = (28.0 / -mv.z) * (0.7 + 0.6 * sin(uTime + aSeed));
+            float twinkle = 0.7 + 0.6 * sin(uTime + aSeed);
+            gl_PointSize = (26.0 / -mv.z) * twinkle * (1.0 + uProgress * 0.6);
             gl_Position = projectionMatrix * mv;
           }
         `}
@@ -178,34 +207,31 @@ function ParticleV() {
   );
 }
 
-function BackdropField() {
+function StarField() {
   const points = useRef<THREE.Points>(null);
-
+  const map = useMemo(() => dotTexture(), []);
   const { positions, colors } = useMemo(() => {
-    const positions = new Float32Array(BG_COUNT * 3);
-    const colors = new Float32Array(BG_COUNT * 3);
+    const positions = new Float32Array(STAR_COUNT * 3);
+    const colors = new Float32Array(STAR_COUNT * 3);
     const c = new THREE.Color();
-    for (let i = 0; i < BG_COUNT; i++) {
+    for (let i = 0; i < STAR_COUNT; i++) {
       positions.set(
         [
-          (hashUnit(i * 1.7) - 0.5) * 60,
-          (hashUnit(i * 2.9) - 0.5) * 40,
-          -8 - hashUnit(i * 4.1) * 40,
+          (hashUnit(i * 1.7) - 0.5) * 70,
+          (hashUnit(i * 2.9) - 0.5) * 48,
+          -14 - hashUnit(i * 4.1) * 46,
         ],
         i * 3,
       );
       c.copy(LOW).lerp(HIGH, hashUnit(i * 6.7));
-      c.multiplyScalar(0.4 + hashUnit(i * 8.3) * 0.5);
+      c.multiplyScalar(0.3 + hashUnit(i * 8.3) * 0.4);
       colors.set([c.r, c.g, c.b], i * 3);
     }
     return { positions, colors };
   }, []);
 
   useFrame((_, delta) => {
-    const pts = points.current;
-    if (!pts) return;
-    pts.rotation.y += delta * 0.015;
-    pts.position.y = (pts.position.y - delta * 0.4) % 8;
+    if (points.current) points.current.rotation.y += delta * 0.008;
   });
 
   return (
@@ -215,6 +241,7 @@ function BackdropField() {
         <bufferAttribute attach="attributes-color" args={[colors, 3]} />
       </bufferGeometry>
       <pointsMaterial
+        map={map}
         size={0.09}
         sizeAttenuation
         vertexColors
@@ -226,17 +253,62 @@ function BackdropField() {
   );
 }
 
+function DustField() {
+  const points = useRef<THREE.Points>(null);
+  const map = useMemo(() => dotTexture(), []);
+  const positions = useMemo(() => {
+    const arr = new Float32Array(DUST_COUNT * 3);
+    for (let i = 0; i < DUST_COUNT; i++) {
+      arr.set(
+        [
+          (hashUnit(i * 3.1) - 0.5) * 24,
+          (hashUnit(i * 5.7) - 0.5) * 16,
+          -2 - hashUnit(i * 7.3) * 12,
+        ],
+        i * 3,
+      );
+    }
+    return arr;
+  }, []);
+
+  useFrame((state, delta) => {
+    const p = points.current;
+    if (!p) return;
+    p.position.y = (state.clock.elapsedTime * 0.15) % 6;
+    p.rotation.z += delta * 0.02;
+  });
+
+  return (
+    <points ref={points}>
+      <bufferGeometry>
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
+      </bufferGeometry>
+      <pointsMaterial
+        map={map}
+        size={0.16}
+        sizeAttenuation
+        color="#4fb8ff"
+        transparent
+        opacity={0.5}
+        depthWrite={false}
+        blending={THREE.AdditiveBlending}
+      />
+    </points>
+  );
+}
+
 export default function HeroObject() {
   return (
-    <Canvas camera={{ position: [0, 0, 6], fov: 42 }} dpr={[1, 1.6]}>
-      <BackdropField />
+    <Canvas camera={{ position: [0, 0, 5.4], fov: 42 }} dpr={[1, 1.6]}>
+      <StarField />
+      <DustField />
       <ParticleV />
       <EffectComposer>
         <Bloom
           mipmapBlur
-          intensity={0.9}
-          luminanceThreshold={0.12}
-          luminanceSmoothing={0.35}
+          intensity={1}
+          luminanceThreshold={0.1}
+          luminanceSmoothing={0.4}
         />
       </EffectComposer>
     </Canvas>

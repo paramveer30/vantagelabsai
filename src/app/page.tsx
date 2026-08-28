@@ -1,5 +1,5 @@
-import { LogoStage } from "@/components/logo-stage";
+import { HomeHero } from "@/components/home-hero";
 
 export default function Home() {
-  return <LogoStage />;
+  return <HomeHero />;
 }
