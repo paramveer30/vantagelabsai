@@ -192,21 +192,38 @@ type BeamsProps = {
   beamWidth?: number;
   beamHeight?: number;
   beamCount?: number;
+  beamColor?: string;
   lightColor?: string;
+  lightIntensity?: number;
+  ambientIntensity?: number;
   speed?: number;
   noiseIntensity?: number;
   scale?: number;
   rotation?: number;
 };
 
+type BeamFieldProps = Required<
+  Pick<
+    BeamsProps,
+    | "beamWidth"
+    | "beamHeight"
+    | "beamCount"
+    | "beamColor"
+    | "speed"
+    | "noiseIntensity"
+    | "scale"
+  >
+>;
+
 function BeamField({
   beamWidth = 2,
   beamHeight = 15,
   beamCount = 12,
+  beamColor = "#05070f",
   speed = 2,
   noiseIntensity = 1.75,
   scale = 0.2,
-}: Required<Omit<BeamsProps, "lightColor" | "rotation">>) {
+}: BeamFieldProps) {
   const mesh = useRef<THREE.Mesh>(null);
 
   const material = useMemo(
@@ -243,7 +260,7 @@ function BeamField({
         },
         material: { fog: true },
         uniforms: {
-          diffuse: new THREE.Color(...hexToRgb("#05070f")),
+          diffuse: new THREE.Color(...hexToRgb(beamColor)),
           time: { value: 0 },
           roughness: { value: 0.3 },
           metalness: { value: 0.3 },
@@ -253,7 +270,7 @@ function BeamField({
           envMapIntensity: { value: 10 },
         },
       }),
-    [speed, noiseIntensity, scale],
+    [beamColor, speed, noiseIntensity, scale],
   );
 
   const geometry = useMemo(
@@ -273,7 +290,10 @@ export default function Beams({
   beamWidth = 2,
   beamHeight = 15,
   beamCount = 12,
+  beamColor = "#05070f",
   lightColor = "#3ad0ff",
+  lightIntensity = 1,
+  ambientIntensity = 0.9,
   speed = 2,
   noiseIntensity = 1.75,
   scale = 0.2,
@@ -286,13 +306,18 @@ export default function Beams({
           beamWidth={beamWidth}
           beamHeight={beamHeight}
           beamCount={beamCount}
+          beamColor={beamColor}
           speed={speed}
           noiseIntensity={noiseIntensity}
           scale={scale}
         />
-        <directionalLight color={lightColor} intensity={1} position={[0, 3, 10]} />
+        <directionalLight
+          color={lightColor}
+          intensity={lightIntensity}
+          position={[0, 3, 10]}
+        />
       </group>
-      <ambientLight intensity={0.9} />
+      <ambientLight intensity={ambientIntensity} />
       <PerspectiveCamera makeDefault position={[0, 0, 20]} fov={30} />
     </Canvas>
   );
