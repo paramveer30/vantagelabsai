@@ -5,7 +5,7 @@ import { useState } from "react";
 type Status = "idle" | "submitting" | "success" | "error";
 
 const fieldClass =
-  "mt-1 w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm outline-none focus:border-brand";
+  "mt-1.5 w-full rounded-lg border border-border bg-surface-2/60 px-3.5 py-2.5 text-sm outline-none transition-colors placeholder:text-muted focus:border-accent focus:ring-1 focus:ring-accent/40";
 
 export function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
@@ -41,8 +41,10 @@ export function ContactForm() {
 
   if (status === "success") {
     return (
-      <div className="rounded-2xl border border-border bg-surface p-6">
-        <p className="font-semibold">Thanks — we got your message.</p>
+      <div className="hud relative rounded-xl border border-border bg-surface-2/60 p-6">
+        <p className="display font-semibold text-accent">
+          Thanks — we got your message.
+        </p>
         <p className="mt-2 text-sm text-muted">
           We&apos;ll get back to you within a business day.
         </p>
@@ -101,9 +103,10 @@ export function ContactForm() {
       <button
         type="submit"
         disabled={status === "submitting"}
-        className="rounded-full bg-brand px-6 py-3 text-sm font-medium text-brand-foreground transition-colors hover:bg-brand-hover disabled:opacity-60"
+        className="inline-flex items-center gap-2 rounded-full bg-brand px-6 py-3 text-sm font-medium text-brand-foreground transition-colors hover:bg-brand-hover disabled:opacity-60"
       >
         {status === "submitting" ? "Sending…" : "Send message"}
+        <span aria-hidden>→</span>
       </button>
     </form>
   );
