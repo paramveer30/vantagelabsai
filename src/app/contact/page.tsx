@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
+import { BookingPanel } from "@/components/booking-panel";
 import { Container } from "@/components/container";
 import { ContactForm } from "@/components/contact-form";
 import { PageHero } from "@/components/page-hero";
-import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -22,25 +22,7 @@ export default function ContactPage() {
       <Container className="grid gap-12 pb-24 md:grid-cols-2">
         <div>
           <h2 className="text-xl font-semibold">Book a call</h2>
-          {site.calendlyUrl ? (
-            <iframe
-              src={site.calendlyUrl}
-              title="Schedule a call with VantageLabsAI"
-              className="mt-4 h-[640px] w-full rounded-2xl border border-border"
-            />
-          ) : (
-            <p className="mt-4 text-sm text-muted">
-              Our booking link is going live shortly. In the meantime, send a
-              message and we&apos;ll set up a time — or email us directly at{" "}
-              <a
-                href={`mailto:${site.email}`}
-                className="text-accent hover:underline"
-              >
-                {site.email}
-              </a>
-              .
-            </p>
-          )}
+          <BookingPanel />
         </div>
 
         <div>
