@@ -23,22 +23,31 @@ export function IntroOverlay() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const labelRef = useRef<HTMLParagraphElement>(null);
 
+  // Drive the typewriter off elapsed wall-clock time so a backgrounded
+  // tab (throttled timers) still shows the right amount and hands off on
+  // schedule instead of stalling.
   useEffect(() => {
     if (phase !== "typing") return;
+    const CHAR_MS = 52;
+    const DONE_MS = TEXT.length * CHAR_MS + 450;
 
-    let i = 0;
-    const type = window.setInterval(() => {
-      i += 1;
-      setTyped(i);
-      if (i >= TEXT.length) {
-        window.clearInterval(type);
-        window.setTimeout(() => setPhase("particles"), 450);
+    let raf = 0;
+    let start = 0;
+    const tick = (now: number) => {
+      if (!start) start = now;
+      const t = now - start;
+      setTyped(Math.min(TEXT.length, Math.floor(t / CHAR_MS)));
+      if (t >= DONE_MS) {
+        setPhase("particles");
+        return;
       }
-    }, 52);
-    const failsafe = window.setTimeout(() => setPhase("gone"), 7000);
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    const failsafe = window.setTimeout(() => setPhase("gone"), 9000);
 
     return () => {
-      window.clearInterval(type);
+      cancelAnimationFrame(raf);
       window.clearTimeout(failsafe);
     };
   }, [phase]);
