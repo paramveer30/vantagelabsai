@@ -314,19 +314,19 @@
   }
 }
 
-/* Page transitions — the old page sheds into blur while PageTransition's
-   particle canvas scatters it and a scan line prints the new page, which
-   resolves from blur underneath. Header, starfield and the particle
-   canvas are pinned by name so only the page body moves. */
+/* Page transitions — the old page blurs out fast while PageTransition's
+   particle canvas bursts and reassembles onto the new layout, which
+   resolves from blur underneath as the particles land. Header, starfield
+   and the particle canvas are pinned by name so only the page body moves. */
 ::view-transition {
   pointer-events: none;
 }
 
 ::view-transition-old(.page-exit) {
-  animation: 180ms var(--ease-soft) both page-shed;
+  animation: 130ms var(--ease-soft) both page-shed;
 }
 ::view-transition-new(.page-enter) {
-  animation: 520ms var(--ease-soft) 200ms both page-resolve;
+  animation: 460ms var(--ease-soft) 280ms both page-resolve;
 }
 
 ::view-transition-group(site-header),
@@ -351,7 +351,7 @@
 @keyframes page-resolve {
   from {
     opacity: 0;
-    filter: blur(9px);
+    filter: blur(13px);
   }
   to {
     opacity: 1;
