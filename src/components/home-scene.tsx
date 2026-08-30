@@ -8,18 +8,11 @@ import { DesktopNav } from "@/components/desktop-nav";
 import { ParkourFigure } from "@/components/parkour-figure";
 import type { Hit } from "@/components/three/types";
 import { useMediaQuery, usePrefersReducedMotion } from "@/lib/media";
+import { nav } from "@/lib/site";
 
 const VCloud = dynamic(() => import("@/components/three/v-cloud"), {
   ssr: false,
 });
-
-const pages = [
-  { n: "01", label: "Services", href: "/services" },
-  { n: "02", label: "Industries", href: "/industries" },
-  { n: "03", label: "Process", href: "/process" },
-  { n: "04", label: "Work", href: "/work" },
-  { n: "05", label: "Contact", href: "/contact" },
-];
 
 const headline = "We build the software your business is missing.";
 const intro =
@@ -35,11 +28,17 @@ const EXPLODED_AT = 0.68; // monitor has formed; show the desktop nav
 function PageLinks({ className = "" }: { className?: string }) {
   return (
     <nav className={`grid gap-x-14 gap-y-4 sm:grid-cols-2 ${className}`}>
-      {pages.map((p) => (
-        <Link key={p.href} href={p.href} className="group flex items-baseline gap-3">
-          <span className="font-mono text-sm text-accent">{p.n}</span>
+      {nav.map((item, i) => (
+        <Link
+          key={item.href}
+          href={item.href}
+          className="group flex items-baseline gap-3"
+        >
+          <span className="font-mono text-sm text-accent">
+            {String(i + 1).padStart(2, "0")}
+          </span>
           <span className="display text-3xl font-semibold text-muted transition-colors group-hover:text-foreground sm:text-4xl">
-            {p.label}
+            {item.label}
           </span>
         </Link>
       ))}
