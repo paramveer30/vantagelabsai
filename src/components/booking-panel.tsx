@@ -1,3 +1,4 @@
+import { BookingEmbed } from "@/components/booking-embed";
 import { site } from "@/lib/site";
 
 // The booking URL lives in site.ts. Empty → show a mailto fallback card;
@@ -19,11 +20,5 @@ export function BookingPanel() {
     );
   }
 
-  return (
-    <iframe
-      src={site.bookingUrl}
-      title="Schedule a call with VantageLabsAI"
-      className="mt-4 h-[640px] w-full rounded-2xl border border-border"
-    />
-  );
+  return <BookingEmbed url={site.bookingUrl} />;
 }
