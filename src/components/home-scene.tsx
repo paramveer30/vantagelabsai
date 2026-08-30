@@ -51,10 +51,12 @@ function StaticHome() {
     <section className="flex min-h-[80vh] items-center">
       <Container>
         <p className="eyebrow">VantageLabsAI</p>
-        <h1 className="display mt-5 max-w-3xl text-balance text-5xl font-semibold sm:text-6xl">
+        <h1 className="display mt-5 max-w-3xl text-balance text-5xl font-semibold leading-[1.04] tracking-[-0.03em] sm:text-6xl">
           {headline}
         </h1>
-        <p className="mt-6 max-w-2xl text-xl text-muted">{intro}</p>
+        <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted sm:text-xl">
+          {intro}
+        </p>
         <PageLinks className="mt-12" />
       </Container>
     </section>
@@ -137,23 +139,53 @@ export function HomeScene() {
           <VCloud progressRef={progressRef} hitRef={hitRef} />
         </div>
 
-        <Container
-          className={`relative transition-all duration-300 ${
+        <div
+          className={`absolute inset-y-0 right-0 flex items-center pr-[7vw] pl-8 transition-all duration-300 ${
             phase === "hero"
               ? "opacity-100"
               : "pointer-events-none translate-y-3 opacity-0"
           }`}
         >
-          <div className="ml-auto max-w-[46rem] md:w-[62%]">
-            <p className="eyebrow">VantageLabsAI</p>
-            <h1 className="display mt-5 text-4xl font-semibold sm:text-[2.6rem]">
-              We build the software
-              <br className="hidden sm:block" /> your business is missing.
+          <div className="w-[min(37rem,44vw)] border-l border-border/70 pl-8">
+            <p className="eyebrow flex items-center gap-3">
+              <span aria-hidden className="h-px w-8 bg-accent/70" />
+              VantageLabsAI
+            </p>
+            <h1 className="display mt-6 text-balance text-[2.4rem] font-semibold leading-[1.05] tracking-[-0.03em] [text-shadow:0_8px_40px_rgba(6,8,16,0.7)] sm:text-[2.7rem] lg:text-[2.9rem]">
+              {headline}
             </h1>
-            <p className="mt-6 text-pretty text-lg text-muted">{intro}</p>
-            <p className="eyebrow mt-10 animate-pulse">Scroll ↓</p>
+            <p className="mt-6 max-w-[42ch] text-pretty text-base leading-relaxed text-muted">
+              {intro}
+            </p>
+            <div className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-4">
+              <Link
+                href="/contact"
+                className="rounded-full bg-brand px-6 py-3 text-sm font-medium text-brand-foreground transition-colors hover:bg-brand-hover"
+              >
+                Book a call
+              </Link>
+              <Link
+                href="/work"
+                className="group inline-flex items-center gap-2 text-sm font-medium text-foreground/80 transition-colors hover:text-foreground"
+              >
+                See our work
+                <span
+                  aria-hidden
+                  className="transition-transform group-hover:translate-x-0.5"
+                >
+                  →
+                </span>
+              </Link>
+            </div>
           </div>
-        </Container>
+        </div>
+
+        <p className="eyebrow absolute bottom-8 left-1/2 flex -translate-x-1/2 items-center gap-2 text-foreground/40">
+          Scroll
+          <span aria-hidden className="animate-bounce">
+            ↓
+          </span>
+        </p>
 
         {/* DesktopNav positions each row onto the particle icons it sits
             over (see desktop-layout). */}
