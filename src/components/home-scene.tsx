@@ -25,6 +25,13 @@ const headline = "We build the software your business is missing.";
 const intro =
   "A small engineering team that designs, builds, and maintains custom software and AI tools — for local businesses and technical founders alike.";
 
+// Scroll-progress easing, all in 0..1 runway units.
+const MAX_DT = 0.05; // clamp a long frame so a stalled tab doesn't lurch
+const EASE_RATE = 5; // exponential approach toward the scroll target
+const SETTLE = 0.0004; // stop the loop once progress is this close
+const TRAVEL_AT = 0.14; // hero copy has cleared; the cloud is in flight
+const EXPLODED_AT = 0.68; // monitor has formed; show the desktop nav
+
 function PageLinks({ className = "" }: { className?: string }) {
   return (
     <nav className={`grid gap-x-14 gap-y-4 sm:grid-cols-2 ${className}`}>
@@ -67,6 +74,9 @@ export function HomeScene() {
   const [phase, setPhase] = useState<"hero" | "travel" | "exploded">("hero");
 
   useEffect(() => {
+    // The static hero has no runway; don't watch scroll at all there.
+    if (reducedMotion || isSmallScreen) return;
+
     let raf = 0;
     let last = 0;
 
@@ -76,7 +86,7 @@ export function HomeScene() {
         raf = 0;
         return;
       }
-      const dt = last ? Math.min((now - last) / 1000, 0.05) : 1 / 60;
+      const dt = last ? Math.min((now - last) / 1000, MAX_DT) : 1 / 60;
       last = now;
 
       const span = runway.offsetHeight - window.innerHeight;
@@ -87,12 +97,14 @@ export function HomeScene() {
       // fling still plays smoothly — but progress stays tied to scroll, so
       // one uninterrupted scroll runs the whole sequence to the bottom.
       const cur = progressRef.current;
-      const next = cur + (target - cur) * (1 - Math.exp(-dt * 5));
+      const next = cur + (target - cur) * (1 - Math.exp(-dt * EASE_RATE));
       progressRef.current = next;
 
-      setPhase(next > 0.68 ? "exploded" : next > 0.14 ? "travel" : "hero");
+      setPhase(
+        next > EXPLODED_AT ? "exploded" : next > TRAVEL_AT ? "travel" : "hero",
+      );
 
-      if (Math.abs(target - next) > 0.0004) {
+      if (Math.abs(target - next) > SETTLE) {
         raf = requestAnimationFrame(frame);
       } else {
         progressRef.current = target;
@@ -115,7 +127,7 @@ export function HomeScene() {
       window.removeEventListener("resize", kick);
       if (raf) cancelAnimationFrame(raf);
     };
-  }, []);
+  }, [reducedMotion, isSmallScreen]);
 
   if (reducedMotion || isSmallScreen) return <StaticHome />;
 
