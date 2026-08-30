@@ -21,6 +21,15 @@
   --brand-foreground: #ffffff;
   --accent: #3ad0ff;
   --glow: rgba(58, 208, 255, 0.35);
+
+  --dur-fast: 150ms;
+  --dur-base: 210ms;
+  --dur-slow: 400ms;
+  --dur-reveal: 640ms;
+  --ease-soft: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-nav: cubic-bezier(0.65, 0, 0.35, 1);
+  --reveal-shift: 24px;
+  --nav-slide: 60px;
 }
 
 @theme inline {
@@ -114,7 +123,7 @@
   }
 
   .reveal {
-    animation: reveal 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation: reveal var(--dur-reveal) var(--ease-soft) both;
   }
   .reveal-2 {
     animation-delay: 0.1s;
@@ -139,7 +148,7 @@
 @keyframes reveal {
   from {
     opacity: 0;
-    transform: translateY(14px);
+    transform: translateY(var(--reveal-shift));
   }
   to {
     opacity: 1;
@@ -151,10 +160,10 @@
   /* Scroll-triggered entrance — toggled by the Reveal component. */
   .reveal-on-scroll {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(var(--reveal-shift));
     transition:
-      opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1),
-      transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+      opacity var(--dur-reveal) var(--ease-soft),
+      transform var(--dur-reveal) var(--ease-soft);
   }
   .reveal-on-scroll.is-visible {
     opacity: 1;
