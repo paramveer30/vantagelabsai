@@ -323,10 +323,10 @@
 }
 
 ::view-transition-old(.page-exit) {
-  animation: 130ms var(--ease-soft) both page-shed;
+  animation: 110ms var(--ease-soft) both page-shed;
 }
 ::view-transition-new(.page-enter) {
-  animation: 460ms var(--ease-soft) 280ms both page-resolve;
+  animation: 440ms var(--ease-soft) 380ms both page-resolve;
 }
 
 ::view-transition-group(site-header),
@@ -351,7 +351,7 @@
 @keyframes page-resolve {
   from {
     opacity: 0;
-    filter: blur(13px);
+    filter: blur(16px);
   }
   to {
     opacity: 1;
