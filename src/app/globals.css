@@ -313,3 +313,46 @@
     display: none;
   }
 }
+
+/* Page transitions — every route change crossfades. The old page leaves
+   quickly, the new one fades in a beat later. Header and starfield are
+   pinned by name so only the page body moves. */
+::view-transition {
+  pointer-events: none;
+}
+
+::view-transition-old(.page-exit) {
+  animation: var(--dur-fast) var(--ease-soft) both page-fade reverse;
+}
+::view-transition-new(.page-enter) {
+  animation: var(--dur-base) var(--ease-soft) var(--dur-fast) both page-fade;
+}
+
+::view-transition-group(site-header),
+::view-transition-group(site-bg),
+::view-transition-old(site-header),
+::view-transition-new(site-header),
+::view-transition-old(site-bg),
+::view-transition-new(site-bg) {
+  animation: none;
+}
+
+@keyframes page-fade {
+  from {
+    opacity: 0;
+    filter: blur(3px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
+}

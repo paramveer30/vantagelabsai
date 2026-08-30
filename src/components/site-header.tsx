@@ -9,7 +9,10 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 bg-background/60 backdrop-blur-xl">
+    <header
+      style={{ viewTransitionName: "site-header" }}
+      className="sticky top-0 z-40 bg-background/60 backdrop-blur-xl"
+    >
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
         <Link href="/" className="flex items-center gap-2">
           <Image

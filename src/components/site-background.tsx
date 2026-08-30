@@ -17,7 +17,11 @@ export function SiteBackground() {
   if (reducedMotion || isSmallScreen) return null;
 
   return (
-    <div aria-hidden className="pointer-events-none fixed inset-0 -z-10">
+    <div
+      aria-hidden
+      style={{ viewTransitionName: "site-bg" }}
+      className="pointer-events-none fixed inset-0 -z-10"
+    >
       <StarfieldScene />
     </div>
   );
