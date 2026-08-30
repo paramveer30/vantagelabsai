@@ -20,7 +20,7 @@ export function SiteBackground() {
     <div
       aria-hidden
       style={{ viewTransitionName: "site-bg" }}
-      className="pointer-events-none fixed inset-0 -z-10"
+      className="site-bg pointer-events-none fixed inset-0 -z-10"
     >
       <StarfieldScene />
     </div>
