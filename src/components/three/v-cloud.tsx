@@ -18,6 +18,11 @@ import { finish, setCloudReady, useWelcome } from "@/lib/welcome";
 
 const COUNT = WELCOME_PARTICLE_COUNT;
 
+// Where the hero V sits at rest, before any scroll. Both fade back to the
+// original travel path as the cloud flies off.
+const REST_X = -1.5; // a touch right of the old -1.7
+const REST_SCALE_BONUS = 0.12; // a touch larger than the old 1.1
+
 function vShape() {
   const s = new THREE.Shape();
   s.moveTo(-1.1, 1.0);
@@ -295,9 +300,11 @@ function Cloud({
     const form = smoothstep((p - 0.4) / 0.34);
     const explode = burst * (1 - form);
 
-    pts.position.x = -1.7 * (1 - travel);
+    pts.position.x = REST_X * (1 - travel);
     pts.position.y = -Math.sin(Math.min(travel, 1) * Math.PI) * 0.9 * (1 - form);
-    pts.scale.setScalar(1.1 + travel * 0.2 - form * 0.42);
+    pts.scale.setScalar(
+      1.1 + REST_SCALE_BONUS * (1 - travel) + travel * 0.2 - form * 0.42,
+    );
 
     // Ease the idle sway back in after the implosion so the field lands
     // on a still V rather than a rotating one.
@@ -319,7 +326,7 @@ function Cloud({
   });
 
   return (
-    <points ref={points} scale={1.1} position={[-1.7, 0, 0]}>
+    <points ref={points} scale={1.1 + REST_SCALE_BONUS} position={[REST_X, 0, 0]}>
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" args={[base, 3]} />
         <bufferAttribute attach="attributes-aComputer" args={[computer, 3]} />
