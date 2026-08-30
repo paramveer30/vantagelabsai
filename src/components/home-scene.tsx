@@ -140,27 +140,27 @@ export function HomeScene() {
         </div>
 
         <div
-          className={`absolute inset-y-0 right-0 flex items-center pr-[7vw] pl-8 transition-all duration-300 ${
+          className={`absolute inset-y-0 right-0 flex items-center pr-[max(2.5rem,3vw)] pl-8 transition-all duration-300 ${
             phase === "hero"
               ? "opacity-100"
               : "pointer-events-none translate-y-3 opacity-0"
           }`}
         >
-          <div className="w-[min(37rem,44vw)] border-l border-border/70 pl-8">
+          <div className="relative w-[min(41rem,44vw)] -translate-y-[3vh] pl-8 before:absolute before:-top-[14vh] before:-bottom-[14vh] before:left-0 before:w-px before:bg-gradient-to-b before:from-transparent before:via-accent/50 before:to-transparent">
             <p className="eyebrow flex items-center gap-3">
               <span aria-hidden className="h-px w-8 bg-accent/70" />
               VantageLabsAI
             </p>
-            <h1 className="display mt-6 text-balance text-[2.4rem] font-semibold leading-[1.05] tracking-[-0.03em] [text-shadow:0_8px_40px_rgba(6,8,16,0.7)] sm:text-[2.7rem] lg:text-[2.9rem]">
+            <h1 className="display mt-6 text-balance text-[2.35rem] font-bold leading-[1.04] tracking-[-0.035em] [text-shadow:0_4px_30px_rgba(6,8,16,0.7)] sm:text-[2.6rem] lg:text-[2.85rem]">
               {headline}
             </h1>
-            <p className="mt-6 max-w-[42ch] text-pretty text-base leading-relaxed text-muted">
+            <p className="mt-5 max-w-[42ch] text-pretty text-base leading-relaxed text-muted">
               {intro}
             </p>
-            <div className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-4">
+            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
               <Link
                 href="/contact"
-                className="rounded-full bg-brand px-6 py-3 text-sm font-medium text-brand-foreground transition-colors hover:bg-brand-hover"
+                className="rounded-full bg-brand px-6 py-3 text-sm font-semibold text-brand-foreground transition-colors hover:bg-brand-hover"
               >
                 Book a call
               </Link>
@@ -177,6 +177,9 @@ export function HomeScene() {
                 </span>
               </Link>
             </div>
+            <p className="mt-10 font-mono text-[0.68rem] uppercase tracking-[0.18em] text-foreground/30">
+              Custom software · AI automation · Ongoing support
+            </p>
           </div>
         </div>
 
