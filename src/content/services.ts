@@ -1,5 +1,9 @@
+// Picks which particle scene the services page renders beside each entry.
+export type ServiceVariant = "software" | "ai" | "support";
+
 export type Service = {
   slug: string;
+  variant: ServiceVariant;
   title: string;
   summary: string;
   description: string;
@@ -9,6 +13,7 @@ export type Service = {
 export const services: Service[] = [
   {
     slug: "custom-software",
+    variant: "software",
     title: "Custom Software & Web Apps",
     summary: "Software built around how your business actually works.",
     description:
@@ -21,6 +26,7 @@ export const services: Service[] = [
   },
   {
     slug: "ai-automation",
+    variant: "ai",
     title: "AI & Automation Integration",
     summary: "Practical AI that removes busywork, not a science project.",
     description:
@@ -33,6 +39,7 @@ export const services: Service[] = [
   },
   {
     slug: "ongoing-support",
+    variant: "support",
     title: "Ongoing Support & Maintenance",
     summary: "We don't disappear after launch.",
     description:
