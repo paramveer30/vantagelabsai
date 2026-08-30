@@ -1,132 +1,252 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type RefObject } from "react";
+import type { Hit } from "./three/types";
 
-type Pt = { x: number; y: number };
-type Node = { p: Pt; jump: boolean };
+type Vec = { x: number; y: number };
+type Box = { x0: number; y0: number; x1: number; y1: number };
 
-// Build the loop path from the current viewport: run the monitor bezel,
-// vault down the icon column, leap the corners.
-function buildPath(): Node[] {
-  const W = window.innerWidth;
-  const H = window.innerHeight;
+const SCALE = 1.7;
+const FOOT = 14 * SCALE; // torso centre → feet
+const CR = 12 * SCALE; // containment radius
+const GRAVITY = 640; // px/s² — gentle; the cursor leash does the work
+const LEASH_K = 155;
+const LEASH_C = 23;
 
-  const iconLeftX = 0.5 * W - 0.36 * H + 32; // tile is 64px wide
-  const ulTop = 0.2 * H + 40;
-  const icon = (i: number): Pt => ({ x: iconLeftX, y: ulTop + i * 84 + 32 });
+const clamp = (v: number, lo: number, hi: number) =>
+  Math.max(lo, Math.min(hi, v));
+const damp = (rate: number, dt: number) => 1 - Math.exp(-rate * dt);
+const mix = (a: number, b: number, t: number) => a + (b - a) * t;
 
-  const cx = 0.5 * W;
-  const cy = 0.428 * H;
-  const hw = 0.467 * H;
-  const hh = 0.286 * H;
-  const TL = { x: cx - hw, y: cy - hh };
-  const TR = { x: cx + hw, y: cy - hh };
-  const BL = { x: cx - hw, y: cy + hh };
-  const BR = { x: cx + hw, y: cy + hh };
-
-  return [
-    { p: TL, jump: false },
-    { p: { x: cx, y: TL.y }, jump: false },
-    { p: icon(0), jump: true },
-    { p: icon(1), jump: true },
-    { p: icon(2), jump: true },
-    { p: icon(3), jump: true },
-    { p: icon(4), jump: true },
-    { p: BL, jump: true },
-    { p: BR, jump: false },
-    { p: { x: BR.x, y: cy }, jump: true },
-    { p: TR, jump: true },
-    { p: TL, jump: false },
-  ];
-}
-
-export function ParkourFigure({ active }: { active: boolean }) {
-  const ref = useRef<HTMLDivElement>(null);
+// A small cursor-driven mech that lives on the formed monitor: it trails
+// the pointer, is contained by the bezel, and rattles the particle field
+// when it slams an edge.
+export function ParkourFigure({
+  active,
+  hitRef,
+}: {
+  active: boolean;
+  hitRef?: RefObject<Hit>;
+}) {
+  const layerRef = useRef<HTMLDivElement>(null);
+  const figRef = useRef<HTMLDivElement>(null);
+  const shadowRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!active) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const layer = layerRef.current;
+    if (!layer) return;
 
-    let path = buildPath();
-    let seg = 0;
-    let t = 0;
-    let dir = 1;
-    let raf = 0;
-    let last = performance.now();
-
+    let interior: Box = { x0: 0, y0: 0, x1: 0, y1: 0 };
     const rebuild = () => {
-      path = buildPath();
+      const W = window.innerWidth;
+      const H = window.innerHeight;
+      const cx = 0.5 * W;
+      const cy = 0.428 * H;
+      const hw = 0.467 * H;
+      const hh = 0.286 * H;
+      const bez = 0.022 * H;
+      interior = {
+        x0: cx - hw + bez,
+        y0: cy - hh + bez,
+        x1: cx + hw - bez,
+        y1: cy + hh - bez,
+      };
     };
+    rebuild();
     window.addEventListener("resize", rebuild);
 
-    const tick = (now: number) => {
-      const dt = Math.min(0.05, (now - last) / 1000);
+    const cursor: Vec = {
+      x: (interior.x0 + interior.x1) / 2,
+      y: (interior.y0 + interior.y1) / 2,
+    };
+    const onMove = (e: PointerEvent) => {
+      const lr = layer.getBoundingClientRect();
+      cursor.x = e.clientX - lr.left;
+      cursor.y = e.clientY - lr.top;
+    };
+    window.addEventListener("pointermove", onMove, { passive: true });
+
+    const pos: Vec = { x: cursor.x, y: cursor.y };
+    const vel: Vec = { x: 0, y: 0 };
+    let grounded = false;
+    let facing = 1;
+    let lean = 0;
+    let stride = 0;
+    let airBlend = 1;
+    let sqH = 0;
+    let sqHv = 0;
+    let sqV = 0;
+    let sqVv = 0;
+    let cdBorder = 0;
+
+    let last = performance.now();
+    let raf = 0;
+    const limbEls = figRef.current
+      ? Array.from(figRef.current.querySelectorAll<SVGGElement>(".limb"))
+      : [];
+
+    const step = (now: number) => {
+      const dt = Math.min(1 / 30, (now - last) / 1000);
       last = now;
 
-      const a = path[seg].p;
-      const b = path[(seg + 1) % path.length].p;
-      const jump = path[seg].jump;
-      const dist = Math.hypot(b.x - a.x, b.y - a.y);
-      const dur = Math.min(1.7, Math.max(0.45, dist / (jump ? 320 : 260)));
-      t += dt / dur;
+      // leash toward the cursor, plus a little weight
+      vel.x += ((cursor.x - pos.x) * LEASH_K - vel.x * LEASH_C) * dt;
+      vel.y +=
+        ((cursor.y - pos.y) * LEASH_K - vel.y * LEASH_C + GRAVITY) * dt;
+      pos.x += vel.x * dt;
+      pos.y += vel.y * dt;
 
-      if (t >= 1) {
-        t = 0;
-        seg = (seg + 1) % path.length;
+      // monitor border: contain, never enter the bezel
+      grounded = false;
+      let bx = 0;
+      let by = 0;
+      if (pos.x - CR < interior.x0) {
+        pos.x = interior.x0 + CR;
+        bx = 1;
+      } else if (pos.x + CR > interior.x1) {
+        pos.x = interior.x1 - CR;
+        bx = -1;
+      }
+      if (pos.y - CR < interior.y0) {
+        pos.y = interior.y0 + CR;
+        by = 1;
+      } else if (pos.y + CR > interior.y1) {
+        pos.y = interior.y1 - CR;
+        by = -1;
+        grounded = true;
+      }
+      if (bx || by) {
+        let impact = 0;
+        if (bx && vel.x * bx < 0) {
+          impact = Math.abs(vel.x);
+          vel.x = -vel.x * 0.3;
+        }
+        if (by && vel.y * by < 0) {
+          impact = Math.max(impact, Math.abs(vel.y));
+          vel.y = -vel.y * 0.3;
+        }
+        if (impact > 130 && now > cdBorder) {
+          cdBorder = now + 160;
+          const px = bx > 0 ? interior.x0 : bx < 0 ? interior.x1 : pos.x;
+          const py = by > 0 ? interior.y0 : by < 0 ? interior.y1 : pos.y;
+          if (hitRef?.current) {
+            hitRef.current = {
+              x: px,
+              y: py,
+              t: now,
+              power: clamp(impact / 900, 0.35, 1),
+            };
+          }
+          if (bx) sqH = Math.min(0.7, sqH + 0.3 + impact / 3000);
+          if (by) sqV = Math.min(0.7, sqV + 0.3 + impact / 3000);
+        }
       }
 
-      const x = a.x + (b.x - a.x) * t;
-      let y = a.y + (b.y - a.y) * t;
-      if (jump) {
-        const h = Math.min(90, 40 + dist * 0.18);
-        y -= Math.sin(Math.min(1, Math.max(0, t)) * Math.PI) * h;
+      // --- cosmetics ------------------------------------------------
+      const fgoal =
+        Math.abs(vel.x) > 24 ? (vel.x > 0 ? 1 : -1) : cursor.x > pos.x ? 1 : -1;
+      facing += (fgoal - facing) * damp(14, dt);
+      lean += (clamp(vel.x / 900, -1, 1) * 0.22 - lean) * damp(10, dt);
+      airBlend += ((grounded ? 0 : 1) - airBlend) * damp(12, dt);
+      if (grounded) stride += (Math.abs(vel.x) * dt) / 19;
+
+      sqHv += (-165 * sqH - 20 * sqHv) * dt;
+      sqH += sqHv * dt;
+      sqVv += (-165 * sqV - 20 * sqVv) * dt;
+      sqV += sqVv * dt;
+      const dfx = 1 + sqH * 0.9 - sqV * 0.7;
+      const dfy = 1 + sqV * 0.9 - sqH * 0.7;
+
+      const fig = figRef.current;
+      if (fig) {
+        fig.style.transform =
+          `translate(${pos.x - 12}px, ${pos.y - 16}px) ` +
+          `rotate(${lean}rad) scale(${dfx * facing * SCALE}, ${dfy * SCALE})`;
       }
 
-      if (Math.abs(b.x - a.x) > 4) dir = b.x > a.x ? 1 : -1;
-
-      const el = ref.current;
-      if (el) {
-        el.style.transform = `translate(${x - 12}px, ${y - 30}px) scaleX(${dir})`;
-        const airborne = jump && t > 0.08 && t < 0.92;
-        el.classList.toggle("jump", airborne);
-        el.classList.toggle("run", !airborne);
+      // contact shadow on the monitor floor
+      const feetY = pos.y + FOOT;
+      const gsh = clamp(1 - Math.max(0, interior.y1 - feetY) / 240, 0.12, 1);
+      const sh = shadowRef.current;
+      if (sh) {
+        sh.style.transform =
+          `translate(${pos.x - 16}px, ${interior.y1 - 4}px) ` +
+          `scale(${1.2 * gsh}, ${gsh})`;
+        sh.style.opacity = `${0.4 * gsh}`;
       }
 
-      raf = requestAnimationFrame(tick);
+      // limbs: run cycle blended toward an air dangle
+      if (limbEls.length === 4) {
+        const s = Math.sin(stride) * 34;
+        const o = Math.sin(stride + Math.PI) * 34;
+        const set = (el: SVGGElement, run: number, air: number) => {
+          el.style.transform = `rotate(${mix(run, air, airBlend)}deg)`;
+        };
+        set(limbEls[0], s, 150);
+        set(limbEls[1], o, 118);
+        set(limbEls[2], (o / 34) * 40, 12);
+        set(limbEls[3], (s / 34) * 40, -16);
+      }
+
+      raf = requestAnimationFrame(step);
     };
 
-    raf = requestAnimationFrame(tick);
+    raf = requestAnimationFrame(step);
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", rebuild);
+      window.removeEventListener("pointermove", onMove);
     };
-  }, [active]);
+  }, [active, hitRef]);
 
   return (
     <div
-      ref={ref}
+      ref={layerRef}
       aria-hidden
-      className={`pk run pointer-events-none absolute left-0 top-0 z-10 ${
+      className={`pointer-events-none absolute inset-0 z-10 ${
         active ? "opacity-100" : "opacity-0"
       }`}
       style={{ transition: "opacity 0.4s" }}
     >
-      <svg width="24" height="32" viewBox="0 0 24 32" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-        <circle cx="12" cy="5" r="3.2" />
-        <line x1="12" y1="8.2" x2="12" y2="20" />
-        <g className="limb arm1">
-          <line x1="12" y1="10" x2="12" y2="18" />
-        </g>
-        <g className="limb arm2">
-          <line x1="12" y1="10" x2="12" y2="18" />
-        </g>
-        <g className="limb leg1">
-          <line x1="12" y1="20" x2="12" y2="30" />
-        </g>
-        <g className="limb leg2">
-          <line x1="12" y1="20" x2="12" y2="30" />
-        </g>
-      </svg>
+      <div ref={shadowRef} className="pk-shadow absolute left-0 top-0" />
+      <div ref={figRef} className="pk absolute left-0 top-0">
+        <svg width="24" height="32" viewBox="0 0 24 32" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+          {/* antenna + visor head */}
+          <line x1="12" y1="0.7" x2="12" y2="2.4" strokeWidth="1.4" />
+          <circle cx="12" cy="0.5" r="0.85" fill="currentColor" stroke="none" />
+          <rect x="7" y="2.2" width="10" height="7.6" rx="2.8" strokeWidth="1.7" />
+          <line x1="8.7" y1="6" x2="15.3" y2="6" strokeWidth="1.3" opacity="0.7" />
+          <circle cx="13.2" cy="5" r="0.9" fill="currentColor" stroke="none" />
+          {/* torso + reactor core + hip block */}
+          <path d="M9 10.4h6l0.7 8.2H8.3z" strokeWidth="1.7" />
+          <circle className="pk-core" cx="12" cy="14" r="1.9" fill="currentColor" stroke="none" />
+          <line x1="10" y1="12.2" x2="14" y2="12.2" strokeWidth="1.1" opacity="0.5" />
+          <rect x="9.2" y="18.4" width="5.6" height="2.3" rx="1" fill="currentColor" stroke="none" opacity="0.9" />
+          {/* limbs — each centred on its own shoulder / hip so it pivots there */}
+          <g className="limb">
+            <line x1="9.3" y1="11" x2="9.3" y2="18.6" />
+            <circle cx="9.3" cy="11" r="1.4" fill="currentColor" stroke="none" />
+            <circle cx="9.3" cy="18.6" r="1.5" fill="currentColor" stroke="none" />
+          </g>
+          <g className="limb">
+            <line x1="14.7" y1="11" x2="14.7" y2="18.6" />
+            <circle cx="14.7" cy="11" r="1.4" fill="currentColor" stroke="none" />
+            <circle cx="14.7" cy="18.6" r="1.5" fill="currentColor" stroke="none" />
+          </g>
+          <g className="limb">
+            <line x1="10.2" y1="20.4" x2="10.2" y2="29.2" />
+            <circle cx="10.2" cy="20.4" r="1.5" fill="currentColor" stroke="none" />
+            <line x1="8.9" y1="29.4" x2="11.5" y2="29.4" strokeWidth="2.2" />
+          </g>
+          <g className="limb">
+            <line x1="13.8" y1="20.4" x2="13.8" y2="29.2" />
+            <circle cx="13.8" cy="20.4" r="1.5" fill="currentColor" stroke="none" />
+            <line x1="12.5" y1="29.4" x2="15.1" y2="29.4" strokeWidth="2.2" />
+          </g>
+        </svg>
+      </div>
     </div>
   );
 }

@@ -260,57 +260,47 @@
   }
 }
 
-/* Parkour stick figure that runs the desktop */
+/* Cursor-driven mech runner — motion is driven per-frame in
+   parkour-figure.tsx; CSS only sets up pivots and the glow theme. */
 .pk {
   color: var(--accent);
-  filter: drop-shadow(0 0 4px rgba(58, 208, 255, 0.9));
+  filter: drop-shadow(0 0 7px rgba(58, 208, 255, 0.55))
+    drop-shadow(0 0 2px rgba(180, 240, 255, 0.4));
+  transform-origin: 12px 16px; /* torso — the point the cursor holds */
+  will-change: transform;
 }
 .pk .limb {
   transform-box: fill-box;
   transform-origin: top center;
+  will-change: transform;
 }
-.pk.run .arm1 {
-  animation: pk-swing 0.32s ease-in-out infinite alternate;
+.pk-core {
+  animation: pk-core 1.5s ease-in-out infinite;
 }
-.pk.run .arm2 {
-  animation: pk-swing 0.32s ease-in-out infinite alternate reverse;
-}
-.pk.run .leg1 {
-  animation: pk-stride 0.32s ease-in-out infinite alternate;
-}
-.pk.run .leg2 {
-  animation: pk-stride 0.32s ease-in-out infinite alternate reverse;
-}
-.pk.jump .arm1 {
-  transform: rotate(155deg);
-}
-.pk.jump .arm2 {
-  transform: rotate(120deg);
-}
-.pk.jump .leg1 {
-  transform: rotate(38deg);
-}
-.pk.jump .leg2 {
-  transform: rotate(-22deg);
-}
-@keyframes pk-swing {
-  from {
-    transform: rotate(-32deg);
+@keyframes pk-core {
+  0%,
+  100% {
+    opacity: 0.45;
   }
-  to {
-    transform: rotate(32deg);
+  50% {
+    opacity: 1;
   }
 }
-@keyframes pk-stride {
-  from {
-    transform: rotate(-42deg);
-  }
-  to {
-    transform: rotate(42deg);
-  }
+.pk-shadow {
+  width: 32px;
+  height: 9px;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(58, 208, 255, 0.55),
+    transparent 72%
+  );
+  transform-origin: 16px 4.5px;
+  will-change: transform, opacity;
 }
 @media (prefers-reduced-motion: reduce) {
-  .pk {
+  .pk,
+  .pk-shadow {
     display: none;
   }
 }

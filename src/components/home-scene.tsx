@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Container } from "@/components/container";
 import { DesktopNav } from "@/components/desktop-nav";
 import { ParkourFigure } from "@/components/parkour-figure";
+import type { Hit } from "@/components/three/types";
 import { useMediaQuery, usePrefersReducedMotion } from "@/lib/media";
 
 const VCloud = dynamic(() => import("@/components/three/v-cloud"), {
@@ -59,28 +60,59 @@ export function HomeScene() {
   const isSmallScreen = useMediaQuery("(max-width: 768px)");
   const runwayRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef(0);
+  // Written by ParkourFigure when it slams a monitor edge, read by VCloud
+  // to shudder the particles at that spot. Screen px + a timestamp so the
+  // shader only reacts to a fresh hit.
+  const hitRef = useRef<Hit>({ x: 0, y: 0, t: 0, power: 0 });
   const [phase, setPhase] = useState<"hero" | "travel" | "exploded">("hero");
 
   useEffect(() => {
     let raf = 0;
-    const update = () => {
-      raf = 0;
+    let last = 0;
+
+    const frame = (now: number) => {
       const runway = runwayRef.current;
-      if (!runway) return;
+      if (!runway) {
+        raf = 0;
+        return;
+      }
+      const dt = last ? Math.min((now - last) / 1000, 0.05) : 1 / 60;
+      last = now;
+
       const span = runway.offsetHeight - window.innerHeight;
-      const p = span > 0 ? Math.min(1, Math.max(0, window.scrollY / span)) : 0;
-      progressRef.current = p;
-      setPhase(p > 0.68 ? "exploded" : p > 0.14 ? "travel" : "hero");
+      const target =
+        span > 0 ? Math.min(1, Math.max(0, window.scrollY / span)) : 0;
+
+      // Ease toward the scroll position, framerate-independent, so a fast
+      // fling still plays smoothly — but progress stays tied to scroll, so
+      // one uninterrupted scroll runs the whole sequence to the bottom.
+      const cur = progressRef.current;
+      const next = cur + (target - cur) * (1 - Math.exp(-dt * 5));
+      progressRef.current = next;
+
+      setPhase(next > 0.68 ? "exploded" : next > 0.14 ? "travel" : "hero");
+
+      if (Math.abs(target - next) > 0.0004) {
+        raf = requestAnimationFrame(frame);
+      } else {
+        progressRef.current = target;
+        raf = 0;
+      }
     };
-    const onScroll = () => {
-      if (!raf) raf = requestAnimationFrame(update);
+
+    const kick = () => {
+      if (!raf) {
+        last = 0;
+        raf = requestAnimationFrame(frame);
+      }
     };
-    update();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
+
+    kick();
+    window.addEventListener("scroll", kick, { passive: true });
+    window.addEventListener("resize", kick);
     return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
+      window.removeEventListener("scroll", kick);
+      window.removeEventListener("resize", kick);
       if (raf) cancelAnimationFrame(raf);
     };
   }, []);
@@ -88,10 +120,10 @@ export function HomeScene() {
   if (reducedMotion || isSmallScreen) return <StaticHome />;
 
   return (
-    <div ref={runwayRef} className="relative" style={{ height: "230vh" }}>
+    <div ref={runwayRef} className="relative" style={{ height: "260vh" }}>
       <div className="sticky top-0 flex h-screen items-center overflow-hidden">
         <div className="absolute inset-0">
-          <VCloud progressRef={progressRef} />
+          <VCloud progressRef={progressRef} hitRef={hitRef} />
         </div>
 
         <Container
@@ -122,7 +154,7 @@ export function HomeScene() {
           }`}
         >
           <DesktopNav active={phase === "exploded"} />
-          <ParkourFigure active={phase === "exploded"} />
+          <ParkourFigure active={phase === "exploded"} hitRef={hitRef} />
         </div>
       </div>
     </div>
