@@ -7,19 +7,16 @@ type Phase = "pending" | "typing" | "particles" | "out" | "gone";
 
 function initialPhase(): Phase {
   if (typeof window === "undefined") return "pending";
-  try {
-    if (sessionStorage.getItem("vl-intro") === "1") return "gone";
-  } catch {}
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     return "gone";
   }
   return "typing";
 }
 
-// First-load sequence: the greeting types out, scatters into cyan
-// particles, and those particles reassemble into the V before the
-// overlay clears to the page. Plays once per session; skipped on a
-// click or under prefers-reduced-motion.
+// Load sequence: the greeting types out, scatters into cyan particles,
+// and those particles reassemble into the V before the overlay clears to
+// the page. Runs on every full page load; skipped on a click or under
+// prefers-reduced-motion.
 export function IntroOverlay() {
   const [phase, setPhase] = useState<Phase>(initialPhase);
   const [typed, setTyped] = useState(0);
@@ -28,9 +25,6 @@ export function IntroOverlay() {
 
   useEffect(() => {
     if (phase !== "typing") return;
-    try {
-      sessionStorage.setItem("vl-intro", "1");
-    } catch {}
 
     let i = 0;
     const type = window.setInterval(() => {
