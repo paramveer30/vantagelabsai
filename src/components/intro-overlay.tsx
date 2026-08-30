@@ -94,17 +94,22 @@ export function IntroOverlay() {
       o.fillText(TEXT, w / 2, labelY);
     }, 2);
 
-    // A bold geometric V they reassemble into.
+    // A bold V they reassemble into, placed where the hero's particle V
+    // sits so the panel can clear straight onto it.
     const s = Math.min(w, h);
+    const vx = Math.max(s * 0.42, w * 0.28);
+    const vy = h * 0.54;
+    const vw = s * 0.34;
+    const vh = s * 0.34;
     const target = sample((o) => {
       o.strokeStyle = "#fff";
       o.lineCap = "round";
       o.lineJoin = "round";
-      o.lineWidth = s * 0.11;
+      o.lineWidth = s * 0.13;
       o.beginPath();
-      o.moveTo(w / 2 - s * 0.24, h / 2 - s * 0.27);
-      o.lineTo(w / 2, h / 2 + s * 0.27);
-      o.lineTo(w / 2 + s * 0.24, h / 2 - s * 0.27);
+      o.moveTo(vx - vw, vy - vh);
+      o.lineTo(vx, vy + vh);
+      o.lineTo(vx + vw, vy - vh);
       o.stroke();
     }, 2);
 
