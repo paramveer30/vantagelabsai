@@ -88,47 +88,78 @@ export function IntroOverlay() {
     const rect = labelRef.current?.getBoundingClientRect();
     const labelY = rect ? rect.top + rect.height / 2 : h * 0.4;
 
+    // Where the letters break apart from.
     const src = sample((o) => {
       o.font = `${cs?.fontWeight ?? "600"} ${cs?.fontSize ?? "32px"} ${family}`;
       o.fillText(TEXT, w / 2, labelY);
     }, 2);
+
+    // A bold geometric V they reassemble into.
+    const s = Math.min(w, h);
     const target = sample((o) => {
-      o.font = `700 ${Math.min(w, h) * 0.6}px ${family}`;
-      o.fillText("V", w / 2, h / 2);
-    }, 3);
+      o.strokeStyle = "#fff";
+      o.lineCap = "round";
+      o.lineJoin = "round";
+      o.lineWidth = s * 0.11;
+      o.beginPath();
+      o.moveTo(w / 2 - s * 0.24, h / 2 - s * 0.27);
+      o.lineTo(w / 2, h / 2 + s * 0.27);
+      o.lineTo(w / 2 + s * 0.24, h / 2 - s * 0.27);
+      o.stroke();
+    }, 2);
 
     if (!src.length || !target.length) {
       bail();
       return;
     }
 
-    const count = Math.min(src.length, 4500);
-    const parts = Array.from({ length: count }, (_, i) => {
-      const s = src[Math.floor((i * src.length) / count)];
-      const t = target[Math.floor(Math.random() * target.length)];
-      return { sx: s.x, sy: s.y, tx: t.x, ty: t.y };
-    });
+    // One particle per V pixel (down-sampled), each pulled from a text pixel.
+    const step2 = Math.max(1, Math.ceil(target.length / 4600));
+    const parts: { sx: number; sy: number; tx: number; ty: number }[] = [];
+    for (let i = 0; i < target.length; i += step2) {
+      const t = target[i];
+      const from = src[(i * 7919) % src.length];
+      parts.push({ sx: from.x, sy: from.y, tx: t.x, ty: t.y });
+    }
 
+    const FORM = 1350;
+    const HOLD = 850;
     let raf = 0;
     let start = 0;
-    const DUR = 1500;
     const frame = (now: number) => {
       if (!start) start = now;
-      const p = Math.min(1, (now - start) / DUR);
-      const e = 1 - Math.pow(1 - p, 3);
-      const jitter = (1 - p) * 7;
+      const t = now - start;
       ctx.clearRect(0, 0, w, h);
       ctx.globalCompositeOperation = "lighter";
-      ctx.fillStyle = `rgba(122,228,255,${0.85 - p * 0.2})`;
-      for (const pt of parts) {
-        const x = pt.sx + (pt.tx - pt.sx) * e + (Math.random() - 0.5) * jitter;
-        const y = pt.sy + (pt.ty - pt.sy) * e + (Math.random() - 0.5) * jitter;
-        ctx.fillRect(x - 0.8, y - 0.8, 1.6, 1.6);
-      }
-      if (p < 1) {
+
+      if (t < FORM) {
+        const p = t / FORM;
+        const e = 1 - Math.pow(1 - p, 3);
+        const jitter = (1 - p) * 9;
+        ctx.fillStyle = `rgba(122,228,255,${0.55 + p * 0.35})`;
+        for (const pt of parts) {
+          const x =
+            pt.sx + (pt.tx - pt.sx) * e + (Math.random() - 0.5) * jitter;
+          const y =
+            pt.sy + (pt.ty - pt.sy) * e + (Math.random() - 0.5) * jitter;
+          ctx.fillRect(x - 1, y - 1, 2, 2);
+        }
+        raf = requestAnimationFrame(frame);
+      } else if (t < FORM + HOLD) {
+        // formed — sit on the V with a faint shimmer
+        const fade = 1 - Math.max(0, (t - FORM - (HOLD - 260)) / 260);
+        ctx.fillStyle = `rgba(140,232,255,${0.92 * fade})`;
+        for (const pt of parts) {
+          ctx.fillRect(
+            pt.tx - 1 + (Math.random() - 0.5) * 1.4,
+            pt.ty - 1 + (Math.random() - 0.5) * 1.4,
+            2,
+            2,
+          );
+        }
         raf = requestAnimationFrame(frame);
       } else {
-        window.setTimeout(() => setPhase("out"), 280);
+        window.setTimeout(() => setPhase("out"), 0);
       }
     };
     raf = requestAnimationFrame(frame);
@@ -137,17 +168,25 @@ export function IntroOverlay() {
 
   useEffect(() => {
     if (phase !== "out") return;
-    const t = window.setTimeout(() => setPhase("gone"), 620);
+    const t = window.setTimeout(() => setPhase("gone"), 720);
     return () => window.clearTimeout(t);
   }, [phase]);
 
-  if (phase === "pending" || phase === "gone") return null;
+  if (phase === "gone") return null;
+
+  // "pending" only exists for the server render — paint an opaque panel
+  // straight away so the page never flashes behind it before the client
+  // takes over.
+  if (phase === "pending") {
+    return <div className="fixed inset-0 z-[100] bg-background" />;
+  }
 
   return (
     <div
       aria-hidden
+      suppressHydrationWarning
       onClick={() => setPhase("out")}
-      className={`fixed inset-0 z-[100] flex items-center justify-center bg-background transition-opacity duration-[600ms] ${
+      className={`fixed inset-0 z-[100] flex items-center justify-center bg-background transition-opacity duration-700 ${
         phase === "out" ? "opacity-0" : "opacity-100"
       }`}
     >
