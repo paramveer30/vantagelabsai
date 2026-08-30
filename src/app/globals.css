@@ -21,6 +21,7 @@
   --brand-foreground: #ffffff;
   --accent: #3ad0ff;
   --glow: rgba(58, 208, 255, 0.35);
+  --danger: #ff6b6b;
 
   --dur-fast: 150ms;
   --dur-base: 210ms;
@@ -45,6 +46,7 @@
   --color-brand-hover: var(--brand-hover);
   --color-brand-foreground: var(--brand-foreground);
   --color-accent: var(--accent);
+  --color-danger: var(--danger);
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -326,7 +328,7 @@
   animation: 110ms var(--ease-soft) both page-shed;
 }
 ::view-transition-new(.page-enter) {
-  animation: 440ms var(--ease-soft) 380ms both page-resolve;
+  animation: 400ms var(--ease-soft) 620ms both page-resolve;
 }
 
 ::view-transition-group(site-header),

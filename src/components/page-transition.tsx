@@ -11,19 +11,20 @@ type Particle = {
   tx: number;
   ty: number;
   born: number;
-  r: number;
   spark: boolean;
 };
 
-const DUR = 1150;
-const BURST = 240; // free outward flight before the homing force ramps in
-const HOLD = 770; // the layout has formed by here; particles fade after
+const DUR = 1320;
+const BURST = 170; // free outward flight before a particle starts homing
+const FORM = 640; // every particle has locked onto its pixel by here
+const HOLD = 900; // the text sits, drawn in particles; fade after
 
-// Fires on every route change: a wide particle burst from the centre that
-// then springs each particle onto a point traced from the freshly-rendered
-// page — every text line and panel edge — so the explosion reassembles
-// into the actual content. The DOM resolves from blur underneath as the
-// particles land (see .page-resolve). No-ops under prefers-reduced-motion.
+// Fires on every route change. Rasterises the incoming page's text and
+// panel edges to an offscreen mask, flings a particle out of a central
+// burst for every lit pixel, then reels each one onto its exact pixel so
+// the words are spelled out in particles — the real DOM then resolves in
+// underneath as they fade (see .page-resolve). No-ops under
+// prefers-reduced-motion.
 export function PageTransition() {
   const pathname = usePathname();
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -49,24 +50,42 @@ export function PageTransition() {
     const cx = w / 2;
     const cy = h * 0.42;
 
-    // Trace the new page: a point cloud over every rendered text line and
-    // every bordered panel edge.
-    const targets: { x: number; y: number }[] = [];
+    // --- Rasterise the new page's text into an alpha mask ---
+    const mask = document.createElement("canvas");
+    mask.width = w;
+    mask.height = h;
+    const m = mask.getContext("2d", { willReadFrequently: true });
     const main = document.querySelector("main");
-    if (main) {
+    if (m && main) {
+      m.textBaseline = "middle";
+      m.fillStyle = "#fff";
+      m.strokeStyle = "#fff";
+
       const walker = document.createTreeWalker(main, NodeFilter.SHOW_TEXT);
       let node = walker.nextNode();
       while (node) {
-        if (node.nodeValue && node.nodeValue.trim()) {
+        const raw = node.nodeValue;
+        const parent = node.parentElement;
+        if (raw && raw.trim() && parent) {
+          const cs = getComputedStyle(parent);
+          m.font = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
           const range = document.createRange();
           range.selectNodeContents(node);
-          for (const r of range.getClientRects()) {
-            if (r.width < 2 || r.height < 2 || r.bottom < 0 || r.top > h) continue;
-            for (let y = r.top + 1; y < r.bottom - 1; y += 3.4) {
-              for (let x = r.left; x < r.right; x += 3.4) {
-                if (Math.random() < 0.5) targets.push({ x, y });
-              }
+          const rects = Array.from(range.getClientRects()).filter(
+            (r) => r.width > 1 && r.height > 1 && r.bottom > 0 && r.top < h,
+          );
+          const words = raw.trim().split(/\s+/);
+          let wi = 0;
+          for (const r of rects) {
+            let line = "";
+            while (wi < words.length) {
+              const trial = line ? `${line} ${words[wi]}` : words[wi];
+              if (line && m.measureText(trial).width > r.width + 4) break;
+              line = trial;
+              wi++;
             }
+            if (line) m.fillText(line, r.left, r.top + r.height / 2);
+            if (wi >= words.length) break;
           }
         }
         node = walker.nextNode();
@@ -79,16 +98,25 @@ export function PageTransition() {
         }
         const r = el.getBoundingClientRect();
         if (r.width < 44 || r.height < 44 || r.bottom < 0 || r.top > h) return;
-        for (let x = r.left; x < r.right; x += 7) {
-          targets.push({ x, y: r.top }, { x, y: r.bottom });
-        }
-        for (let y = r.top; y < r.bottom; y += 7) {
-          targets.push({ x: r.left, y }, { x: r.right, y });
-        }
+        m.lineWidth = 1;
+        m.strokeRect(r.left, r.top, r.width, r.height);
       });
     }
 
-    const cap = w < 640 ? 1300 : 2600;
+    // --- Lit pixels become particle targets ---
+    const targets: { x: number; y: number }[] = [];
+    if (m) {
+      const data = m.getImageData(0, 0, w, h).data;
+      for (let y = 0; y < h; y += 1.7) {
+        const row = Math.round(y);
+        for (let x = 0; x < w; x += 1.7) {
+          const col = Math.round(x);
+          if (data[(row * w + col) * 4 + 3] > 40) targets.push({ x: col, y: row });
+        }
+      }
+    }
+
+    const cap = w < 640 ? 2600 : 5200;
     if (targets.length > cap) {
       for (let i = targets.length - 1; i > 0; i--) {
         const j = (Math.random() * (i + 1)) | 0;
@@ -100,8 +128,7 @@ export function PageTransition() {
     const parts: Particle[] = [];
     const make = (tx: number, ty: number) => {
       const ang = Math.random() * Math.PI * 2;
-      const spd = 720 + Math.random() * 1800;
-      const spark = Math.random() < 0.1;
+      const spd = 780 + Math.random() * 1900;
       parts.push({
         x: cx + (Math.random() - 0.5) * 64,
         y: cy + (Math.random() - 0.5) * 64,
@@ -110,8 +137,7 @@ export function PageTransition() {
         tx,
         ty,
         born: Math.random() * 120,
-        r: spark ? 1.3 + Math.random() * 1.4 : 0.6 + Math.random() * 1.3,
-        spark,
+        spark: Math.random() < 0.07,
       });
     };
     if (targets.length) {
@@ -137,15 +163,15 @@ export function PageTransition() {
       ctx.clearRect(0, 0, w, h);
       ctx.globalCompositeOperation = "lighter";
 
-      if (t < 340) {
-        const fa = (1 - t / 340) * 0.6;
+      if (t < 220) {
+        const fa = (1 - t / 220) * 0.42;
         const g = ctx.createRadialGradient(
           cx,
           cy,
           0,
           cx,
           cy,
-          Math.max(w, h) * 0.62,
+          Math.max(w, h) * 0.55,
         );
         g.addColorStop(0, `rgba(160,238,255,${fa})`);
         g.addColorStop(0.5, `rgba(90,200,255,${fa * 0.4})`);
@@ -158,27 +184,34 @@ export function PageTransition() {
         const life = t - p.born;
         if (life < 0) continue;
 
-        const homing = Math.min(1, Math.max(0, (life - BURST) / 320));
-        const k = 31 * homing;
-        p.vx += (p.tx - p.x) * k * dt;
-        p.vy += (p.ty - p.y) * k * dt;
-        const drag = Math.pow(homing > 0 ? 0.84 : 0.955, dt * 60);
-        p.vx *= drag;
-        p.vy *= drag;
-        p.x += p.vx * dt;
-        p.y += p.vy * dt;
+        if (life < BURST) {
+          const drag = Math.pow(0.955, dt * 60);
+          p.vx *= drag;
+          p.vy *= drag;
+          p.x += p.vx * dt;
+          p.y += p.vy * dt;
+        } else {
+          const prog = Math.min(1, (life - BURST) / (FORM - BURST));
+          const s = 0.03 + prog * prog * 0.34;
+          p.x += (p.tx - p.x) * s + p.vx * dt * (1 - prog);
+          p.y += (p.ty - p.y) * s + p.vy * dt * (1 - prog);
+          p.vx *= 0.9;
+          p.vy *= 0.9;
+        }
 
         let a: number;
-        if (life < 120) a = life / 120;
+        if (life < 110) a = life / 110;
         else if (life < HOLD) a = 1;
         else a = Math.max(0, 1 - (life - HOLD) / (DUR - HOLD));
-        a *= p.spark ? 1 : 0.7;
         if (a <= 0) continue;
 
-        ctx.fillStyle = p.spark
-          ? `rgba(215,249,255,${a})`
-          : `rgba(120,226,255,${a})`;
-        ctx.fillRect(p.x - p.r, p.y - p.r, p.r * 2, p.r * 2);
+        if (p.spark) {
+          ctx.fillStyle = `rgba(224,251,255,${a})`;
+          ctx.fillRect(p.x - 1.3, p.y - 1.3, 2.6, 2.6);
+        } else {
+          ctx.fillStyle = `rgba(128,230,255,${a})`;
+          ctx.fillRect(p.x - 0.9, p.y - 0.9, 1.8, 1.8);
+        }
       }
 
       if (t < DUR) {
