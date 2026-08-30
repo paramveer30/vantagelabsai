@@ -5,10 +5,18 @@ import * as THREE from "three";
 import { MeshSurfaceSampler } from "three/examples/jsm/math/MeshSurfaceSampler.js";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { CAMERA, DPR, gradient, hashUnit, smoothstep } from "./util";
+import {
+  CAMERA,
+  DPR,
+  gradient,
+  hashUnit,
+  smoothstep,
+  WELCOME_PARTICLE_COUNT,
+} from "./util";
 import type { Hit } from "./types";
+import { finish, setCloudReady, useWelcome } from "@/lib/welcome";
 
-const COUNT = 24000;
+const COUNT = WELCOME_PARTICLE_COUNT;
 
 function vShape() {
   const s = new THREE.Shape();
@@ -84,13 +92,15 @@ function sample(geo: THREE.BufferGeometry, out: Float32Array) {
 function useParticleData() {
   return useMemo(() => {
     const base = new Float32Array(COUNT * 3);
-    const computer = new Float32Array(COUNT * 3);
     const scatter = new Float32Array(COUNT * 3);
+    const field = new Float32Array(COUNT * 3);
     const color = new Float32Array(COUNT * 3);
     const seed = new Float32Array(COUNT);
 
     sample(vGeometry(), base);
-    sample(monitorGeometry(), computer);
+    // The monitor target isn't touched until the user scrolls, so keep it
+    // off the first-paint critical path — Cloud samples it when idle.
+    const computer = base.slice();
 
     const c = new THREE.Color();
     let minY = Infinity;
@@ -119,9 +129,25 @@ function useParticleData() {
       c.multiplyScalar(0.8 + hashUnit(i * 7.9) * 0.5);
       color.set([c.r, c.g, c.b], i * 3);
       seed[i] = hashUnit(i * 11.3) * 6.283;
+
+      // A loose cloud filling the frame — where each particle drifts as
+      // part of the background before the welcome pulls it in. Kept fairly
+      // tight so every particle has a similar, short trip into the V and
+      // the implosion reads as one motion rather than trailing stragglers.
+      const a1 = hashUnit(i * 13.1) * Math.PI * 2;
+      const a2 = Math.acos(2 * hashUnit(i * 17.3) - 1);
+      const rad = 2.4 + hashUnit(i * 19.7) * 3.1;
+      field.set(
+        [
+          Math.sin(a2) * Math.cos(a1) * rad,
+          Math.sin(a2) * Math.sin(a1) * rad * 0.85,
+          Math.cos(a2) * rad * 0.5 - 0.6,
+        ],
+        i * 3,
+      );
     }
 
-    return { base, computer, scatter, color, seed };
+    return { base, computer, scatter, field, color, seed };
   }, []);
 }
 
@@ -136,8 +162,34 @@ function Cloud({
   const mat = useRef<THREE.ShaderMaterial>(null);
   const pointer = useRef(new THREE.Vector2(0, 0));
   const lastHit = useRef(0);
-  const { base, computer, scatter, color, seed } = useParticleData();
+  const { base, computer, scatter, field, color, seed } = useParticleData();
   const canvas = useThree((s) => s.gl.domElement);
+  const welcome = useWelcome();
+
+  // Welcome-implosion bookkeeping. intro 0 = particles drift in the loose
+  // background field, 1 = fully gathered into the V. reveal brightens
+  // them from a faint haze as they rush in.
+  const intro = useRef(0);
+  const reveal = useRef(0);
+  const introStart = useRef(0);
+  const finished = useRef(false);
+  const doneAt = useRef(0);
+  const framesSeen = useRef(0);
+
+  // Sample the scroll-only monitor target after first paint so the heavy
+  // MeshSurfaceSampler build never competes with hydration or the
+  // greeting typing. Done well before any scroll can reach it.
+  useEffect(() => {
+    const attr = points.current?.geometry.getAttribute("aComputer") as
+      | THREE.BufferAttribute
+      | undefined;
+    if (!attr) return;
+    const id = window.setTimeout(() => {
+      sample(monitorGeometry(), attr.array as Float32Array);
+      attr.needsUpdate = true;
+    }, 400);
+    return () => window.clearTimeout(id);
+  }, []);
 
   // Track the cursor on the window rather than R3F's state.pointer: the
   // hero copy sits in a div above the canvas, so pointer events over the
@@ -159,13 +211,24 @@ function Cloud({
     const pts = points.current;
     if (!m || !pts) return;
 
-    const t = m.uniforms.uTime.value + delta;
+    // Clamp the step so a hydration hitch or a slow first frame can't make
+    // time (and the implosion) lurch forward.
+    const dt = Math.min(delta, 0.05);
+
+    // Let WelcomeIntro hand off only once a real frame has rendered, so
+    // the implosion never starts against a compile/init stall.
+    if (framesSeen.current < 2) {
+      framesSeen.current += 1;
+      if (framesSeen.current === 2) setCloudReady();
+    }
+
+    const t = m.uniforms.uTime.value + dt;
     m.uniforms.uTime.value = t;
 
     // Follow the cursor (NDC) with time-based easing so the field parts
     // around it at the same rate on a 60Hz or a 120Hz display.
     const pr = m.uniforms.uPointer.value as THREE.Vector2;
-    const k = 1 - Math.exp(-delta * 9);
+    const k = 1 - Math.exp(-dt * 9);
     pr.x += (pointer.current.x - pr.x) * k;
     pr.y += (pointer.current.y - pr.y) * k;
     if (m.uniforms.uAspect)
@@ -179,7 +242,7 @@ function Cloud({
     const hpw = m.uniforms.uHitPow;
     if (hp && ha && hpw) {
       if (ha.value >= 0) {
-        ha.value += delta;
+        ha.value += dt;
         if (ha.value > 1.2) ha.value = -1;
       }
       const hit = hitRef?.current;
@@ -195,8 +258,37 @@ function Cloud({
       }
     }
 
-    // Progress is already eased + speed-capped upstream (see HomeScene).
-    const p = progressRef.current;
+    // Welcome implosion: while the greeting types, the particles drift in
+    // the loose background field as a faint haze; once it's done they
+    // rush inward and brighten into the V. Nothing else moves until then.
+    const IMPLODE = 1.5;
+    const done = welcome.phase === "done";
+    if (welcome.phase === "typing") {
+      reveal.current = 0.13;
+      intro.current = 0;
+    } else if (welcome.phase === "handoff") {
+      if (!introStart.current) introStart.current = t;
+      const e = t - introStart.current;
+      const ip = Math.min(1, Math.max(0, e / IMPLODE));
+      intro.current = 1 - Math.pow(1 - ip, 2.4);
+      reveal.current = 0.13 + 0.87 * smoothstep(Math.min(1, e / 1.0));
+      if (ip >= 1 && !finished.current) {
+        finished.current = true;
+        finish();
+      }
+    } else if (done && !finished.current) {
+      intro.current = 1;
+      reveal.current = 1;
+      finished.current = true;
+    }
+    if (done && !doneAt.current) doneAt.current = t;
+
+    m.uniforms.uIntro.value = done ? 1 : intro.current;
+    m.uniforms.uIntroReveal.value = done ? 1 : reveal.current;
+
+    // Progress is already eased + speed-capped upstream (see HomeScene);
+    // hold it at 0 until the welcome releases so nothing lurches.
+    const p = done ? progressRef.current : 0;
 
     const travel = smoothstep((p - 0.06) / 0.3);
     const burst = smoothstep((p - 0.22) / 0.22);
@@ -207,8 +299,13 @@ function Cloud({
     pts.position.y = -Math.sin(Math.min(travel, 1) * Math.PI) * 0.9 * (1 - form);
     pts.scale.setScalar(1.1 + travel * 0.2 - form * 0.42);
 
+    // Ease the idle sway back in after the implosion so the field lands
+    // on a still V rather than a rotating one.
+    const swayGate = doneAt.current ? Math.min(1, (t - doneAt.current) / 0.6) : 0;
     const sway =
-      Math.sin(t * 0.3) * 0.35 + travel * Math.PI * 2.4 + explode * t * 0.3;
+      Math.sin(t * 0.3) * 0.35 * swayGate +
+      travel * Math.PI * 2.4 +
+      explode * t * 0.3;
     pts.rotation.y = THREE.MathUtils.lerp(sway, 0, form);
     pts.rotation.z = THREE.MathUtils.lerp(
       travel * 0.3 * Math.sin(t * 0.6) + explode * 0.4,
@@ -227,6 +324,7 @@ function Cloud({
         <bufferAttribute attach="attributes-position" args={[base, 3]} />
         <bufferAttribute attach="attributes-aComputer" args={[computer, 3]} />
         <bufferAttribute attach="attributes-aScatter" args={[scatter, 3]} />
+        <bufferAttribute attach="attributes-aField" args={[field, 3]} />
         <bufferAttribute attach="attributes-aColor" args={[color, 3]} />
         <bufferAttribute attach="attributes-aSeed" args={[seed, 1]} />
       </bufferGeometry>
@@ -240,6 +338,8 @@ function Cloud({
           uExplode: { value: 0 },
           uForm: { value: 0 },
           uFade: { value: 1 },
+          uIntro: { value: 0 },
+          uIntroReveal: { value: 0 },
           uPointer: { value: new THREE.Vector2(0, 0) },
           uAspect: { value: 1 },
           uHitPos: { value: new THREE.Vector2(0, 0) },
@@ -249,12 +349,15 @@ function Cloud({
         vertexShader={`
           attribute vec3 aComputer;
           attribute vec3 aScatter;
+          attribute vec3 aField;
           attribute vec3 aColor;
           attribute float aSeed;
           uniform float uTime;
           uniform float uExplode;
           uniform float uForm;
           uniform float uFade;
+          uniform float uIntro;
+          uniform float uIntroReveal;
           uniform vec2 uPointer;
           uniform float uAspect;
           uniform vec2 uHitPos;
@@ -264,18 +367,26 @@ function Cloud({
           varying float vAlpha;
           void main() {
             vColor = aColor;
-            vec3 vpos = mix(position, aScatter, uExplode);
+            // Welcome: start in the loose background field, implode into
+            // the V. Stagger each particle's arrival by its seed so the
+            // cloud streams in rather than snapping as one shell.
+            float d0 = fract(aSeed * 0.1592);
+            float li = clamp((uIntro - d0 * 0.18) / 0.82, 0.0, 1.0);
+            li = li * li * (3.0 - 2.0 * li);
+            vec3 rest = mix(aField, position, li);
+            vec3 vpos = mix(rest, aScatter, uExplode);
             vec3 pos = mix(vpos, aComputer, uForm);
-            pos += 0.04 * (1.0 - uForm * 0.85) * vec3(
+            pos += 0.04 * (1.0 - uForm * 0.85) * mix(0.25, 1.0, uIntro) * vec3(
               sin(uTime * 0.8 + aSeed),
               cos(uTime * 0.7 + aSeed * 1.3),
               sin(uTime * 0.6 + aSeed * 0.7)
             );
-            vAlpha = uFade * mix(1.0, 0.5, uExplode);
+            vAlpha = uFade * mix(1.0, 0.5, uExplode) * mix(uIntroReveal, 1.0, uIntro);
             vec4 mv = modelViewMatrix * vec4(pos, 1.0);
             float twinkle = 0.75 + 0.55 * sin(uTime + aSeed);
             gl_PointSize = (34.0 / -mv.z) * twinkle
-              * (1.0 + uExplode * 0.6) * (1.0 - uForm * 0.15);
+              * (1.0 + uExplode * 0.6) * (1.0 - uForm * 0.15)
+              * mix(0.45, 1.0, uIntro);
             vec4 clip = projectionMatrix * mv;
 
             // Part the field around the cursor — strong on the loose hero
@@ -289,6 +400,7 @@ function Cloud({
             // Scale the offset rather than normalise it: the shove keeps a
             // steady direction and eases to zero right under the cursor,
             // instead of flipping frame to frame where the gap is ~0.
+            push *= step(0.999, uIntro);
             vec2 dir = gap / (pd + 0.12);
             clip.xy += (dir / vec2(uAspect, 1.0)) * push * clip.w * 0.08;
             gl_PointSize *= 1.0 + push * 1.4;
@@ -298,7 +410,7 @@ function Cloud({
             // expanding shock ring shoves particles outward as its front
             // passes, trailed by a short decaying shiver — an actual hit,
             // not a vibrating blob.
-            if (uHitAge >= 0.0) {
+            if (uHitAge >= 0.0 && uIntro >= 1.0) {
               vec2 hv = (sp - uHitPos) * vec2(uAspect, 1.0);
               float hpd = length(hv);
               float ringR = uHitAge * 0.9;

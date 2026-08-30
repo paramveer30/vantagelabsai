@@ -9,6 +9,7 @@ import { ParkourFigure } from "@/components/parkour-figure";
 import type { Hit } from "@/components/three/types";
 import { useMediaQuery, usePrefersReducedMotion } from "@/lib/media";
 import { nav } from "@/lib/site";
+import { useWelcome } from "@/lib/welcome";
 
 const VCloud = dynamic(() => import("@/components/three/v-cloud"), {
   ssr: false,
@@ -66,6 +67,7 @@ function StaticHome() {
 export function HomeScene() {
   const reducedMotion = usePrefersReducedMotion();
   const isSmallScreen = useMediaQuery("(max-width: 768px)");
+  const welcome = useWelcome();
   const runwayRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef(0);
   // Written by ParkourFigure when it slams a monitor edge, read by VCloud
@@ -91,8 +93,14 @@ export function HomeScene() {
       last = now;
 
       const span = runway.offsetHeight - window.innerHeight;
+      // Ignore scroll until the welcome hands off, so the V forms on a
+      // still page instead of one already scrolled into the sequence.
       const target =
-        span > 0 ? Math.min(1, Math.max(0, window.scrollY / span)) : 0;
+        welcome.phase !== "done"
+          ? 0
+          : span > 0
+            ? Math.min(1, Math.max(0, window.scrollY / span))
+            : 0;
 
       // Ease toward the scroll position, framerate-independent, so a fast
       // fling still plays smoothly — but progress stays tied to scroll, so
@@ -128,7 +136,9 @@ export function HomeScene() {
       window.removeEventListener("resize", kick);
       if (raf) cancelAnimationFrame(raf);
     };
-  }, [reducedMotion, isSmallScreen]);
+    // welcome.phase re-kicks the loop so it eases to a real scroll
+    // position the moment the intro releases.
+  }, [reducedMotion, isSmallScreen, welcome.phase]);
 
   if (reducedMotion || isSmallScreen) return <StaticHome />;
 
@@ -140,10 +150,16 @@ export function HomeScene() {
         </div>
 
         <div
-          className={`absolute inset-y-0 right-0 flex items-center pr-[max(2.5rem,3vw)] pl-8 transition-all duration-300 ${
-            phase === "hero"
-              ? "opacity-100"
-              : "pointer-events-none translate-y-3 opacity-0"
+          data-hero-copy
+          className={`absolute inset-y-0 right-0 flex items-center pr-[max(2.5rem,3vw)] pl-8 transition-all ease-out ${
+            welcome.phase === "handoff"
+              ? "delay-300 duration-[900ms]"
+              : "duration-300"
+          } ${
+            phase === "hero" &&
+            (welcome.phase === "handoff" || welcome.phase === "done")
+              ? "translate-x-0 opacity-100"
+              : "pointer-events-none translate-x-6 opacity-0"
           }`}
         >
           <div className="relative w-[min(41rem,44vw)] -translate-y-[3vh] pl-8 before:absolute before:-top-[14vh] before:-bottom-[14vh] before:left-0 before:w-px before:bg-gradient-to-b before:from-transparent before:via-accent/50 before:to-transparent">
@@ -183,7 +199,10 @@ export function HomeScene() {
           </div>
         </div>
 
-        <p className="eyebrow absolute bottom-8 left-1/2 flex -translate-x-1/2 items-center gap-2 text-foreground/40">
+        <p
+          data-hero-copy
+          className="eyebrow absolute bottom-8 left-1/2 flex -translate-x-1/2 items-center gap-2 text-foreground/40"
+        >
           Scroll
           <span aria-hidden className="animate-bounce">
             ↓

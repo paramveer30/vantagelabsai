@@ -471,3 +471,37 @@
     animation-delay: 0s !important;
   }
 }
+
+/*
+ * First-load welcome: a <head> guard sets data-welcome before paint so
+ * the page chrome never flashes behind the greeting, while the galaxy
+ * background (a -z-10 layer) stays visible. WelcomeIntro clears the
+ * attribute when the sequence ends and these fade back in.
+ */
+/* Hidden while the greeting types; on "handoff" the hold is released so
+   the chrome eases in alongside the V forming. */
+html[data-welcome]:not([data-welcome="handoff"])
+  :is(.site-header, .site-footer, [data-hero-copy]) {
+  opacity: 0 !important;
+}
+html[data-welcome] :is(.site-header, .site-footer, [data-hero-copy]) {
+  pointer-events: none;
+}
+html[data-welcome] body {
+  overflow: hidden;
+}
+html[data-welcome]:not([data-welcome="handoff"])[data-welcome-route="page"] main {
+  opacity: 0;
+}
+/* Everything the welcome held back eases in together (the hero copy
+   carries its own longer transition + slide, in home-scene). */
+:where(.site-header, .site-footer, [data-hero-copy], main) {
+  transition: opacity 700ms var(--ease-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-welcome] :is(.site-header, .site-footer, [data-hero-copy]),
+  html[data-welcome][data-welcome-route="page"] main {
+    opacity: 1 !important;
+  }
+}

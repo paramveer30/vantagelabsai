@@ -7,6 +7,9 @@ export const CAMERA = {
 };
 export const DPR: [number, number] = [1, 1.6];
 
+// The hero V and the welcome implosion draw the same particles.
+export const WELCOME_PARTICLE_COUNT = 24000;
+
 export const LOW = new THREE.Color("#0b4fd6");
 export const MID = new THREE.Color("#2aa8ee");
 export const HIGH = new THREE.Color("#7fe4ff");
