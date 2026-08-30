@@ -2,10 +2,7 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { z } from "zod";
 
-import {
-  buildAutoReply,
-  buildTeamNotification,
-} from "../../../lib/contact-email";
+import { buildAutoReply, buildTeamNotification } from "@/lib/contact-email";
 
 const schema = z.object({
   name: z.string().trim().min(1).max(100),
