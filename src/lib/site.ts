@@ -8,7 +8,7 @@ export const site = {
   // Paste a Cal.com (cal.com/your-handle/intro) or Calendly
   // (calendly.com/your-handle/30min) link here. Empty → the contact page
   // shows a mailto fallback card; the embed adds dark-theme params.
-  bookingUrl: "",
+  bookingUrl: "https://cal.com/vantagelabs/30min",
 } as const;
 
 export const nav = [

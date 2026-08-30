@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 // Append dark-theme query params for the known providers, leaving any the
 // URL already carries untouched. Cal.com reads `theme`; Calendly takes bare
@@ -34,6 +34,13 @@ export function BookingEmbed({ url }: { url: string }) {
   const [loaded, setLoaded] = useState(false);
   const src = useMemo(() => withThemeParams(url), [url]);
 
+  // The provider's SPA can miss the iframe load event; clear the overlay
+  // after a grace period regardless so it never sticks.
+  useEffect(() => {
+    const t = setTimeout(() => setLoaded(true), 4000);
+    return () => clearTimeout(t);
+  }, []);
+
   return (
     <div className="hud card-glow relative mt-4 h-[560px] w-full rounded-2xl border border-border bg-surface sm:h-[640px]">
       {!loaded && (
@@ -50,7 +57,6 @@ export function BookingEmbed({ url }: { url: string }) {
       <iframe
         src={src}
         title="Schedule a call with VantageLabsAI"
-        loading="lazy"
         onLoad={() => setLoaded(true)}
         className="h-full w-full rounded-2xl border-0"
       />
