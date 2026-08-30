@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { z } from "zod";
 
+import { buildTeamNotification } from "../../../lib/contact-email";
+
 const schema = z.object({
   name: z.string().trim().min(1).max(100),
   email: z.email().max(200),
@@ -63,41 +65,44 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true });
   }
 
+  const submission = { name, email, company, message };
+
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
     console.warn(
       "contact: email not configured — set RESEND_API_KEY to send notifications",
     );
-    console.info("contact submission", { name, email });
+    // Log the whole submission so it can be recovered from server logs.
+    console.info("contact submission", submission);
     return NextResponse.json({ ok: true });
   }
 
+  const resend = new Resend(apiKey);
+  const notification = buildTeamNotification(submission);
+
   try {
-    const resend = new Resend(apiKey);
     const { error } = await resend.emails.send({
       from: process.env.CONTACT_FROM_EMAIL ?? "",
       to: process.env.CONTACT_TO_EMAIL ?? "",
       replyTo: email,
-      subject: `New enquiry from ${name}`,
-      text: [
-        `Name: ${name}`,
-        `Email: ${email}`,
-        company ? `Company: ${company}` : null,
-        "",
-        message,
-      ]
-        .filter((line): line is string => line !== null)
-        .join("\n"),
+      subject: notification.subject,
+      text: notification.text,
     });
 
     if (error) {
-      console.error("contact: Resend returned an error", error);
+      console.error("contact: Resend returned an error", error, submission);
       return NextResponse.json({ error: genericError }, { status: 502 });
     }
   } catch (err) {
-    console.error("contact: failed to send notification email", err);
+    console.error(
+      "contact: failed to send notification email",
+      err,
+      submission,
+    );
     return NextResponse.json({ error: genericError }, { status: 502 });
   }
+
+  console.info("contact submission sent", { name, email });
 
   return NextResponse.json({ ok: true });
 }
