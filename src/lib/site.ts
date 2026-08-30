@@ -4,7 +4,7 @@ export const site = {
   description:
     "VantageLabsAI builds custom software, AI integrations, and ongoing support for businesses of any size — from local shops to technical founders.",
   url: "https://vantagelabsai.com",
-  email: "hello@vantagelabsai.com",
+  email: "vantage.labs@outlook.ca",
   // Set once the booking tool (Calendly / Cal.com) is live; until then the
   // contact page shows a mailto fallback card.
   bookingUrl: "",
