@@ -2,7 +2,10 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { z } from "zod";
 
-import { buildTeamNotification } from "../../../lib/contact-email";
+import {
+  buildAutoReply,
+  buildTeamNotification,
+} from "../../../lib/contact-email";
 
 const schema = z.object({
   name: z.string().trim().min(1).max(100),
@@ -103,6 +106,24 @@ export async function POST(req: Request) {
   }
 
   console.info("contact submission sent", { name, email });
+
+  // The team already has the message; a failed auto-reply must not fail the
+  // request, so it gets its own try/catch and the response stays 200.
+  try {
+    const autoReply = buildAutoReply({ name });
+    const { error } = await resend.emails.send({
+      from: process.env.CONTACT_FROM_EMAIL ?? "",
+      to: email,
+      subject: autoReply.subject,
+      text: autoReply.text,
+    });
+
+    if (error) {
+      console.error("contact: auto-reply returned an error", error);
+    }
+  } catch (err) {
+    console.error("contact: failed to send auto-reply email", err);
+  }
 
   return NextResponse.json({ ok: true });
 }

@@ -39,16 +39,32 @@ beforeEach(() => {
 });
 
 describe("POST /api/contact", () => {
-  it("sends an email and returns ok for a valid submission", async () => {
+  it("emails the team and auto-replies to the sender for a valid submission", async () => {
     const res = await post(validBody, { ip: "10.1.0.1" });
 
     expect(res.status).toBe(200);
     await expect(res.json()).resolves.toEqual({ ok: true });
-    expect(mockSend).toHaveBeenCalledTimes(1);
+    expect(mockSend).toHaveBeenCalledTimes(2);
     expect(mockSend.mock.calls[0][0]).toMatchObject({
       to: "inbox@vantagelabsai.com",
       replyTo: "ada@example.com",
     });
+    expect(mockSend.mock.calls[1][0]).toMatchObject({
+      to: "ada@example.com",
+      subject: "Thanks for reaching out to VantageLabsAI",
+    });
+  });
+
+  it("still returns ok when the auto-reply fails to send", async () => {
+    mockSend
+      .mockResolvedValueOnce({ data: { id: "email_1" }, error: null })
+      .mockRejectedValueOnce(new Error("auto-reply down"));
+
+    const res = await post(validBody, { ip: "10.6.0.1" });
+
+    expect(res.status).toBe(200);
+    await expect(res.json()).resolves.toEqual({ ok: true });
+    expect(mockSend).toHaveBeenCalledTimes(2);
   });
 
   it("returns 422 when the body fails validation", async () => {

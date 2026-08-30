@@ -27,3 +27,13 @@ export function buildTeamNotification({
       .join("\n"),
   };
 }
+
+export function buildAutoReply({ name }: { name: string }): {
+  subject: string;
+  text: string;
+} {
+  return {
+    subject: "Thanks for reaching out to VantageLabsAI",
+    text: `Hi ${name},\n\nThanks for your message — it's landed with us and we'll get back to you shortly, usually within one business day.\n\n— VantageLabsAI`,
+  };
+}
