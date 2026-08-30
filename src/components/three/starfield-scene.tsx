@@ -3,7 +3,7 @@
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { dotTexture, hashUnit, HIGH, LOW } from "./util";
+import { CAMERA, dotTexture, DPR, hashUnit, HIGH, LOW } from "./util";
 
 const STAR_COUNT = 2600;
 const DUST_COUNT = 500;
@@ -100,7 +100,7 @@ function DustField() {
 
 export default function StarfieldScene() {
   return (
-    <Canvas camera={{ position: [0, 0, 5.4], fov: 42 }} dpr={[1, 1.6]}>
+    <Canvas camera={CAMERA} dpr={DPR}>
       <StarField />
       <DustField />
     </Canvas>

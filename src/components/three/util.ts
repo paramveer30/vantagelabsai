@@ -1,5 +1,12 @@
 import * as THREE from "three";
 
+// Both hero canvases frame the same virtual space — keep them on one camera.
+export const CAMERA = {
+  position: [0, 0, 5.4] as [number, number, number],
+  fov: 42,
+};
+export const DPR: [number, number] = [1, 1.6];
+
 export const LOW = new THREE.Color("#0b4fd6");
 export const MID = new THREE.Color("#2aa8ee");
 export const HIGH = new THREE.Color("#7fe4ff");

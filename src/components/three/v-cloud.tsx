@@ -5,7 +5,7 @@ import * as THREE from "three";
 import { MeshSurfaceSampler } from "three/examples/jsm/math/MeshSurfaceSampler.js";
 import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { gradient, hashUnit, smoothstep } from "./util";
+import { CAMERA, DPR, gradient, hashUnit, smoothstep } from "./util";
 import type { Hit } from "./types";
 
 const COUNT = 24000;
@@ -344,7 +344,7 @@ export default function VCloud({
   hitRef?: RefObject<Hit>;
 }) {
   return (
-    <Canvas camera={{ position: [0, 0, 5.4], fov: 42 }} dpr={[1, 1.6]}>
+    <Canvas camera={CAMERA} dpr={DPR}>
       <Cloud progressRef={progressRef} hitRef={hitRef} />
     </Canvas>
   );
