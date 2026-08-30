@@ -316,6 +316,122 @@
   }
 }
 
+/* Site header — dissolves into the background with a masked blur scrim so
+   there's no bar edge; the tab links read as a techy HUD that lights up
+   with a cyan glow on hover and on the active route. */
+.site-header::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 -18px 0;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in oklab, var(--background) 88%, transparent),
+    color-mix(in oklab, var(--background) 32%, transparent) 46%,
+    transparent
+  );
+  -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent);
+  mask-image: linear-gradient(to bottom, #000 60%, transparent);
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+  pointer-events: none;
+}
+
+.nav-link {
+  position: relative;
+  font-family: var(--font-display), var(--font-geist-sans), sans-serif;
+  font-size: 0.76rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--foreground) 52%, transparent);
+  transition:
+    color var(--dur-fast) var(--ease-soft),
+    text-shadow var(--dur-fast) var(--ease-soft);
+}
+.nav-link:hover,
+.nav-link[aria-current="page"] {
+  color: var(--foreground);
+  text-shadow:
+    0 0 16px var(--glow),
+    0 0 4px color-mix(in oklab, var(--accent) 45%, transparent);
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: 0.3rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  box-shadow: 0 0 8px var(--glow);
+  opacity: 0;
+  transform: scaleX(0.3);
+  transition:
+    opacity var(--dur-fast) var(--ease-soft),
+    transform var(--dur-fast) var(--ease-soft);
+}
+.nav-link:hover::after,
+.nav-link[aria-current="page"]::after {
+  opacity: 0.9;
+  transform: scaleX(1);
+}
+
+.nav-index {
+  margin-right: 0.45rem;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  color: color-mix(in oklab, var(--accent) 78%, transparent);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Vertical (mobile) variant: a left tick instead of the underline. */
+.nav-link--stack::after {
+  left: 0.15rem;
+  right: auto;
+  top: 0.55rem;
+  bottom: 0.55rem;
+  width: 2px;
+  height: auto;
+  background: var(--accent);
+  transform: scaleY(0.2);
+}
+.nav-link--stack:hover::after,
+.nav-link--stack[aria-current="page"]::after {
+  transform: scaleY(1);
+}
+
+/* CTA — a holographic chip matching the desktop tiles, so it sits in the
+   glassy header instead of a solid pill punching through it. */
+.nav-cta {
+  font-family: var(--font-display), var(--font-geist-sans), sans-serif;
+  color: var(--foreground);
+  border: 1px solid color-mix(in oklab, var(--accent) 50%, transparent);
+  background: color-mix(in oklab, var(--accent) 12%, transparent);
+  box-shadow:
+    0 0 22px -8px var(--glow),
+    inset 0 1px 0 color-mix(in oklab, #bfefff 20%, transparent);
+  transition:
+    background var(--dur-fast) var(--ease-soft),
+    border-color var(--dur-fast) var(--ease-soft),
+    box-shadow var(--dur-fast) var(--ease-soft);
+}
+.nav-cta:hover {
+  border-color: color-mix(in oklab, var(--accent) 85%, transparent);
+  background: color-mix(in oklab, var(--accent) 20%, transparent);
+  box-shadow:
+    0 0 30px -4px var(--glow),
+    inset 0 1px 0 color-mix(in oklab, #bfefff 34%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-link,
+  .nav-link::after,
+  .nav-cta {
+    transition: none;
+  }
+}
+
 /* Page transitions — a short crossfade on the page body only. The sticky
    header and the fixed starfield are pinned by name so they hold still. */
 ::view-transition {
