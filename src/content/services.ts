@@ -1,4 +1,5 @@
-// Picks which particle scene the services page renders beside each entry.
+// Picks which animated product vignette the services page renders beside
+// each entry.
 export type ServiceVariant = "software" | "ai" | "support";
 
 export type Service = {
@@ -7,7 +8,7 @@ export type Service = {
   title: string;
   summary: string;
   description: string;
-  highlights: string[];
+  examples: string[];
 };
 
 export const services: Service[] = [
@@ -15,39 +16,42 @@ export const services: Service[] = [
     slug: "custom-software",
     variant: "software",
     title: "Custom Software & Web Apps",
-    summary: "Software built around how your business actually works.",
+    summary: "The tools your business runs on, built to fit exactly how you work.",
     description:
-      "Off-the-shelf tools make you adapt your business to their limits. We build the opposite: software shaped around your workflow, whether that's an internal tool for staff scheduling or a customer-facing app your clients use every day.",
-    highlights: [
-      "Internal tools (scheduling, inventory, ordering)",
-      "Customer-facing web and mobile apps",
-      "Integrations with the tools you already use",
+      "Off-the-shelf software makes you bend to its limits. We build the other way around — shaped to your workflow, whether it's the internal tool your staff live in or the app your customers use every day.",
+    examples: [
+      "Booking systems",
+      "Client portals",
+      "Inventory & ordering",
+      "Custom dashboards",
     ],
   },
   {
     slug: "ai-automation",
     variant: "ai",
     title: "AI & Automation Integration",
-    summary: "Practical AI that removes busywork, not a science project.",
+    summary: "AI that clears the busywork — answering, sorting, summarising, around the clock.",
     description:
-      "We add AI where it actually saves time — answering common customer questions, summarizing paperwork, sorting through leads — instead of bolting on AI for the sake of it. If it doesn't save you hours, we won't build it.",
-    highlights: [
-      "Customer-facing chat and support automation",
-      "Document and data processing",
-      "Workflow automation between your existing tools",
+      "We add AI only where it saves real hours: replying to common questions, pulling data out of paperwork, routing leads to the right place. If it won't save you time, we won't build it.",
+    examples: [
+      "Support chatbots",
+      "Document extraction",
+      "Lead routing",
+      "Report drafting",
     ],
   },
   {
     slug: "ongoing-support",
     variant: "support",
     title: "Ongoing Support & Maintenance",
-    summary: "We don't disappear after launch.",
+    summary: "We stay on after launch — fixing, improving, and keeping it fast.",
     description:
-      "Software needs upkeep — bug fixes, small feature requests, keeping things running as your business grows. We offer ongoing support so you have a team to call, not a one-time contractor who vanishes.",
-    highlights: [
-      "Bug fixes and updates",
-      "New features as your needs grow",
-      "A direct line to the people who built it",
+      "Software needs upkeep. You get a team on call for bug fixes, new features, and keeping everything running as you grow — not a contractor who disappears at handoff.",
+    examples: [
+      "Monitoring & uptime",
+      "Bug fixes",
+      "New features",
+      "Performance tuning",
     ],
   },
 ];

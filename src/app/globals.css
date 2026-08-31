@@ -552,3 +552,166 @@ html[data-welcome]:not([data-welcome="handoff"])[data-welcome-route="page"] main
     opacity: 1 !important;
   }
 }
+
+/*
+ * Services vignettes — the small animated product mocks beside each
+ * service (see service-vignette.tsx). The component only attaches these
+ * classes when it's animating; the reduced-motion guard at the end is a
+ * belt-and-braces stop for the frame glow, which is CSS-only.
+ */
+.vg-frame {
+  animation: vg-frame-glow 4.2s ease-in-out infinite;
+}
+
+.vg-rise {
+  animation: vg-rise 520ms var(--ease-soft) both;
+}
+
+.vg-bar {
+  transform-origin: bottom;
+  animation: vg-bar 620ms var(--ease-soft) both;
+}
+
+.vg-blink {
+  animation: vg-blink 1.8s ease-in-out infinite;
+  box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.5);
+}
+
+.vg-sweep {
+  background: linear-gradient(
+    100deg,
+    transparent 40%,
+    rgba(122, 228, 255, 0.14) 50%,
+    transparent 60%
+  );
+  animation: vg-sweep 1200ms var(--ease-soft) 7000ms both;
+}
+
+/* Typing indicator: the bubble lives only between ~0.9s and ~2.4s of the
+   loop, then holds at zero until the remount. */
+.vg-typing {
+  animation: vg-typing-life 2600ms var(--ease-soft) 900ms both;
+}
+.vg-typing span {
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  margin: 0 1.5px;
+  border-radius: 9999px;
+  background: var(--accent);
+  animation: vg-dot 1s ease-in-out infinite;
+}
+.vg-typing span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.vg-typing span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+/* The sparkline path is drawn at double width; sliding it left by half
+   loops seamlessly. */
+.vg-spark {
+  animation: vg-spark 3s linear infinite;
+}
+
+@keyframes vg-rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes vg-bar {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes vg-frame-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 24px -16px var(--glow);
+  }
+  50% {
+    box-shadow: 0 0 34px -10px var(--glow);
+  }
+}
+
+@keyframes vg-blink {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(74, 222, 128, 0);
+  }
+}
+
+@keyframes vg-sweep {
+  from {
+    transform: translateX(-120%);
+  }
+  to {
+    transform: translateX(130%);
+  }
+}
+
+@keyframes vg-typing-life {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  12%,
+  82% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+    transform: none;
+  }
+}
+
+@keyframes vg-dot {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes vg-spark {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vg-frame,
+  .vg-rise,
+  .vg-bar,
+  .vg-blink,
+  .vg-sweep,
+  .vg-typing,
+  .vg-typing span,
+  .vg-spark {
+    animation: none !important;
+  }
+  .vg-bar {
+    transform: none !important;
+  }
+}
