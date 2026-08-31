@@ -7,7 +7,11 @@ import { Container } from "@/components/container";
 import { DesktopNav } from "@/components/desktop-nav";
 import { ParkourFigure } from "@/components/parkour-figure";
 import type { Hit } from "@/components/three/types";
-import { useMediaQuery, usePrefersReducedMotion } from "@/lib/media";
+import {
+  useHydrated,
+  useMediaQuery,
+  usePrefersReducedMotion,
+} from "@/lib/media";
 import { nav } from "@/lib/site";
 import { useWelcome } from "@/lib/welcome";
 
@@ -47,9 +51,9 @@ function PageLinks({ className = "" }: { className?: string }) {
   );
 }
 
-function StaticHome() {
+export function HomeStatic() {
   return (
-    <section className="flex min-h-[80vh] items-center">
+    <section className="home-static flex min-h-[80svh] items-center">
       <Container>
         <p className="eyebrow">VantageLabsAI</p>
         <h1 className="display mt-5 max-w-3xl text-balance text-5xl font-semibold leading-[1.04] tracking-[-0.03em] sm:text-6xl">
@@ -64,7 +68,24 @@ function StaticHome() {
   );
 }
 
-export function HomeScene() {
+// Home hero. HomeStatic is what the server renders and what stays on any
+// device that shouldn't run the 3D sequence (mobile, reduced motion, no
+// JS), so a phone never ships the 260vh animated runway or a hydration
+// height swap. A motion-friendly desktop swaps up to the particle cloud
+// once mounted; the first-load welcome overlay covers that swap.
+export function HomeHero() {
+  const hydrated = useHydrated();
+  const reducedMotion = usePrefersReducedMotion();
+  const isSmallScreen = useMediaQuery("(max-width: 768px)");
+
+  return !hydrated || reducedMotion || isSmallScreen ? (
+    <HomeStatic />
+  ) : (
+    <HomeAnimated />
+  );
+}
+
+function HomeAnimated() {
   const reducedMotion = usePrefersReducedMotion();
   const isSmallScreen = useMediaQuery("(max-width: 768px)");
   const welcome = useWelcome();
@@ -140,7 +161,7 @@ export function HomeScene() {
     // position the moment the intro releases.
   }, [reducedMotion, isSmallScreen, welcome.phase]);
 
-  if (reducedMotion || isSmallScreen) return <StaticHome />;
+  if (reducedMotion || isSmallScreen) return null;
 
   return (
     <div ref={runwayRef} className="relative" style={{ height: "260vh" }}>
