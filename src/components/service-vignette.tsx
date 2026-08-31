@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode, type Ref } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ServiceVariant } from "@/content/services";
 import { usePrefersReducedMotion } from "@/lib/media";
+import { CountUp, Streamed, VignetteFrame } from "@/components/vignette-kit";
 
 // A small animated mock of what each service actually delivers — a
 // dashboard assembling itself, an AI reply landing in a support chat, a
@@ -32,10 +33,9 @@ export function ServiceVignette({ variant }: { variant: ServiceVariant }) {
       setInView(true);
       return;
     }
-    const io = new IntersectionObserver(
-      ([e]) => setInView(e.isIntersecting),
-      { threshold: 0.25 },
-    );
+    const io = new IntersectionObserver(([e]) => setInView(e.isIntersecting), {
+      threshold: 0.25,
+    });
     io.observe(el);
     return () => io.disconnect();
   }, []);
@@ -60,40 +60,14 @@ export function ServiceVignette({ variant }: { variant: ServiceVariant }) {
   );
 }
 
-function VignetteFrame({
-  ref,
-  label,
-  children,
-}: {
-  ref: Ref<HTMLDivElement>;
-  label: string;
-  children: ReactNode;
-}) {
-  return (
-    <div
-      ref={ref}
-      className="vg-frame absolute inset-0 overflow-hidden rounded-xl border border-border bg-surface-2"
-    >
-      <div className="flex h-7 items-center gap-2 border-b border-border px-3">
-        <span className="h-1.5 w-1.5 rounded-full bg-foreground/25" />
-        <span className="h-1.5 w-1.5 rounded-full bg-foreground/25" />
-        <span className="h-1.5 w-1.5 rounded-full bg-foreground/25" />
-        <span className="ml-1 font-mono text-[10px] tracking-wide text-muted">
-          {label}
-        </span>
-      </div>
-      <div className="absolute inset-x-0 bottom-0 top-7">{children}</div>
-    </div>
-  );
-}
-
 /* -------------------------------------------------------------------- */
 /* software — a dashboard building itself                               */
 /* -------------------------------------------------------------------- */
 
 function SoftwareVignette({ animate }: { animate: boolean }) {
   const bars = [42, 66, 30, 78, 52, 90, 60];
-  const step = (n: number) => (animate ? { animationDelay: `${n}ms` } : undefined);
+  const step = (n: number) =>
+    animate ? { animationDelay: `${n}ms` } : undefined;
   return (
     <div className="flex h-full gap-2 p-3">
       <div className="flex w-9 shrink-0 flex-col gap-1.5">
@@ -165,7 +139,9 @@ function SoftwareVignette({ animate }: { animate: boolean }) {
         </div>
       </div>
 
-      {animate && <div className="vg-sweep pointer-events-none absolute inset-0" />}
+      {animate && (
+        <div className="vg-sweep pointer-events-none absolute inset-0" />
+      )}
     </div>
   );
 }
@@ -274,9 +250,14 @@ function SupportVignette({ animate }: { animate: boolean }) {
             className={`flex items-center gap-2 text-[10px] ${
               animate ? "vg-rise" : ""
             }`}
-            style={animate ? { animationDelay: `${300 + i * 260}ms` } : undefined}
+            style={
+              animate ? { animationDelay: `${300 + i * 260}ms` } : undefined
+            }
           >
-            <svg viewBox="0 0 16 16" className="h-3 w-3 shrink-0 text-[#4ade80]">
+            <svg
+              viewBox="0 0 16 16"
+              className="h-3 w-3 shrink-0 text-[#4ade80]"
+            >
               <path
                 d="M3 8.5l3.5 3.5L13 4"
                 fill="none"
@@ -299,75 +280,9 @@ function SupportVignette({ animate }: { animate: boolean }) {
 const SPARK_PATH = (() => {
   const pts = [22, 26, 18, 30, 24, 33, 20, 28, 25, 31, 19, 27];
   const half = pts.map((y, i) => `${(i / (pts.length - 1)) * 100},${y}`);
-  const full = [...half, ...half.map((p, i) => `${100 + (i / (pts.length - 1)) * 100},${pts[i]}`)];
+  const full = [
+    ...half,
+    ...half.map((p, i) => `${100 + (i / (pts.length - 1)) * 100},${pts[i]}`),
+  ];
   return "M" + full.join(" L");
 })();
-
-/* -------------------------------------------------------------------- */
-/* small helpers                                                       */
-/* -------------------------------------------------------------------- */
-
-function CountUp({
-  end,
-  animate,
-  delay = 0,
-}: {
-  end: number;
-  animate: boolean;
-  delay?: number;
-}) {
-  const [n, setN] = useState(0);
-
-  useEffect(() => {
-    if (!animate) return;
-    let raf = 0;
-    let start = 0;
-    const dur = 900;
-    const tick = (ts: number) => {
-      if (!start) start = ts;
-      const p = Math.min(1, (ts - start - delay) / dur);
-      if (p < 0) {
-        raf = requestAnimationFrame(tick);
-        return;
-      }
-      const eased = 1 - Math.pow(1 - p, 3);
-      setN(Math.round(end * eased));
-      if (p < 1) raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [end, animate, delay]);
-
-  return <>{animate ? n : end}</>;
-}
-
-function Streamed({
-  text,
-  animate,
-  startAfter,
-  perWord,
-}: {
-  text: string;
-  animate: boolean;
-  startAfter: number;
-  perWord: number;
-}) {
-  const words = text.split(" ");
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    if (!animate) return;
-    const timers: number[] = [];
-    const startId = window.setTimeout(() => {
-      for (let i = 1; i <= words.length; i++) {
-        timers.push(window.setTimeout(() => setCount(i), i * perWord));
-      }
-    }, startAfter);
-    return () => {
-      window.clearTimeout(startId);
-      timers.forEach((t) => window.clearTimeout(t));
-    };
-  }, [text, animate, startAfter, perWord, words.length]);
-
-  return <>{(animate ? words.slice(0, count) : words).join(" ")}</>;
-}

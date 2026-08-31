@@ -78,12 +78,36 @@
     z-index: -20;
     pointer-events: none;
     background-image:
-      radial-gradient(1px 1px at 12% 22%, rgba(200, 224, 255, 0.7), transparent),
-      radial-gradient(1px 1px at 47% 8%, rgba(170, 205, 255, 0.55), transparent),
-      radial-gradient(1px 1px at 78% 34%, rgba(210, 232, 255, 0.6), transparent),
-      radial-gradient(1px 1px at 88% 74%, rgba(160, 200, 255, 0.5), transparent),
-      radial-gradient(1px 1px at 32% 63%, rgba(200, 224, 255, 0.55), transparent),
-      radial-gradient(1px 1px at 62% 88%, rgba(180, 212, 255, 0.5), transparent),
+      radial-gradient(
+        1px 1px at 12% 22%,
+        rgba(200, 224, 255, 0.7),
+        transparent
+      ),
+      radial-gradient(
+        1px 1px at 47% 8%,
+        rgba(170, 205, 255, 0.55),
+        transparent
+      ),
+      radial-gradient(
+        1px 1px at 78% 34%,
+        rgba(210, 232, 255, 0.6),
+        transparent
+      ),
+      radial-gradient(
+        1px 1px at 88% 74%,
+        rgba(160, 200, 255, 0.5),
+        transparent
+      ),
+      radial-gradient(
+        1px 1px at 32% 63%,
+        rgba(200, 224, 255, 0.55),
+        transparent
+      ),
+      radial-gradient(
+        1px 1px at 62% 88%,
+        rgba(180, 212, 255, 0.5),
+        transparent
+      ),
       radial-gradient(
         1.4px 1.4px at 22% 46%,
         rgba(220, 238, 255, 0.65),
@@ -95,8 +119,15 @@
         transparent
       );
     background-repeat: repeat;
-    background-size: 340px 340px, 340px 340px, 480px 480px, 480px 480px,
-      600px 600px, 600px 600px, 760px 760px, 760px 760px;
+    background-size:
+      340px 340px,
+      340px 340px,
+      480px 480px,
+      480px 480px,
+      600px 600px,
+      600px 600px,
+      760px 760px,
+      760px 760px;
   }
 
   ::selection {
@@ -572,7 +603,8 @@ html[data-welcome] :is(.site-header, .site-footer, [data-hero-copy]) {
 html[data-welcome] body {
   overflow: hidden;
 }
-html[data-welcome]:not([data-welcome="handoff"])[data-welcome-route="page"] main {
+html[data-welcome]:not([data-welcome="handoff"])[data-welcome-route="page"]
+  main {
   opacity: 0;
 }
 /* Everything the welcome held back eases in together (the hero copy
@@ -748,6 +780,117 @@ html[data-welcome]:not([data-welcome="handoff"])[data-welcome-route="page"] main
   }
   .vg-bar {
     transform: none !important;
+  }
+}
+
+/*
+ * Industries — the "who we help" marquee under the hero, plus the few
+ * motions the per-industry scenes need that the vg-* set above doesn't
+ * already cover (a bar wiping to width, a map ping, a stamp landing, a
+ * ticket sliding in). The scenes reuse vg-rise / vg-bar / vg-blink /
+ * vg-spark directly.
+ */
+.ind-marquee-track {
+  animation: ind-marquee 46s linear infinite;
+}
+.ind-marquee-track--rev {
+  animation-direction: reverse;
+  animation-duration: 58s;
+}
+.ind-marquee-row:hover .ind-marquee-track,
+.ind-marquee-row:focus-within .ind-marquee-track {
+  animation-play-state: paused;
+}
+
+.ind-slide {
+  animation: ind-slide 520ms var(--ease-soft) both;
+}
+.ind-fill {
+  transform-origin: left;
+  animation: ind-fill 900ms var(--ease-soft) both;
+}
+.ind-ping {
+  animation: ind-ping 2s ease-out infinite;
+}
+.ind-stamp {
+  animation: ind-stamp 600ms var(--ease-soft) 900ms both;
+}
+
+@keyframes ind-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes ind-slide {
+  from {
+    opacity: 0;
+    transform: translateX(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes ind-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes ind-ping {
+  from {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.6;
+  }
+  to {
+    transform: translate(-50%, -50%) scale(6);
+    opacity: 0;
+  }
+}
+
+@keyframes ind-stamp {
+  from {
+    opacity: 0;
+    transform: rotate(-14deg) scale(1.7);
+  }
+  60% {
+    opacity: 1;
+  }
+  to {
+    opacity: 1;
+    transform: rotate(-14deg) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ind-slide,
+  .ind-fill,
+  .ind-ping,
+  .ind-stamp {
+    animation: none !important;
+  }
+  .ind-fill {
+    transform: none !important;
+  }
+  .ind-marquee-row {
+    display: block;
+    overflow: visible;
+  }
+  .ind-marquee-track {
+    animation: none !important;
+    width: 100%;
+    flex-wrap: wrap;
+  }
+  .ind-marquee-track[aria-hidden="true"] {
+    display: none;
   }
 }
 
