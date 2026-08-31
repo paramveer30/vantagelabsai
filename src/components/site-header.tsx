@@ -22,7 +22,7 @@ export function SiteHeader() {
       <div className="relative mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
         <Link href="/" className="group flex items-center gap-2.5">
           <Image
-            src="/brand/image.png"
+            src="/brand/logo-mark.png"
             alt=""
             width={30}
             height={30}
