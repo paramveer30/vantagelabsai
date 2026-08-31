@@ -950,3 +950,74 @@ html[data-welcome]:not([data-welcome="handoff"])[data-welcome-route="page"]
     transition: none !important;
   }
 }
+
+/* Brand wordmark — the "AI" suffix in the logo blue with a soft glow, so
+   "VantageLabsAI" reads the way the lockup does. */
+.wordmark-ai {
+  color: #4da6ff;
+  text-shadow: 0 0 12px rgba(77, 166, 255, 0.45);
+}
+
+/* Header / footer logo mark — a screen blend drops the baked-in dark
+   badge so only the glowing blue V sits on the page, with a cyan bloom
+   that lifts on hover. */
+.logo-mark {
+  mix-blend-mode: screen;
+  filter: drop-shadow(0 0 7px rgba(77, 166, 255, 0.5))
+    drop-shadow(0 0 2px rgba(122, 228, 255, 0.4));
+  transition: filter var(--dur-fast) var(--ease-soft);
+}
+.group:hover .logo-mark {
+  filter: drop-shadow(0 0 13px rgba(77, 166, 255, 0.78))
+    drop-shadow(0 0 4px rgba(122, 228, 255, 0.55));
+}
+
+/* Site footer — a quiet HUD panel: a hairline top rule that catches the
+   cyan glow, mono headings, and links that light up like the nav. */
+.site-footer {
+  position: relative;
+  border-top: 1px solid var(--border);
+}
+.site-footer::before {
+  content: "";
+  position: absolute;
+  inset: -1px 0 auto 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--glow), transparent);
+  pointer-events: none;
+}
+.footer-heading {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--foreground) 40%, transparent);
+}
+.footer-link {
+  width: fit-content;
+  font-size: 0.85rem;
+  color: var(--muted);
+  transition:
+    color var(--dur-fast) var(--ease-soft),
+    text-shadow var(--dur-fast) var(--ease-soft);
+}
+.footer-link:hover {
+  color: var(--foreground);
+  text-shadow: 0 0 14px var(--glow);
+}
+.footer-cta {
+  width: fit-content;
+  color: var(--accent);
+  transition: text-shadow var(--dur-fast) var(--ease-soft);
+}
+.footer-cta:hover {
+  text-shadow: 0 0 16px var(--glow);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-mark,
+  .footer-link,
+  .footer-cta {
+    transition: none;
+  }
+}
