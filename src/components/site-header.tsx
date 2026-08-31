@@ -3,20 +3,50 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { nav } from "@/lib/site";
 import { Wordmark } from "./wordmark";
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const pathname = usePathname();
+  const lastY = useRef(0);
 
   const isActive = (href: string) =>
     pathname === href || pathname.startsWith(`${href}/`);
 
+  // The scrim behind the bar is translucent, so a bar pinned over
+  // scrolling content reads as an overlap. Slide it out on a downward
+  // scroll and bring it back on any upward scroll or near the top.
+  useEffect(() => {
+    lastY.current = window.scrollY;
+    let frame = 0;
+
+    const update = () => {
+      frame = 0;
+      const y = window.scrollY;
+      const delta = y - lastY.current;
+      if (Math.abs(delta) < 6) return;
+      setHidden(delta > 0 && y > 96);
+      lastY.current = y;
+    };
+
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, []);
+
   return (
     <header
       style={{ viewTransitionName: "site-header" }}
+      data-hidden={hidden && !open ? "true" : undefined}
       className="site-header sticky top-0 z-40"
     >
       <div className="relative mx-auto flex h-16 max-w-6xl items-center justify-between px-6">

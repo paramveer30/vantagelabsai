@@ -432,6 +432,24 @@
 /* Site header — dissolves into the background with a masked blur scrim so
    there's no bar edge; the tab links read as a techy HUD that lights up
    with a cyan glow on hover and on the active route. */
+.site-header {
+  transition:
+    transform var(--dur-base) var(--ease-soft),
+    opacity 700ms var(--ease-soft);
+  will-change: transform;
+}
+/* Set by SiteHeader on a downward scroll: lift the bar clear of the
+   content instead of letting it sit over it. The extra 20px clears the
+   scrim's bleed below the bar. */
+.site-header[data-hidden="true"] {
+  transform: translateY(calc(-100% - 20px));
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-header {
+    transition: opacity 700ms var(--ease-soft);
+  }
+}
+
 .site-header::before {
   content: "";
   position: absolute;
