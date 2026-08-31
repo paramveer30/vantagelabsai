@@ -109,4 +109,24 @@ describe("POST /api/cal/webhook", () => {
     expect(res.status).toBe(200);
     expect(mockSend).toHaveBeenCalledTimes(1);
   });
+
+  it("rejects an unsigned request with 500 in production", async () => {
+    vi.stubEnv("NODE_ENV", "production");
+    vi.stubEnv("CAL_WEBHOOK_SECRET", "");
+
+    const res = await post(bookingCreated, { signature: "not-checked" });
+
+    expect(res.status).toBe(500);
+    expect(mockSend).not.toHaveBeenCalled();
+  });
+
+  it("fails with 500 in production when email is not configured", async () => {
+    vi.stubEnv("NODE_ENV", "production");
+    vi.stubEnv("RESEND_API_KEY", "");
+
+    const res = await post(bookingCreated);
+
+    expect(res.status).toBe(500);
+    expect(mockSend).not.toHaveBeenCalled();
+  });
 });

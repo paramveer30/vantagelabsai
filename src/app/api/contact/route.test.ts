@@ -96,6 +96,16 @@ describe("POST /api/contact", () => {
     expect(mockSend).not.toHaveBeenCalled();
   });
 
+  it("fails with 500 in production when email is not configured", async () => {
+    vi.stubEnv("NODE_ENV", "production");
+    vi.stubEnv("RESEND_API_KEY", "");
+
+    const res = await post(validBody, { ip: "10.7.0.1" });
+
+    expect(res.status).toBe(500);
+    expect(mockSend).not.toHaveBeenCalled();
+  });
+
   it("returns 429 once the per-IP window is exceeded", async () => {
     const ip = "10.5.0.1";
     for (let i = 0; i < 5; i++) {

@@ -33,6 +33,7 @@ function isRateLimited(ip: string) {
 }
 
 export async function POST(req: Request) {
+  const isProduction = process.env.NODE_ENV === "production";
   const ip =
     req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
 
@@ -68,12 +69,18 @@ export async function POST(req: Request) {
   const submission = { name, email, company, message };
 
   const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    console.warn(
-      "contact: email not configured; set RESEND_API_KEY to send notifications",
-    );
-    // Log the whole submission so it can be recovered from server logs.
-    console.info("contact submission", submission);
+  const from = process.env.CONTACT_FROM_EMAIL;
+  const to = process.env.CONTACT_TO_EMAIL;
+
+  if (!apiKey || !from || !to) {
+    // In production a missing config means we'd silently drop a real lead, so
+    // fail loudly instead. In dev the submission is logged so it isn't lost.
+    if (isProduction) {
+      console.error("contact: email is not configured; cannot deliver submission");
+      return NextResponse.json({ error: genericError }, { status: 500 });
+    }
+    console.warn("contact: email not configured; logging the submission instead");
+    console.info("contact submission (dev)", submission);
     return NextResponse.json({ ok: true });
   }
 
@@ -82,34 +89,30 @@ export async function POST(req: Request) {
 
   try {
     const { error } = await resend.emails.send({
-      from: process.env.CONTACT_FROM_EMAIL ?? "",
-      to: process.env.CONTACT_TO_EMAIL ?? "",
+      from,
+      to,
       replyTo: email,
       subject: notification.subject,
       text: notification.text,
     });
 
     if (error) {
-      console.error("contact: Resend returned an error", error, submission);
+      console.error("contact: Resend returned an error", error);
       return NextResponse.json({ error: genericError }, { status: 502 });
     }
   } catch (err) {
-    console.error(
-      "contact: failed to send notification email",
-      err,
-      submission,
-    );
+    console.error("contact: failed to send notification email", err);
     return NextResponse.json({ error: genericError }, { status: 502 });
   }
 
-  console.info("contact submission sent", { name, email });
+  console.info("contact: notification sent");
 
   // The team already has the message; a failed auto-reply must not fail the
   // request, so it gets its own try/catch and the response stays 200.
   try {
     const autoReply = buildAutoReply({ name });
     const { error } = await resend.emails.send({
-      from: process.env.CONTACT_FROM_EMAIL ?? "",
+      from,
       to: email,
       subject: autoReply.subject,
       text: autoReply.text,

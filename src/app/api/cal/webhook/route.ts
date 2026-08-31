@@ -37,6 +37,8 @@ type CalPayload = {
 };
 
 export async function POST(req: Request) {
+  const isProduction = process.env.NODE_ENV === "production";
+
   // Raw text, not req.json(); the signature is over the exact bytes sent.
   const raw = await req.text();
 
@@ -47,9 +49,13 @@ export async function POST(req: Request) {
       console.warn("cal webhook: signature mismatch");
       return NextResponse.json({ error: "Invalid signature." }, { status: 401 });
     }
+  } else if (isProduction) {
+    // Without the secret this is an open, unauthenticated email trigger.
+    console.error("cal webhook: CAL_WEBHOOK_SECRET not set; rejecting request");
+    return NextResponse.json({ error: genericError }, { status: 500 });
   } else {
     console.warn(
-      "cal webhook: CAL_WEBHOOK_SECRET not set; skipping signature check",
+      "cal webhook: CAL_WEBHOOK_SECRET not set; skipping signature check (dev)",
     );
   }
 
@@ -83,11 +89,16 @@ export async function POST(req: Request) {
   };
 
   const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    console.warn(
-      "cal webhook: email not configured; set RESEND_API_KEY to send notifications",
-    );
-    console.info("cal booking", event);
+  const from = process.env.CONTACT_FROM_EMAIL;
+  const to = process.env.CONTACT_TO_EMAIL;
+
+  if (!apiKey || !from || !to) {
+    if (isProduction) {
+      console.error("cal webhook: email is not configured; cannot notify the team");
+      return NextResponse.json({ error: genericError }, { status: 500 });
+    }
+    console.warn("cal webhook: email not configured; logging the booking instead");
+    console.info("cal booking (dev)", { triggerEvent, uid: event.uid });
     return NextResponse.json({ ok: true });
   }
 
@@ -95,19 +106,19 @@ export async function POST(req: Request) {
 
   try {
     const { error } = await new Resend(apiKey).emails.send({
-      from: process.env.CONTACT_FROM_EMAIL ?? "",
-      to: process.env.CONTACT_TO_EMAIL ?? "",
+      from,
+      to,
       replyTo: event.attendeeEmail || undefined,
       subject,
       text,
     });
 
     if (error) {
-      console.error("cal webhook: Resend returned an error", error, event);
+      console.error("cal webhook: Resend returned an error", error);
       return NextResponse.json({ error: genericError }, { status: 502 });
     }
   } catch (err) {
-    console.error("cal webhook: failed to send notification email", err, event);
+    console.error("cal webhook: failed to send notification email", err);
     return NextResponse.json({ error: genericError }, { status: 502 });
   }
 
