@@ -13,7 +13,7 @@ export function PageHero({
     <Container className="relative isolate py-28 md:py-36">
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 -top-28 -z-10 mx-auto h-[440px] max-w-[1000px] blur-[130px]"
+        className="pointer-events-none absolute inset-x-0 -top-28 -z-10 mx-auto h-[300px] max-w-[1000px] blur-[80px] md:h-[440px] md:blur-[130px]"
         style={{
           background:
             "radial-gradient(58% 58% at 50% 40%, rgba(58,208,255,0.20), rgba(47,107,255,0.10) 46%, transparent 74%)",

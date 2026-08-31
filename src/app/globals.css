@@ -66,6 +66,10 @@
       ),
       var(--background);
     color: var(--foreground);
+    /* Backstop against a stray wide child scrolling the page sideways on a
+       phone. `clip` (not `hidden`) so it never becomes a scroll container
+       and the sticky header keeps working. */
+    overflow-x: clip;
   }
 
   /* A static starfield that's painted from the very first frame, so the
@@ -212,7 +216,7 @@
     }
   }
 
-  @media (prefers-reduced-motion: reduce) {
+  @media (prefers-reduced-motion: reduce), (max-width: 768px) {
     .wordmark {
       animation: none;
     }
@@ -272,15 +276,17 @@
 }
 
 @layer utilities {
-  /* Scroll-triggered entrance, toggled by the Reveal component. */
-  .reveal-on-scroll {
+  /* Scroll-triggered entrance, toggled by the Reveal component. Scoped to
+     html.js (set before first paint in layout.tsx) so the content is never
+     hidden when JS is absent or still loading. */
+  html.js .reveal-on-scroll {
     opacity: 0;
     transform: translateY(var(--reveal-shift));
     transition:
       opacity var(--dur-reveal) var(--ease-soft),
       transform var(--dur-reveal) var(--ease-soft);
   }
-  .reveal-on-scroll.is-visible {
+  html.js .reveal-on-scroll.is-visible {
     opacity: 1;
     transform: none;
   }
@@ -310,7 +316,7 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .reveal-on-scroll {
+    html.js .reveal-on-scroll {
       opacity: 1;
       transform: none;
       transition: none;
@@ -444,9 +450,17 @@
   );
   -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent);
   mask-image: linear-gradient(to bottom, #000 60%, transparent);
-  backdrop-filter: blur(7px);
-  -webkit-backdrop-filter: blur(7px);
   pointer-events: none;
+}
+
+/* Real-time backdrop blur is one of the most expensive things a mobile GPU
+   can do on a sticky element during scroll, so keep it to pointer/desktop
+   widths; the gradient scrim alone carries the effect on phones. */
+@media (min-width: 769px) {
+  .site-header::before {
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
+  }
 }
 
 .nav-link {
@@ -576,7 +590,9 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
+/* On phones the crossfade has to rasterise the whole <main>; skip it and
+   navigate instantly rather than stutter. */
+@media (prefers-reduced-motion: reduce), (max-width: 768px) {
   ::view-transition-old(*),
   ::view-transition-new(*),
   ::view-transition-group(*) {
@@ -594,10 +610,10 @@
 /* Hidden while the greeting types; on "handoff" the hold is released so
    the chrome eases in alongside the V forming. */
 html[data-welcome]:not([data-welcome="handoff"])
-  :is(.site-header, .site-footer, [data-hero-copy]) {
+  :is(.site-header, .site-footer, [data-hero-copy], .home-static) {
   opacity: 0 !important;
 }
-html[data-welcome] :is(.site-header, .site-footer, [data-hero-copy]) {
+html[data-welcome] :is(.site-header, .site-footer, [data-hero-copy], .home-static) {
   pointer-events: none;
 }
 html[data-welcome] body {
@@ -609,7 +625,7 @@ html[data-welcome]:not([data-welcome="handoff"])[data-welcome-route="page"]
 }
 /* Everything the welcome held back eases in together (the hero copy
    carries its own longer transition + slide, in home-scene). */
-:where(.site-header, .site-footer, [data-hero-copy], main) {
+:where(.site-header, .site-footer, [data-hero-copy], .home-static, main) {
   transition: opacity 700ms var(--ease-soft);
 }
 
@@ -767,7 +783,7 @@ html[data-welcome]:not([data-welcome="handoff"])[data-welcome-route="page"]
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
+@media (prefers-reduced-motion: reduce), (max-width: 768px) {
   .vg-frame,
   .vg-rise,
   .vg-bar,
@@ -870,7 +886,7 @@ html[data-welcome]:not([data-welcome="handoff"])[data-welcome-route="page"]
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
+@media (prefers-reduced-motion: reduce), (max-width: 768px) {
   .ind-slide,
   .ind-fill,
   .ind-ping,

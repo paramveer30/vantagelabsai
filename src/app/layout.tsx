@@ -7,11 +7,14 @@ import { WelcomeIntro } from "@/components/welcome-intro";
 import { site } from "@/lib/site";
 import "./globals.css";
 
-// Runs while the HTML is parsing, before anything paints: arm the
-// first-load welcome so the page chrome is hidden from the first frame.
-// Skipped where there's no particle V to form (reduced motion, narrow
-// viewports); WelcomeIntro clears the attributes when the sequence ends.
+// Runs while the HTML is parsing, before anything paints. Marks the
+// document as JS-capable (so CSS can keep scroll-reveal content visible
+// when JS is absent), then arms the first-load welcome so the page chrome
+// is hidden from the first frame. The welcome is skipped where there's no
+// particle V to form (reduced motion, narrow viewports); WelcomeIntro
+// clears the attributes when the sequence ends.
 const welcomeGuard = `(function(){try{var d=document.documentElement;
+d.classList.add('js');
 if(matchMedia('(prefers-reduced-motion: reduce)').matches||matchMedia('(max-width: 768px)').matches)return;
 d.setAttribute('data-welcome','pending');
 d.setAttribute('data-welcome-route',location.pathname==='/'?'home':'page');
