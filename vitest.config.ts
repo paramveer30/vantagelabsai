@@ -5,4 +5,8 @@ export default defineConfig({
   resolve: {
     alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) },
   },
+  test: {
+    // Each .claude worktree carries its own copy of the suite; only run this one.
+    exclude: ["**/node_modules/**", "**/.claude/**"],
+  },
 });

@@ -53,6 +53,7 @@ describe("POST /api/contact", () => {
       to: "ada@example.com",
       subject: "Thanks for reaching out to VantageLabsAI",
     });
+    expect(mockSend.mock.calls[1][0].text).toMatch(/few days/i);
   });
 
   it("still returns ok when the auto-reply fails to send", async () => {
