@@ -8,10 +8,12 @@ export function SiteThumbnail({
   src,
   alt,
   label,
+  priority = false,
 }: {
   src: string;
   alt: string;
   label: string;
+  priority?: boolean;
 }) {
   return (
     <div className="vg-frame absolute inset-0 overflow-hidden rounded-xl border border-border bg-surface-2">
@@ -32,6 +34,7 @@ export function SiteThumbnail({
           src={src}
           alt={alt}
           fill
+          priority={priority}
           sizes="(max-width: 1024px) 90vw, 30vw"
           className="object-cover object-top"
         />

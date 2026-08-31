@@ -46,6 +46,7 @@ export default function WorkPage() {
                       src={project.image}
                       alt={project.imageAlt}
                       label={domain(project.url)}
+                      priority={i === 0}
                     />
                   </a>
 
