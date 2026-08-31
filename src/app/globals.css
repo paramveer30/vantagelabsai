@@ -152,6 +152,41 @@
     color: transparent;
   }
 
+  /* Oversized page wordmark — the brand gradient with a slow sheen
+     drifting across it and a soft cyan bloom underneath. The sheen is
+     decorative; reduced-motion holds it on a static gradient. */
+  .wordmark {
+    background: linear-gradient(
+      100deg,
+      var(--foreground) 0%,
+      var(--accent) 40%,
+      var(--brand) 58%,
+      var(--foreground) 100%
+    );
+    background-size: 220% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 8px 44px rgba(58, 208, 255, 0.22));
+    animation: wordmark-sheen 8s var(--ease-soft) infinite;
+  }
+
+  @keyframes wordmark-sheen {
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .wordmark {
+      animation: none;
+    }
+  }
+
   .glass {
     background: color-mix(in oklab, var(--surface) 72%, transparent);
     backdrop-filter: blur(12px);
