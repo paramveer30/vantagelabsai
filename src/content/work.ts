@@ -24,7 +24,7 @@ export const projects: Project[] = [
     url: "https://letmeknock.vercel.app/",
     category: "Student housing marketplace",
     year: "2025",
-    image: "/work/letmeknock.jpg",
+    image: "/work/LetMeKock.png",
     imageAlt:
       "LetMeKnock listings page — a filter sidebar beside a grid of student rentals",
     summary:
@@ -39,7 +39,7 @@ export const projects: Project[] = [
     url: "https://www.medicine4youth.ca/",
     category: "Non-profit brand & platform",
     year: "2025",
-    image: "/work/medicine4youth.jpg",
+    image: "/work/Med4youth.png",
     imageAlt: "Medicine4Youth homepage hero",
     summary:
       "The national home for a student-led medical-education non-profit and its ten specialty branches.",
@@ -53,7 +53,7 @@ export const projects: Project[] = [
     url: "https://www.avneetnijjer.ca/",
     category: "Portfolio + AI twin",
     year: "2025",
-    image: "/work/avneet-nijjer.jpg",
+    image: "/work/AVNEET.png",
     imageAlt: "Avneet Nijjer portfolio homepage hero",
     summary:
       'An engineer’s portfolio with a conversational "AI twin" that answers questions about his work in his voice.',
