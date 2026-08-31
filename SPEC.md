@@ -24,6 +24,11 @@ questions about VantageLabsAI and steers them toward booking a call. Being
 built from scratch (custom UI, streaming, RAG, backend) is itself the
 strongest portfolio signal on the site.
 
+> **Status (initial launch):** the marketing site, the contact form, and
+> the Cal.com booking webhook are built and shipping. The custom chatbot
+> described in sections 1 and 4 is specified but not yet implemented. It is
+> the next milestone, not part of v1.
+
 ---
 
 ## 2. Tech Stack & Architecture
@@ -32,11 +37,11 @@ strongest portfolio signal on the site.
 |---|---|---|
 | Framework | Next.js (App Router), TypeScript strict mode | Static marketing pages + API route for the chatbot in one project; good SEO via SSG/SSR |
 | Styling | Tailwind CSS | Fast to build a consistent, polished UI |
-| 3D / interactive | React Three Fiber + drei | React-idiomatic Three.js; isolated in a few lazy-loaded components so it never blocks core page load or SEO |
+| 3D / interactive | React Three Fiber | React-idiomatic Three.js; isolated in a few lazy-loaded components so it never blocks core page load or SEO |
 | Chatbot backend | Next.js API route (`/api/chat`), streaming (SSE) | Custom-built, not a third-party widget |
 | RAG | Site content chunked + embedded at build time; lightweight vector similarity search (in-memory/JSON store) | No heavyweight infra needed at this content scale |
 | LLM | Claude API (Anthropic SDK), small/cheap model by default (Haiku-tier), model name in one config constant | Keeps cost near-zero; trivial to upgrade later |
-| Booking | Calendly (free tier), embedded | Free, professional, widely recognized |
+| Booking | Cal.com (free tier), embedded | Free, professional, open-source scheduling with a webhook for booking alerts |
 | Hosting | Vercel (free tier) | Pairs naturally with Next.js |
 | Email notifications | Transactional email provider free tier (e.g. Resend) | Notifies founders on bookings / chatbot-captured leads |
 | CMS | None — content lives in code (TS/Markdown content files) | Pages are static; founders are comfortable editing via git |
@@ -60,7 +65,7 @@ strongest portfolio signal on the site.
 - **Case Studies / Portfolio** — scaffolded now with 1-2 placeholder slots
   ("Coming soon"). Two real examples exist but are deferred; the page is
   structurally ready to receive them later without a rebuild.
-- **Contact** — Calendly embed + fallback simple form; both routes notify
+- **Contact** — Cal.com embed + fallback simple form; both routes notify
   founders by email.
 - No dedicated Team/About-the-founders page (explicitly excluded from v1).
 - The chatbot is a persistent site-wide widget, not a separate page.
