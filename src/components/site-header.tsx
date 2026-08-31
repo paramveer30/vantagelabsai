@@ -4,7 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { nav, site } from "@/lib/site";
+import { nav } from "@/lib/site";
+import { Wordmark } from "./wordmark";
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
@@ -25,12 +26,10 @@ export function SiteHeader() {
             alt=""
             width={30}
             height={30}
-            className="rounded-md"
+            className="logo-mark"
             priority
           />
-          <span className="display text-[1.05rem] font-semibold tracking-tight text-foreground/90 transition-colors group-hover:text-foreground">
-            {site.name}
-          </span>
+          <Wordmark className="display text-[1.05rem] font-semibold tracking-tight text-foreground/90 transition-colors group-hover:text-foreground" />
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
