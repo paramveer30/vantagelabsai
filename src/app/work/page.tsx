@@ -5,7 +5,6 @@ import { PageHero } from "@/components/page-hero";
 import { Reveal } from "@/components/reveal";
 import { SiteThumbnail } from "@/components/site-thumbnail";
 import { projects } from "@/content/work";
-import { testimonials } from "@/content/testimonials";
 
 export const metadata: Metadata = {
   title: "Work",
@@ -16,30 +15,6 @@ export const metadata: Metadata = {
 // medicine4youth.ca -> medicine4youth.ca (drops protocol + www)
 function domain(url: string): string {
   return new URL(url).host.replace(/^www\./, "");
-}
-
-function Stars({ rating }: { rating: number }) {
-  return (
-    <span
-      role="img"
-      aria-label={`${rating} out of 5 stars`}
-      className="flex gap-0.5"
-    >
-      {[0, 1, 2, 3, 4].map((i) => (
-        <svg
-          key={i}
-          viewBox="0 0 20 20"
-          aria-hidden
-          className={`h-4 w-4 ${i < rating ? "text-accent" : "text-white/15"}`}
-        >
-          <path
-            fill="currentColor"
-            d="M10 1.5l2.6 5.27 5.82.85-4.21 4.1.99 5.79L10 14.77l-5.2 2.73.99-5.79L1.58 7.62l5.82-.85z"
-          />
-        </svg>
-      ))}
-    </span>
-  );
 }
 
 export default function WorkPage() {
@@ -123,44 +98,6 @@ export default function WorkPage() {
             </Reveal>
           );
         })}
-      </Container>
-
-      <Container className="pb-8">
-        <div className="flex items-center gap-3">
-          <span className="font-mono text-sm text-accent">
-            {String(projects.length + 1).padStart(2, "0")}
-          </span>
-          <span className="h-px flex-1 bg-border" />
-        </div>
-
-        <span className="mt-4 inline-flex items-center gap-2 rounded-full border border-border-strong bg-surface/60 px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-muted">
-          Example layout · placeholder
-        </span>
-        <h2 className="display text-gradient mt-4 text-3xl font-semibold md:text-4xl">
-          Client testimonials
-        </h2>
-        <p className="mt-3 max-w-xl text-base text-muted">
-          This section is a placeholder. The cards below show the layout with
-          example copy; they are not real reviews. Genuine client
-          testimonials will land here as projects wrap.
-        </p>
-
-        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {testimonials.map((testimonial, i) => (
-            <Reveal key={i} index={i}>
-              <figure className="hud card-glow relative flex h-full flex-col rounded-2xl border border-border bg-surface/60 p-6">
-                <Stars rating={testimonial.rating} />
-                <blockquote className="mt-4 flex-1 text-sm leading-relaxed text-foreground/90">
-                  &ldquo;{testimonial.quote}&rdquo;
-                </blockquote>
-                <figcaption className="mt-4 text-xs text-muted">
-                  Client name, role{" "}
-                  <span className="italic text-muted/70">(sample)</span>
-                </figcaption>
-              </figure>
-            </Reveal>
-          ))}
-        </div>
       </Container>
 
       <Container className="pb-24">
