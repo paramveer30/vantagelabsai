@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { ServiceVariant } from "@/content/services";
-import { usePrefersReducedMotion } from "@/lib/media";
+import { useMediaQuery, usePrefersReducedMotion } from "@/lib/media";
 import { CountUp, Streamed, VignetteFrame } from "@/components/vignette-kit";
 
 // A small animated mock of what each service actually delivers: a
@@ -22,6 +22,8 @@ const LABELS: Record<ServiceVariant, string> = {
 
 export function ServiceVignette({ variant }: { variant: ServiceVariant }) {
   const reduced = usePrefersReducedMotion();
+  // Phones get the finished state with no loop, like the process timeline.
+  const small = useMediaQuery("(max-width: 768px)");
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
   const [cycle, setCycle] = useState(0);
@@ -41,12 +43,12 @@ export function ServiceVignette({ variant }: { variant: ServiceVariant }) {
   }, []);
 
   useEffect(() => {
-    if (reduced || !inView) return;
+    if (reduced || small || !inView) return;
     const id = window.setInterval(() => setCycle((c) => c + 1), CYCLE_MS);
     return () => window.clearInterval(id);
-  }, [reduced, inView]);
+  }, [reduced, small, inView]);
 
-  const animate = !reduced && inView;
+  const animate = !reduced && !small && inView;
 
   return (
     <VignetteFrame ref={ref} label={LABELS[variant]}>

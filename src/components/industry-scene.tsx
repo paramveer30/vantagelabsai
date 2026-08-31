@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, type ReactElement } from "react";
 import type { IndustryVariant } from "@/content/industries";
-import { usePrefersReducedMotion } from "@/lib/media";
+import { useMediaQuery, usePrefersReducedMotion } from "@/lib/media";
 import {
   Bubble,
   Check,
@@ -36,6 +36,10 @@ const LABELS: Record<IndustryVariant, string> = {
 
 export function IndustryScene({ variant }: { variant: IndustryVariant }) {
   const reduced = usePrefersReducedMotion();
+  // On phones the mock renders its finished state, no loop, matching the
+  // process timeline. Several of these sit on screen at once in the
+  // single-column layout.
+  const small = useMediaQuery("(max-width: 768px)");
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
   const [cycle, setCycle] = useState(0);
@@ -55,12 +59,12 @@ export function IndustryScene({ variant }: { variant: IndustryVariant }) {
   }, []);
 
   useEffect(() => {
-    if (reduced || !inView) return;
+    if (reduced || small || !inView) return;
     const id = window.setInterval(() => setCycle((c) => c + 1), CYCLE_MS);
     return () => window.clearInterval(id);
-  }, [reduced, inView]);
+  }, [reduced, small, inView]);
 
-  const animate = !reduced && inView;
+  const animate = !reduced && !small && inView;
   const Scene = SCENES[variant];
 
   return (
