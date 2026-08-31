@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Sibling worktrees keep their own checkout and build output — never ours to lint.
+    ".claude/**",
+    "**/.next/**",
   ]),
 ]);
 
