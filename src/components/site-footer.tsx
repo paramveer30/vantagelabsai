@@ -13,7 +13,7 @@ export function SiteFooter() {
           <div className="max-w-xs">
             <Link href="/" className="group inline-flex items-center gap-2.5">
               <Image
-                src="/brand/logo-mark.png"
+                src="/brand/image.png"
                 alt=""
                 width={28}
                 height={28}
