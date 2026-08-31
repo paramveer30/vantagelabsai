@@ -177,15 +177,17 @@ export function ParkourFigure({
         sh.style.opacity = `${0.4 * gsh}`;
       }
 
-      // limbs: run cycle blended toward an air dangle
+      // limbs: run cycle blended toward an airborne pose. Arms stay a low
+      // outward sway even mid-move; a big raise swings the hands up across
+      // the torso and reads as a glitch.
       if (limbEls.length === 4) {
         const s = Math.sin(stride) * 34;
         const o = Math.sin(stride + Math.PI) * 34;
         const set = (el: SVGGElement, run: number, air: number) => {
           el.style.transform = `rotate(${mix(run, air, airBlend)}deg)`;
         };
-        set(limbEls[0], s, 150);
-        set(limbEls[1], o, 118);
+        set(limbEls[0], s * 0.6, -22);
+        set(limbEls[1], o * 0.6, 22);
         set(limbEls[2], (o / 34) * 40, 12);
         set(limbEls[3], (s / 34) * 40, -16);
       }
