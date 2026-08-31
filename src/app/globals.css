@@ -750,3 +750,60 @@ html[data-welcome]:not([data-welcome="handoff"])[data-welcome-route="page"] main
     transform: none !important;
   }
 }
+
+/*
+ * Process — the animated build timeline on /process (see
+ * process-timeline.tsx). The rail's progress line is driven from the
+ * component with an inline transform; these two cover the forward sheen
+ * travelling along the rail and the halo on the active node. The build
+ * mock inside reuses the vg-* keyframes above.
+ */
+.pr-rail-fill {
+  transform-origin: left;
+  transition: transform var(--dur-slow) var(--ease-soft);
+}
+
+.pr-flow {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(122, 228, 255, 0.16) 45%,
+    rgba(122, 228, 255, 0.16) 55%,
+    transparent 100%
+  );
+  background-size: 220% 100%;
+  animation: pr-flow 2.6s linear infinite;
+}
+
+.pr-pulse {
+  animation: pr-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes pr-flow {
+  from {
+    background-position: 140% 50%;
+  }
+  to {
+    background-position: -40% 50%;
+  }
+}
+
+@keyframes pr-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(58, 208, 255, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(58, 208, 255, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pr-flow,
+  .pr-pulse {
+    animation: none !important;
+  }
+  .pr-rail-fill {
+    transition: none !important;
+  }
+}
