@@ -104,7 +104,7 @@ function useParticleData() {
 
     sample(vGeometry(), base);
     // The monitor target isn't touched until the user scrolls, so keep it
-    // off the first-paint critical path — Cloud samples it when idle.
+    // off the first-paint critical path; Cloud samples it when idle.
     const computer = base.slice();
 
     const c = new THREE.Color();
@@ -135,7 +135,7 @@ function useParticleData() {
       color.set([c.r, c.g, c.b], i * 3);
       seed[i] = hashUnit(i * 11.3) * 6.283;
 
-      // A loose cloud filling the frame — where each particle drifts as
+      // A loose cloud filling the frame, where each particle drifts as
       // part of the background before the welcome pulls it in. Kept fairly
       // tight so every particle has a similar, short trip into the V and
       // the implosion reads as one motion rather than trailing stragglers.
@@ -396,7 +396,7 @@ function Cloud({
               * mix(0.45, 1.0, uIntro);
             vec4 clip = projectionMatrix * mv;
 
-            // Part the field around the cursor — strong on the loose hero
+            // Part the field around the cursor: strong on the loose hero
             // V, gentle once the monitor has formed so it stays readable.
             // Measure the gap in aspect-corrected space so the opening is
             // round, not an ellipse that stretches across a wide screen.
@@ -415,7 +415,7 @@ function Cloud({
 
             // Impact where the parkour figure lands on the bezel: an
             // expanding shock ring shoves particles outward as its front
-            // passes, trailed by a short decaying shiver — an actual hit,
+            // passes, trailed by a short decaying shiver, an actual hit,
             // not a vibrating blob.
             if (uHitAge >= 0.0 && uIntro >= 1.0) {
               vec2 hv = (sp - uHitPos) * vec2(uAspect, 1.0);

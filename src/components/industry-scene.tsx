@@ -14,7 +14,7 @@ import {
 } from "@/components/vignette-kit";
 
 // A small animated mock of the kind of software we'd build for each
-// industry — a kitchen display filling with tickets, a stock list
+// industry: a kitchen display filling with tickets, a stock list
 // catching a low run, a dispatch board with a crew on the way. DOM + SVG
 // + CSS so it stays sharp at any size; keyframes live in globals.css
 // under "Services vignettes" (vg-*) and "Industries" (ind-*). Under
@@ -105,7 +105,7 @@ function FillBar({
 }
 
 /* -------------------------------------------------------------------- */
-/* restaurants — a kitchen display filling with tickets                */
+/* restaurants · a kitchen display filling with tickets                */
 /* -------------------------------------------------------------------- */
 
 const TICKETS = [
@@ -163,7 +163,7 @@ function RestaurantsScene({ animate }: SceneProps) {
 }
 
 /* -------------------------------------------------------------------- */
-/* retail — a stock list catching a low run                            */
+/* retail · a stock list catching a low run                            */
 /* -------------------------------------------------------------------- */
 
 const STOCK = [
@@ -225,7 +225,7 @@ function RetailScene({ animate }: SceneProps) {
       >
         <Check className="h-2.5 w-2.5" />
         <span className="font-mono text-foreground/70">
-          Reorder drafted — 1 item low
+          Reorder drafted, 1 item low
         </span>
       </div>
     </div>
@@ -233,7 +233,7 @@ function RetailScene({ animate }: SceneProps) {
 }
 
 /* -------------------------------------------------------------------- */
-/* healthcare — a day's schedule filling, intake collected up front    */
+/* healthcare · a day's schedule filling, intake collected up front    */
 /* -------------------------------------------------------------------- */
 
 const SLOTS = [
@@ -268,7 +268,7 @@ function HealthcareScene({ animate }: SceneProps) {
 
       <div className="flex min-w-0 flex-1 flex-col gap-2">
         <span className="font-mono text-[9px] uppercase tracking-wider text-muted">
-          Intake — J. Rivera
+          Intake: J. Rivera
         </span>
         <div className="flex flex-1 flex-col justify-around">
           {INTAKE.map((label, i) => (
@@ -302,10 +302,10 @@ function HealthcareScene({ animate }: SceneProps) {
 }
 
 /* -------------------------------------------------------------------- */
-/* veterinary — one record, and an owner who confirms                  */
+/* veterinary · one record, and an owner who confirms                  */
 /* -------------------------------------------------------------------- */
 
-const VET_SMS = "Bella's checkup is tomorrow at 10:00 — reply Y to confirm.";
+const VET_SMS = "Bella's checkup is tomorrow at 10:00. Reply Y to confirm.";
 const VET_VITALS = [
   ["Weight", "28.4 kg"],
   ["Last visit", "Mar 2"],
@@ -366,7 +366,7 @@ function VeterinaryScene({ animate }: SceneProps) {
 }
 
 /* -------------------------------------------------------------------- */
-/* professional — enquiry to paid invoice                              */
+/* professional · enquiry to paid invoice                              */
 /* -------------------------------------------------------------------- */
 
 const INVOICES = [
@@ -421,7 +421,7 @@ function ProfessionalScene({ animate }: SceneProps) {
 }
 
 /* -------------------------------------------------------------------- */
-/* trades — the right crew, on the way                                 */
+/* trades · the right crew, on the way                                 */
 /* -------------------------------------------------------------------- */
 
 const JOBS = [
@@ -470,7 +470,7 @@ function TradesScene({ animate }: SceneProps) {
             }`}
           />
           <span className="font-mono text-foreground/70">
-            Crew 2 — on the way
+            Crew 2 is on the way
           </span>
         </div>
       </div>
@@ -479,7 +479,7 @@ function TradesScene({ animate }: SceneProps) {
 }
 
 /* -------------------------------------------------------------------- */
-/* fitness — full classes, memberships on autopilot                    */
+/* fitness · full classes, memberships on autopilot                    */
 /* -------------------------------------------------------------------- */
 
 const GRID = Array.from({ length: 20 }, (_, i) => i);
@@ -519,7 +519,7 @@ function FitnessScene({ animate }: SceneProps) {
           }`}
         />
         <span className="font-mono text-foreground/70">
-          Spin 6pm — full, 3 on waitlist
+          Spin 6pm: full, 3 on waitlist
         </span>
       </div>
     </div>
@@ -527,7 +527,7 @@ function FitnessScene({ animate }: SceneProps) {
 }
 
 /* -------------------------------------------------------------------- */
-/* nonprofits — more raised, less overhead                             */
+/* nonprofits · more raised, less overhead                             */
 /* -------------------------------------------------------------------- */
 
 const DONORS = [
@@ -579,7 +579,7 @@ function NonprofitsScene({ animate }: SceneProps) {
 }
 
 /* -------------------------------------------------------------------- */
-/* startups — commits in, usage up, shipped                            */
+/* startups · commits in, usage up, shipped                            */
 /* -------------------------------------------------------------------- */
 
 const COMMITS = [

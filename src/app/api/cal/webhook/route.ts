@@ -37,7 +37,7 @@ type CalPayload = {
 };
 
 export async function POST(req: Request) {
-  // Raw text, not req.json() — the signature is over the exact bytes sent.
+  // Raw text, not req.json(); the signature is over the exact bytes sent.
   const raw = await req.text();
 
   const secret = process.env.CAL_WEBHOOK_SECRET;
@@ -49,7 +49,7 @@ export async function POST(req: Request) {
     }
   } else {
     console.warn(
-      "cal webhook: CAL_WEBHOOK_SECRET not set — skipping signature check",
+      "cal webhook: CAL_WEBHOOK_SECRET not set; skipping signature check",
     );
   }
 
@@ -85,7 +85,7 @@ export async function POST(req: Request) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
     console.warn(
-      "cal webhook: email not configured — set RESEND_API_KEY to send notifications",
+      "cal webhook: email not configured; set RESEND_API_KEY to send notifications",
     );
     console.info("cal booking", event);
     return NextResponse.json({ ok: true });

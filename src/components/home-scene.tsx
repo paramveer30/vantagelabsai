@@ -17,7 +17,7 @@ const VCloud = dynamic(() => import("@/components/three/v-cloud"), {
 
 const headline = "We build the software your business is missing.";
 const intro =
-  "A small engineering team that designs, builds, and maintains custom software and AI tools — for local businesses and technical founders alike.";
+  "A small engineering team that designs, builds, and maintains custom software and AI tools for local businesses and technical founders alike.";
 
 // Scroll-progress easing, all in 0..1 runway units.
 const MAX_DT = 0.05; // clamp a long frame so a stalled tab doesn't lurch
@@ -103,7 +103,7 @@ export function HomeScene() {
             : 0;
 
       // Ease toward the scroll position, framerate-independent, so a fast
-      // fling still plays smoothly — but progress stays tied to scroll, so
+      // fling still plays smoothly, but progress stays tied to scroll, so
       // one uninterrupted scroll runs the whole sequence to the bottom.
       const cur = progressRef.current;
       const next = cur + (target - cur) * (1 - Math.exp(-dt * EASE_RATE));

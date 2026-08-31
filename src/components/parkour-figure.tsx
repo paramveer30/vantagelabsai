@@ -9,7 +9,7 @@ type Box = { x0: number; y0: number; x1: number; y1: number };
 const SCALE = 1.7;
 const FOOT = 14 * SCALE; // torso centre → feet
 const CR = 12 * SCALE; // containment radius
-const GRAVITY = 640; // px/s² — gentle; the cursor leash does the work
+const GRAVITY = 640; // px/s², gentle; the cursor leash does the work
 const LEASH_K = 155;
 const LEASH_C = 23;
 
@@ -218,7 +218,7 @@ export function ParkourFigure({
           {/* antenna */}
           <line x1="12" y1="2.2" x2="12" y2="0.9" strokeWidth="1.3" />
           <circle cx="12" cy="0.7" r="0.95" fill="currentColor" stroke="none" />
-          {/* head — clean rounded chassis with a visor and two eyes */}
+          {/* head: clean rounded chassis with a visor and two eyes */}
           <rect x="7.4" y="2.2" width="9.2" height="7.2" rx="2.1" strokeWidth="1.7" />
           <rect x="9" y="4.2" width="6" height="2.7" rx="1.35" fill="currentColor" stroke="none" opacity="0.22" />
           <circle cx="10.5" cy="5.55" r="0.72" fill="currentColor" stroke="none" />
@@ -230,7 +230,7 @@ export function ParkourFigure({
           <circle className="pk-core" cx="12" cy="14" r="1.85" fill="currentColor" stroke="none" />
           <line x1="9.6" y1="17" x2="14.4" y2="17" strokeWidth="1" opacity="0.45" />
           <rect x="8.6" y="19" width="6.8" height="2.1" rx="0.9" fill="currentColor" stroke="none" opacity="0.9" />
-          {/* limbs — panelled arms then legs; each group's bbox top-centre
+          {/* limbs: panelled arms then legs; each group's bbox top-centre
               sits on its shoulder / hip so the CSS pivot lands right */}
           <g className="limb">
             <rect x="6.5" y="11" width="2" height="7.1" rx="1" />

@@ -10,7 +10,7 @@ import { testimonials } from "@/content/testimonials";
 export const metadata: Metadata = {
   title: "Work",
   description:
-    "A look at what VantageLabsAI has shipped — live products designed, built, and launched end to end.",
+    "A look at what VantageLabsAI has shipped: live products designed, built, and launched end to end.",
 };
 
 // medicine4youth.ca -> medicine4youth.ca (drops protocol + www)
@@ -48,7 +48,7 @@ export default function WorkPage() {
       <PageHero
         eyebrow="Work"
         title="What we've shipped"
-        subtitle="Real products, live in the world — each one designed, built, and launched end to end."
+        subtitle="Real products, live in the world, each one designed, built, and launched end to end."
       />
 
       <Container className="space-y-10 pb-8">
@@ -141,7 +141,7 @@ export default function WorkPage() {
         </h2>
         <p className="mt-3 max-w-xl text-base text-muted">
           This section is a placeholder. The cards below show the layout with
-          example copy &mdash; they are not real reviews. Genuine client
+          example copy; they are not real reviews. Genuine client
           testimonials will land here as projects wrap.
         </p>
 
@@ -170,7 +170,7 @@ export default function WorkPage() {
           </h2>
           <p className="mt-3 max-w-lg text-base text-muted">
             Tell us what you have in mind. We&apos;ll walk you through relevant
-            past work and map out how we&apos;d approach it — on a quick call,
+            past work and map out how we&apos;d approach it, on a quick call,
             no obligation.
           </p>
           <Link

@@ -16,7 +16,7 @@ const schema = z.object({
 const genericError = "Something went wrong. Please email us instead.";
 
 // Fixed-window per-IP limit. The Map lives in module memory, so this is a
-// stopgap only — it resets on every serverless cold start and each running
+// stopgap only; it resets on every serverless cold start and each running
 // instance keeps its own count. Move to a shared store before it matters.
 const RATE_LIMIT = 5;
 const RATE_WINDOW_MS = 10 * 60 * 1000;
@@ -60,7 +60,7 @@ export async function POST(req: Request) {
 
   const { name, email, company, message, website } = parsed.data;
 
-  // Honeypot tripped — accept the request so the bot moves on, drop the message.
+  // Honeypot tripped: accept the request so the bot moves on, drop the message.
   if (website && website.trim()) {
     return NextResponse.json({ ok: true });
   }
@@ -70,7 +70,7 @@ export async function POST(req: Request) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
     console.warn(
-      "contact: email not configured — set RESEND_API_KEY to send notifications",
+      "contact: email not configured; set RESEND_API_KEY to send notifications",
     );
     // Log the whole submission so it can be recovered from server logs.
     console.info("contact submission", submission);

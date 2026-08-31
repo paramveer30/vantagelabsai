@@ -131,7 +131,7 @@ export const industries: Industry[] = [
     variant: "nonprofits",
     name: "Nonprofits & Community",
     summary:
-      "Raise more with less overhead — donations, donors, and reporting in one system.",
+      "Raise more with less overhead: donations, donors, and reporting in one system.",
     description:
       "Donation pages that convert, donor records that stay current, and the reports your board and funders ask for without a week of spreadsheet work. Built for small teams doing a lot.",
     builds: [
@@ -148,7 +148,7 @@ export const industries: Industry[] = [
     summary:
       "Ship the MVP, wire up the internal tools, and add the AI features on your roadmap.",
     description:
-      "An extra engineering team that moves at your pace — building the first version, the admin panel you keep putting off, or the AI feature you need in the product this quarter.",
+      "An extra engineering team that moves at your pace, building the first version, the admin panel you keep putting off, or the AI feature you need in the product this quarter.",
     builds: ["MVP builds", "Internal tools", "AI features", "API integrations"],
   },
 ];

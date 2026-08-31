@@ -8,7 +8,7 @@ export function BookingPanel() {
     return (
       <div className="hud card-glow relative flex h-full min-h-[420px] flex-col justify-center rounded-2xl border border-border bg-surface p-6">
         <p className="text-sm text-muted">
-          Booking link goes live shortly — email us or send the form.
+          Booking link goes live shortly. Email us or send the form.
         </p>
         <a
           href={`mailto:${site.email}`}

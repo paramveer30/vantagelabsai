@@ -18,7 +18,7 @@ export default function ServicesPage() {
       <PageHero
         eyebrow="Services"
         title="What we build"
-        subtitle="Three ways we help you ship — pick one, or all three as you grow."
+        subtitle="Three ways we help you ship: pick one, or all three as you grow."
       />
 
       <Container className="space-y-10 pb-24">
@@ -81,7 +81,7 @@ export default function ServicesPage() {
           </h2>
           <p className="mt-3 max-w-lg text-base text-muted">
             Tell us what&apos;s slowing you down. We&apos;ll map it to the right
-            mix on a quick call — no pitch, no obligation.
+            mix on a quick call. No pitch, no obligation.
           </p>
           <Link
             href="/contact"

@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     "Book a free discovery call or send us a message about your project.",
 };
 
-// Two matched routes to the same conversation — the numbers key the panel
+// Two matched routes to the same conversation; the numbers key the panel
 // headers to the "what to expect" strip below.
 const panels = [
   {
@@ -34,7 +34,7 @@ const expectations = [
   },
   {
     title: "No pitch, no obligation",
-    body: "You leave with a clear read on scope and next steps — even if it isn't us.",
+    body: "You leave with a clear read on scope and next steps, even if it isn't us.",
   },
   {
     title: "A reply within a business day",

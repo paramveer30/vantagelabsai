@@ -5,7 +5,7 @@ import type { ServiceVariant } from "@/content/services";
 import { usePrefersReducedMotion } from "@/lib/media";
 import { CountUp, Streamed, VignetteFrame } from "@/components/vignette-kit";
 
-// A small animated mock of what each service actually delivers — a
+// A small animated mock of what each service actually delivers: a
 // dashboard assembling itself, an AI reply landing in a support chat, a
 // live status board shipping updates. DOM + SVG + CSS so it stays
 // pixel-sharp; the keyframes live in globals.css under "Services
@@ -61,7 +61,7 @@ export function ServiceVignette({ variant }: { variant: ServiceVariant }) {
 }
 
 /* -------------------------------------------------------------------- */
-/* software — a dashboard building itself                               */
+/* software · a dashboard building itself                               */
 /* -------------------------------------------------------------------- */
 
 function SoftwareVignette({ animate }: { animate: boolean }) {
@@ -147,11 +147,11 @@ function SoftwareVignette({ animate }: { animate: boolean }) {
 }
 
 /* -------------------------------------------------------------------- */
-/* ai — a chat answering a customer                                    */
+/* ai · a chat answering a customer                                    */
 /* -------------------------------------------------------------------- */
 
 const AI_REPLY =
-  "Yes — we're open Saturday and Sunday, 9am to 2pm. Want me to book you a slot?";
+  "Yes, we're open Saturday and Sunday, 9am to 2pm. Want me to book you a slot?";
 
 function AiVignette({ animate }: { animate: boolean }) {
   return (
@@ -198,7 +198,7 @@ function AiVignette({ animate }: { animate: boolean }) {
 }
 
 /* -------------------------------------------------------------------- */
-/* support — a live status board                                       */
+/* support · a live status board                                       */
 /* -------------------------------------------------------------------- */
 
 const DEPLOYS = [

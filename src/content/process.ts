@@ -28,7 +28,7 @@ export const processSteps: ProcessStep[] = [
     step: 2,
     title: "Plan & Design",
     description:
-      "We scope exactly what we're building, how long it'll take, and what it costs — before any code is written.",
+      "We scope exactly what we're building, how long it'll take, and what it costs, all before any code is written.",
     label: "Design",
     deliverable: "A written plan and a fixed quote",
     outputs: ["Scope and timeline", "Screens and flows", "A fixed price"],

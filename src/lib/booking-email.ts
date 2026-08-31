@@ -42,7 +42,7 @@ function formatWhen(startTime: string, endTime: string, timeZone?: string): stri
     const endText = Number.isNaN(end.getTime()) ? "" : `–${time.format(end)}`;
     return `${date}, ${time.format(start)}${endText} (${tz})`;
   } catch {
-    // Bad timezone string from the payload — fall back to the raw ISO.
+    // Bad timezone string from the payload; fall back to the raw ISO.
     return `${startTime} – ${endTime}`;
   }
 }
@@ -59,7 +59,7 @@ export function buildBookingNotification(event: BookingEvent): {
   );
 
   return {
-    subject: `${heading}: ${event.attendeeName} — ${event.title}`,
+    subject: `${heading}: ${event.attendeeName}, ${event.title}`,
     text: [
       `${heading} via Cal.com.`,
       "",

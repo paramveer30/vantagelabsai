@@ -9,7 +9,7 @@ import { useEffect, useState, type ReactNode, type Ref } from "react";
 // so the reduced-motion branch needs no timers.
 
 /* -------------------------------------------------------------------- */
-/* frame — the bordered "app window" chrome                            */
+/* frame · the bordered "app window" chrome                            */
 /* -------------------------------------------------------------------- */
 
 export function VignetteFrame({

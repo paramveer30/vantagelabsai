@@ -10,7 +10,7 @@ import { industries, type Industry } from "@/content/industries";
 export const metadata: Metadata = {
   title: "Industries",
   description:
-    "Restaurants, retail, clinics, vets, trades, gyms, nonprofits, startups — and plenty that aren't on the list. If your business runs on manual work, we build the software that fits.",
+    "Restaurants, retail, clinics, vets, trades, gyms, nonprofits, startups, and plenty that aren't on the list. If your business runs on manual work, we build the software that fits.",
 };
 
 function IndustryCard({
@@ -84,7 +84,7 @@ export default function IndustriesPage() {
       <PageHero
         eyebrow="Industries"
         title="Who we help"
-        subtitle="From the corner café to the Series A startup — if your business runs on spreadsheets, sticky notes, or software that fights you, we build the thing that fits."
+        subtitle="From the corner café to the Series A startup: if your business runs on spreadsheets, sticky notes, or software that fights you, we build the thing that fits."
       />
 
       <IndustryMarquee />
@@ -106,7 +106,7 @@ export default function IndustriesPage() {
             Don&apos;t see your industry?
           </h2>
           <p className="mt-3 max-w-lg text-base text-muted">
-            The list isn&apos;t the point — the pattern is. If your team is
+            The list isn&apos;t the point. The pattern is. If your team is
             doing by hand what software should be doing, we can help. Tell us
             what&apos;s slowing you down.
           </p>

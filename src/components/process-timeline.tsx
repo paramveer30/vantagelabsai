@@ -7,8 +7,8 @@ import { usePrefersReducedMotion, useMediaQuery } from "@/lib/media";
 // The Process page's centrepiece: a four-stop timeline that plays itself
 // through discovery → design → build → launch, with arrows pulling the
 // eye left to right and a single product mock that assembles itself in
-// step with the active stop. Same machinery as the service scene —
-// IntersectionObserver + an interval + reduced-motion guards — and it
+// step with the active stop. Same machinery as the service scene
+// (IntersectionObserver + an interval + reduced-motion guards), and it
 // falls back to a plain readable list on small screens or under reduced
 // motion. Keyframes: vg-* (shared, "Services vignettes") and pr-*
 // ("Process") in globals.css.
@@ -176,7 +176,7 @@ export function ProcessTimeline() {
 }
 
 /* -------------------------------------------------------------------- */
-/* static fallback — small screens and reduced motion                  */
+/* static fallback · small screens and reduced motion                  */
 /* -------------------------------------------------------------------- */
 
 function StaticProcess() {
@@ -307,7 +307,7 @@ function Stage({ stage, animate }: { stage: number; animate: boolean }) {
           What&apos;s slowing you down?
         </Bubble>
         <Bubble side="end" animate={animate} delay={900}>
-          Manual quotes — hours in spreadsheets every week.
+          Manual quotes, hours in spreadsheets every week.
         </Bubble>
         <div className="mt-1 flex flex-col gap-1">
           {notes.map((t, i) => (

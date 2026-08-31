@@ -34,6 +34,6 @@ export function buildAutoReply({ name }: { name: string }): {
 } {
   return {
     subject: "Thanks for reaching out to VantageLabsAI",
-    text: `Hi ${name},\n\nThanks for your message — it's landed with us. We read every note personally and will get back to you within a few days.\n\n— VantageLabsAI`,
+    text: `Hi ${name},\n\nThanks for your message. It's landed with us, and we read every note personally. We'll get back to you within a few days.\n\nVantageLabsAI`,
   };
 }

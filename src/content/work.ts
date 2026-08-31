@@ -25,7 +25,7 @@ export const projects: Project[] = [
     category: "Student housing marketplace",
     year: "2025",
     image: "/work/letmeknock.jpg",
-    imageAlt: "LetMeKnock homepage — student housing search",
+    imageAlt: "LetMeKnock homepage, student housing search",
     summary:
       "A verified-listings marketplace that takes the stress out of finding student housing near campus.",
     description:
@@ -48,7 +48,7 @@ export const projects: Project[] = [
   },
   {
     slug: "avneet-nijjer-portfolio",
-    name: "Avneet Nijjer — Portfolio",
+    name: "Avneet Nijjer Portfolio",
     url: "https://www.avneetnijjer.ca/",
     category: "Portfolio + AI twin",
     year: "2025",
@@ -57,7 +57,7 @@ export const projects: Project[] = [
     summary:
       'An engineer’s portfolio with a conversational "AI twin" that answers questions about his work in his voice.',
     description:
-      "Alongside the usual project and experience sections, the site ships an AI chat grounded in Avneet's background — OpenAI for generation, a Sanity-backed content layer so updates are a CMS edit rather than a deploy, and Clerk for admin auth.",
+      "Alongside the usual project and experience sections, the site ships an AI chat grounded in Avneet's background: OpenAI for generation, a Sanity-backed content layer so updates are a CMS edit rather than a deploy, and Clerk for admin auth.",
     stack: ["Next.js", "React", "TypeScript", "OpenAI API", "Sanity", "Clerk"],
   },
 ];

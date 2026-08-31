@@ -14,7 +14,7 @@ const DONE_MS = START_MS + TEXT.length * CHAR_MS + 450;
 
 // The first-load welcome. Types the greeting over the live galaxy
 // background, then hands off to the hero particle cloud, which pulls the
-// drifting field inward to form the V (home) — or just clears to the page
+// drifting field inward to form the V (home), or just clears to the page
 // (other routes). The head guard in the layout decides whether it runs by
 // setting data-welcome; it's absent under reduced motion or on narrow
 // viewports, where there's no particle V to form.
@@ -37,7 +37,7 @@ export function WelcomeIntro() {
   const finishTyping = useCallback(() => {
     paint(TEXT.length);
     if (typeof window !== "undefined" && window.location.pathname !== "/") {
-      finish(); // no V to form here — CSS fades the page in
+      finish(); // no V to form here; CSS fades the page in
     } else {
       setTypedDone(true);
     }
@@ -61,7 +61,7 @@ export function WelcomeIntro() {
   }, []);
 
   // Typewriter: one wall-clock rAF pass, written straight to the DOM node
-  // so it never triggers a render — and keyed only on the phase string
+  // so it never triggers a render, and keyed only on the phase string
   // (finishTyping is stable) so nothing re-runs and restarts it mid-type.
   useEffect(() => {
     if (w.phase !== "typing") return;

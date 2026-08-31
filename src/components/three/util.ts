@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-// Both hero canvases frame the same virtual space — keep them on one camera.
+// Both hero canvases frame the same virtual space; keep them on one camera.
 export const CAMERA = {
   position: [0, 0, 5.4] as [number, number, number],
   fov: 42,

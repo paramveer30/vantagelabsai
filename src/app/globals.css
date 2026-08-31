@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /*
- * Dark "lab" palette — near-black navy base with the blue→cyan brand
+ * Dark "lab" palette: near-black navy base with the blue→cyan brand
  * gradient from the logo. Surfaces layer (background < surface <
  * surface-2) so panels sit over the animated background without hard
  * edges; borders are faint white rather than a fixed navy so they read
@@ -135,7 +135,7 @@
   }
 
   /* The WebGL starfield can't render until its chunk loads and the canvas
-     produces a first frame — ease it up so it emerges over the static
+     produces a first frame; ease it up so it emerges over the static
      field rather than popping in. */
   .site-bg {
     animation: site-bg-in 1400ms var(--ease-soft) both;
@@ -183,7 +183,7 @@
     color: transparent;
   }
 
-  /* Oversized page wordmark — the brand gradient with a slow sheen
+  /* Oversized page wordmark: the brand gradient with a slow sheen
      drifting across it and a soft cyan bloom underneath. The sheen is
      decorative; reduced-motion holds it on a static gradient. */
   .wordmark {
@@ -272,7 +272,7 @@
 }
 
 @layer utilities {
-  /* Scroll-triggered entrance — toggled by the Reveal component. */
+  /* Scroll-triggered entrance, toggled by the Reveal component. */
   .reveal-on-scroll {
     opacity: 0;
     transform: translateY(var(--reveal-shift));
@@ -384,13 +384,13 @@
   }
 }
 
-/* Cursor-driven mech runner — motion is driven per-frame in
+/* Cursor-driven mech runner: motion is driven per-frame in
    parkour-figure.tsx; CSS only sets up pivots and the glow theme. */
 .pk {
   color: var(--accent);
   filter: drop-shadow(0 0 7px rgba(58, 208, 255, 0.55))
     drop-shadow(0 0 2px rgba(180, 240, 255, 0.4));
-  transform-origin: 12px 16px; /* torso — the point the cursor holds */
+  transform-origin: 12px 16px; /* torso: the point the cursor holds */
   will-change: transform;
 }
 .pk .limb {
@@ -429,7 +429,7 @@
   }
 }
 
-/* Site header — dissolves into the background with a masked blur scrim so
+/* Site header: dissolves into the background with a masked blur scrim so
    there's no bar edge; the tab links read as a techy HUD that lights up
    with a cyan glow on hover and on the active route. */
 .site-header::before {
@@ -514,7 +514,7 @@
   transform: scaleY(1);
 }
 
-/* CTA — a holographic chip matching the desktop tiles, so it sits in the
+/* CTA: a holographic chip matching the desktop tiles, so it sits in the
    glassy header instead of a solid pill punching through it. */
 .nav-cta {
   font-family: var(--font-display), var(--font-geist-sans), sans-serif;
@@ -545,7 +545,7 @@
   }
 }
 
-/* Page transitions — a short crossfade on the page body only. The sticky
+/* Page transitions: a short crossfade on the page body only. The sticky
    header and the fixed starfield are pinned by name so they hold still. */
 ::view-transition {
   pointer-events: none;
@@ -621,7 +621,7 @@ html[data-welcome]:not([data-welcome="handoff"])[data-welcome-route="page"]
 }
 
 /*
- * Services vignettes — the small animated product mocks beside each
+ * Services vignettes: the small animated product mocks beside each
  * service (see service-vignette.tsx). The component only attaches these
  * classes when it's animating; the reduced-motion guard at the end is a
  * belt-and-braces stop for the frame glow, which is CSS-only.
@@ -784,7 +784,7 @@ html[data-welcome]:not([data-welcome="handoff"])[data-welcome-route="page"]
 }
 
 /*
- * Industries — the "who we help" marquee under the hero, plus the few
+ * Industries: the "who we help" marquee under the hero, plus the few
  * motions the per-industry scenes need that the vg-* set above doesn't
  * already cover (a bar wiping to width, a map ping, a stamp landing, a
  * ticket sliding in). The scenes reuse vg-rise / vg-bar / vg-blink /
@@ -895,7 +895,7 @@ html[data-welcome]:not([data-welcome="handoff"])[data-welcome-route="page"]
 }
 
 /*
- * Process — the animated build timeline on /process (see
+ * Process: the animated build timeline on /process (see
  * process-timeline.tsx). The rail's progress line is driven from the
  * component with an inline transform; these two cover the forward sheen
  * travelling along the rail and the halo on the active node. The build
@@ -951,14 +951,14 @@ html[data-welcome]:not([data-welcome="handoff"])[data-welcome-route="page"]
   }
 }
 
-/* Brand wordmark — the "AI" suffix in the logo blue with a soft glow, so
+/* Brand wordmark: the "AI" suffix in the logo blue with a soft glow, so
    "VantageLabsAI" reads the way the lockup does. */
 .wordmark-ai {
   color: #4da6ff;
   text-shadow: 0 0 12px rgba(77, 166, 255, 0.45);
 }
 
-/* Header / footer logo mark — a screen blend drops the baked-in dark
+/* Header / footer logo mark: a screen blend drops the baked-in dark
    badge so only the glowing blue V sits on the page, with a cyan bloom
    that lifts on hover. */
 .logo-mark {
@@ -972,7 +972,7 @@ html[data-welcome]:not([data-welcome="handoff"])[data-welcome-route="page"]
     drop-shadow(0 0 4px rgba(122, 228, 255, 0.55));
 }
 
-/* Site footer — a quiet HUD panel: a hairline top rule that catches the
+/* Site footer, a quiet HUD panel: a hairline top rule that catches the
    cyan glow, mono headings, and links that light up like the nav. */
 .site-footer {
   position: relative;

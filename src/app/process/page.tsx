@@ -17,7 +17,7 @@ export default function ProcessPage() {
       <PageHero
         eyebrow="Process"
         title="How we work"
-        subtitle="Four steps, no surprises — you'll know what's happening at every stage."
+        subtitle="Four steps, no surprises. You'll know what's happening at every stage."
       />
 
       <Container className="pb-16">
@@ -34,7 +34,7 @@ export default function ProcessPage() {
             Know what you want built?
           </h2>
           <p className="mt-3 max-w-lg text-base text-muted">
-            Start with the discovery call — a free, no-obligation chat about the
+            Start with the discovery call, a free, no-obligation chat about the
             problem and whether we&apos;re the right fit.
           </p>
           <Link

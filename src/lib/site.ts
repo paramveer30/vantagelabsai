@@ -2,7 +2,7 @@ export const site = {
   name: "VantageLabsAI",
   tagline: "Custom software for any business that needs it",
   description:
-    "VantageLabsAI builds custom software, AI integrations, and ongoing support for businesses of any size — from local shops to technical founders.",
+    "VantageLabsAI builds custom software, AI integrations, and ongoing support for businesses of any size, from local shops to technical founders.",
   url: "https://vantagelabsai.com",
   email: "vantage.labs@outlook.ca",
   // Paste a Cal.com (cal.com/your-handle/intro) or Calendly

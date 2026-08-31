@@ -49,7 +49,7 @@ export function ContactForm() {
         >
           ✓
         </span>
-        <p className="font-semibold">Thanks — we got your message.</p>
+        <p className="font-semibold">Thanks, we got your message.</p>
         <p className="max-w-xs text-sm text-muted">
           We&apos;ll get back to you within a business day.
         </p>
@@ -59,7 +59,7 @@ export function ContactForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex h-full flex-col gap-4">
-      {/* Honeypot — hidden from people, catnip for bots. Submitted with the
+      {/* Honeypot: hidden from people, catnip for bots. Submitted with the
           rest of the form; the API drops anything with this filled in. */}
       <div
         aria-hidden="true"
