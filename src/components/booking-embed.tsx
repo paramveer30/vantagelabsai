@@ -42,7 +42,7 @@ export function BookingEmbed({ url }: { url: string }) {
   }, []);
 
   return (
-    <div className="hud card-glow relative mt-4 h-[560px] w-full rounded-2xl border border-border bg-surface sm:h-[640px]">
+    <div className="hud card-glow relative h-[560px] w-full rounded-2xl border border-border bg-surface sm:h-[600px]">
       {!loaded && (
         <div className="absolute inset-0 grid place-items-center rounded-2xl bg-surface">
           <div className="flex flex-col items-center gap-3 text-muted">

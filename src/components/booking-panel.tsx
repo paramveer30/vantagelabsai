@@ -6,13 +6,13 @@ import { site } from "@/lib/site";
 export function BookingPanel() {
   if (!site.bookingUrl) {
     return (
-      <div className="hud card-glow relative mt-4 rounded-2xl border border-border bg-surface p-6">
+      <div className="hud card-glow relative flex h-full min-h-[420px] flex-col justify-center rounded-2xl border border-border bg-surface p-6">
         <p className="text-sm text-muted">
           Booking link goes live shortly — email us or send the form.
         </p>
         <a
           href={`mailto:${site.email}`}
-          className="mt-4 inline-block rounded-full bg-brand px-6 py-3 text-sm font-medium text-brand-foreground transition-colors hover:bg-brand-hover"
+          className="mt-4 inline-block self-start rounded-full bg-brand px-6 py-3 text-sm font-medium text-brand-foreground transition-colors hover:bg-brand-hover"
         >
           Email {site.email}
         </a>
