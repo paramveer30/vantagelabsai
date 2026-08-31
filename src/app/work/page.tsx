@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Container } from "@/components/container";
 import { PageHero } from "@/components/page-hero";
 import { Reveal } from "@/components/reveal";
-import { WorkVignette } from "@/components/work-vignette";
+import { SiteThumbnail } from "@/components/site-thumbnail";
 import { projects } from "@/content/work";
 import { testimonials } from "@/content/testimonials";
 
@@ -63,12 +63,13 @@ export default function WorkPage() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={`Open ${project.name} in a new tab`}
-                    className={`relative mx-auto block aspect-[4/3] w-full max-w-md lg:mx-0 ${
+                    className={`relative mx-auto block aspect-[16/10] w-full max-w-md lg:mx-0 ${
                       flip ? "lg:order-2" : "lg:order-1"
                     }`}
                   >
-                    <WorkVignette
-                      shape={project.shape}
+                    <SiteThumbnail
+                      src={project.image}
+                      alt={project.imageAlt}
                       label={domain(project.url)}
                     />
                   </a>

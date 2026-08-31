@@ -1,13 +1,12 @@
-export type ProjectShape = "listings" | "editorial" | "portfolio";
-
 export type Project = {
   slug: string;
   name: string;
   url: string;
   category: string;
   year: string;
-  // Picks which animated mock <WorkVignette> renders.
-  shape: ProjectShape;
+  // Screenshot of the live site, served from /public/work.
+  image: string;
+  imageAlt: string;
   // One strong line, shown in the foreground colour.
   summary: string;
   // Two or three sentences of detail, shown muted.
@@ -25,7 +24,9 @@ export const projects: Project[] = [
     url: "https://letmeknock.vercel.app/",
     category: "Student housing marketplace",
     year: "2025",
-    shape: "listings",
+    image: "/work/letmeknock.jpg",
+    imageAlt:
+      "LetMeKnock listings page — a filter sidebar beside a grid of student rentals",
     summary:
       "A verified-listings marketplace that takes the stress out of finding student housing near campus.",
     description:
@@ -38,7 +39,8 @@ export const projects: Project[] = [
     url: "https://www.medicine4youth.ca/",
     category: "Non-profit brand & platform",
     year: "2025",
-    shape: "editorial",
+    image: "/work/medicine4youth.jpg",
+    imageAlt: "Medicine4Youth homepage hero",
     summary:
       "The national home for a student-led medical-education non-profit and its ten specialty branches.",
     description:
@@ -51,7 +53,8 @@ export const projects: Project[] = [
     url: "https://www.avneetnijjer.ca/",
     category: "Portfolio + AI twin",
     year: "2025",
-    shape: "portfolio",
+    image: "/work/avneet-nijjer.jpg",
+    imageAlt: "Avneet Nijjer portfolio homepage hero",
     summary:
       'An engineer’s portfolio with a conversational "AI twin" that answers questions about his work in his voice.',
     description:
