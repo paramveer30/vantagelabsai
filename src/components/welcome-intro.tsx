@@ -95,7 +95,7 @@ export function WelcomeIntro() {
       className="fixed inset-0 z-[100] flex items-center justify-center"
     >
       <p
-        className={`display text-2xl font-semibold tracking-tight text-foreground transition-opacity duration-300 sm:text-4xl ${
+        className={`display text-2xl font-bold tracking-tight text-accent transition-opacity duration-300 [text-shadow:0_0_28px_rgba(58,208,255,0.45),0_0_8px_rgba(58,208,255,0.7)] sm:text-4xl ${
           w.phase === "typing" ? "opacity-100" : "opacity-0"
         }`}
       >
