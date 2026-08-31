@@ -212,38 +212,39 @@ export function ParkourFigure({
     >
       <div ref={shadowRef} className="pk-shadow absolute left-0 top-0" />
       <div ref={figRef} className="pk absolute left-0 top-0">
-        <svg width="24" height="32" viewBox="0 0 24 32" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-          {/* antenna + visor head */}
-          <line x1="12" y1="0.7" x2="12" y2="2.4" strokeWidth="1.4" />
-          <circle cx="12" cy="0.5" r="0.85" fill="currentColor" stroke="none" />
-          <rect x="7" y="2.2" width="10" height="7.6" rx="2.8" strokeWidth="1.7" />
-          <line x1="8.7" y1="6" x2="15.3" y2="6" strokeWidth="1.3" opacity="0.7" />
-          <circle cx="13.2" cy="5" r="0.9" fill="currentColor" stroke="none" />
-          {/* torso + reactor core + hip block */}
-          <path d="M9 10.4h6l0.7 8.2H8.3z" strokeWidth="1.7" />
-          <circle className="pk-core" cx="12" cy="14" r="1.9" fill="currentColor" stroke="none" />
-          <line x1="10" y1="12.2" x2="14" y2="12.2" strokeWidth="1.1" opacity="0.5" />
-          <rect x="9.2" y="18.4" width="5.6" height="2.3" rx="1" fill="currentColor" stroke="none" opacity="0.9" />
-          {/* limbs — each centred on its own shoulder / hip so it pivots there */}
+        <svg width="24" height="32" viewBox="0 0 24 32" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+          {/* antenna */}
+          <line x1="12" y1="2.2" x2="12" y2="0.9" strokeWidth="1.3" />
+          <circle cx="12" cy="0.7" r="0.95" fill="currentColor" stroke="none" />
+          {/* head — clean rounded chassis with a visor and two eyes */}
+          <rect x="7.4" y="2.2" width="9.2" height="7.2" rx="2.1" strokeWidth="1.7" />
+          <rect x="9" y="4.2" width="6" height="2.7" rx="1.35" fill="currentColor" stroke="none" opacity="0.22" />
+          <circle cx="10.5" cy="5.55" r="0.72" fill="currentColor" stroke="none" />
+          <circle cx="13.5" cy="5.55" r="0.72" fill="currentColor" stroke="none" />
+          {/* neck */}
+          <line x1="12" y1="9.4" x2="12" y2="10.6" strokeWidth="1.4" />
+          {/* torso + reactor core + panel seam + hip block */}
+          <rect x="8" y="10.5" width="8" height="9.1" rx="1.7" strokeWidth="1.7" />
+          <circle className="pk-core" cx="12" cy="14" r="1.85" fill="currentColor" stroke="none" />
+          <line x1="9.6" y1="17" x2="14.4" y2="17" strokeWidth="1" opacity="0.45" />
+          <rect x="8.6" y="19" width="6.8" height="2.1" rx="0.9" fill="currentColor" stroke="none" opacity="0.9" />
+          {/* limbs — panelled arms then legs; each group's bbox top-centre
+              sits on its shoulder / hip so the CSS pivot lands right */}
           <g className="limb">
-            <line x1="9.3" y1="11" x2="9.3" y2="18.6" />
-            <circle cx="9.3" cy="11" r="1.4" fill="currentColor" stroke="none" />
-            <circle cx="9.3" cy="18.6" r="1.5" fill="currentColor" stroke="none" />
+            <rect x="6.5" y="11" width="2" height="7.1" rx="1" />
+            <circle cx="7.5" cy="18.4" r="1.15" fill="currentColor" stroke="none" />
           </g>
           <g className="limb">
-            <line x1="14.7" y1="11" x2="14.7" y2="18.6" />
-            <circle cx="14.7" cy="11" r="1.4" fill="currentColor" stroke="none" />
-            <circle cx="14.7" cy="18.6" r="1.5" fill="currentColor" stroke="none" />
+            <rect x="15.5" y="11" width="2" height="7.1" rx="1" />
+            <circle cx="16.5" cy="18.4" r="1.15" fill="currentColor" stroke="none" />
           </g>
           <g className="limb">
-            <line x1="10.2" y1="20.4" x2="10.2" y2="29.2" />
-            <circle cx="10.2" cy="20.4" r="1.5" fill="currentColor" stroke="none" />
-            <line x1="8.9" y1="29.4" x2="11.5" y2="29.4" strokeWidth="2.2" />
+            <rect x="9" y="20.2" width="2.1" height="7.4" rx="1" />
+            <rect x="8.1" y="27.4" width="3.9" height="1.9" rx="0.7" fill="currentColor" stroke="none" />
           </g>
           <g className="limb">
-            <line x1="13.8" y1="20.4" x2="13.8" y2="29.2" />
-            <circle cx="13.8" cy="20.4" r="1.5" fill="currentColor" stroke="none" />
-            <line x1="12.5" y1="29.4" x2="15.1" y2="29.4" strokeWidth="2.2" />
+            <rect x="12.9" y="20.2" width="2.1" height="7.4" rx="1" />
+            <rect x="12" y="27.4" width="3.9" height="1.9" rx="0.7" fill="currentColor" stroke="none" />
           </g>
         </svg>
       </div>
