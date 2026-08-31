@@ -3,7 +3,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { finish, setPhase, useWelcome } from "@/lib/welcome";
 
-const TEXT = "Welcome to Vantage Labs";
+const PREFIX = "Welcome to ";
+const BRAND = "Vantage Labs";
+const TEXT = PREFIX + BRAND;
 const CHAR_MS = 52;
 // Hold on just the caret briefly so the first chars don't fight the
 // hydration / canvas-init burst, then type in one pass.
@@ -19,17 +21,27 @@ const DONE_MS = START_MS + TEXT.length * CHAR_MS + 450;
 export function WelcomeIntro() {
   const w = useWelcome();
   const textRef = useRef<HTMLSpanElement>(null);
+  const brandRef = useRef<HTMLSpanElement>(null);
   const [typedDone, setTypedDone] = useState(false);
   const handedOff = useRef(false);
 
+  // Push `n` typed characters across the two nodes: the plain prefix fills
+  // first, then the styled "Vantage Labs" brand span.
+  const paint = useCallback((n: number) => {
+    if (textRef.current) textRef.current.textContent = TEXT.slice(0, Math.min(n, PREFIX.length));
+    if (brandRef.current) {
+      brandRef.current.textContent = n > PREFIX.length ? TEXT.slice(PREFIX.length, n) : "";
+    }
+  }, []);
+
   const finishTyping = useCallback(() => {
-    if (textRef.current) textRef.current.textContent = TEXT;
+    paint(TEXT.length);
     if (typeof window !== "undefined" && window.location.pathname !== "/") {
       finish(); // no V to form here — CSS fades the page in
     } else {
       setTypedDone(true);
     }
-  }, []);
+  }, [paint]);
 
   // Home: hand off once typing is done AND the cloud has rendered a live
   // frame, so the implosion never starts against an init stall. Fires
@@ -60,8 +72,8 @@ export function WelcomeIntro() {
       if (!start) start = now;
       const t = now - start - START_MS;
       const n = t < 0 ? 0 : Math.min(TEXT.length, Math.floor(t / CHAR_MS));
-      if (n !== shown && textRef.current) {
-        textRef.current.textContent = TEXT.slice(0, n);
+      if (n !== shown) {
+        paint(n);
         shown = n;
       }
       if (now - start >= DONE_MS) {
@@ -72,7 +84,7 @@ export function WelcomeIntro() {
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [w.phase, finishTyping]);
+  }, [w.phase, finishTyping, paint]);
 
   // Nothing stalls the page: force the release after 7s no matter what.
   useEffect(() => {
@@ -100,6 +112,15 @@ export function WelcomeIntro() {
         }`}
       >
         <span ref={textRef} />
+        <span
+          ref={brandRef}
+          className="font-bold"
+          style={{
+            color: "#4da6ff",
+            textShadow:
+              "0 0 20px rgba(77, 166, 255, 0.95), 0 0 44px rgba(77, 166, 255, 0.55)",
+          }}
+        />
         <span className="ml-1 inline-block h-[1em] w-[2px] translate-y-[0.12em] animate-pulse bg-accent" />
       </p>
     </div>
