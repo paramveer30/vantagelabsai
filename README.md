@@ -1,36 +1,71 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# VantageLabsAI
 
-## Getting Started
+Marketing site for VantageLabsAI, a custom software consultancy. Static
+Next.js pages for the public content, two API routes for lead capture (a
+contact form and a Cal.com booking webhook), and a few lazy-loaded React
+Three Fiber scenes for the interactive parts.
 
-First, run the development server:
+The repo doubles as a portfolio piece, so it is kept small and the git
+history is meant to be read.
+
+## Stack
+
+- Next.js 16 (App Router), React 19, TypeScript in strict mode
+- Tailwind CSS v4
+- React Three Fiber + three.js for the 3D scenes
+- Resend for transactional email
+- Vitest for unit tests
+- Hosted on Vercel
+
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev        # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The site runs with no environment variables set. The contact form and the
+booking webhook still accept submissions and log them server-side; nothing
+is emailed until Resend is configured.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Command | Does |
+| --- | --- |
+| `npm run dev` | Start the dev server |
+| `npm run build` | Production build |
+| `npm run start` | Serve the production build |
+| `npm run lint` | ESLint |
+| `npm test` | Run the Vitest suite once |
 
-## Learn More
+## Environment
 
-To learn more about Next.js, take a look at the following resources:
+Copy `.env.example` to `.env.local` and fill in what you need. In production
+the email variables are required and the app fails fast without them; in
+development they are optional.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Variable | Purpose |
+| --- | --- |
+| `RESEND_API_KEY` | Resend API key. Without it, submissions are logged instead of emailed (development only). |
+| `CONTACT_TO_EMAIL` | Inbox that receives contact and booking notifications. |
+| `CONTACT_FROM_EMAIL` | From address for those emails. Its domain must be verified in Resend. |
+| `CAL_WEBHOOK_SECRET` | Shared secret for verifying the `x-cal-signature-256` header on the Cal.com webhook. Required in production. |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The booking link shown across the site is set in `src/lib/site.ts` as
+`bookingUrl`.
 
-## Deploy on Vercel
+## Layout
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+src/
+  app/          Routes, one folder per page, plus api/contact and api/cal/webhook
+  components/    UI; three/ holds the R3F scene primitives
+  content/       Page copy as typed data (services, industries, process, work)
+  lib/           Email builders, site config, small helpers
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Deploying
+
+Connect the repo to Vercel and set the environment variables above in the
+Vercel project. Point the Cal.com webhook (Settings -> Developer ->
+Webhooks) at `/api/cal/webhook` and give it the same `CAL_WEBHOOK_SECRET`.
