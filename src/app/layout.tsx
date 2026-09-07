@@ -1,5 +1,6 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
+import { CookieConsent } from "@/components/cookie-consent";
 import { SiteBackground } from "@/components/site-background";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
@@ -43,20 +44,55 @@ export const metadata: Metadata = {
   },
   description: site.description,
   metadataBase: new URL(site.url),
+  applicationName: site.name,
+  authors: [{ name: site.name, url: site.url }],
+  creator: site.name,
+  publisher: site.name,
+  category: "technology",
+  keywords: [
+    "custom software development",
+    "web application development",
+    "AI integration",
+    "automation",
+    "software consultancy",
+    "MVP development",
+    "small business software",
+  ],
+  formatDetection: { telephone: false, address: false, email: false },
   alternates: { canonical: "/" },
+  // og/twitter images come from app/opengraph-image.tsx + twitter-image.tsx.
   openGraph: {
     type: "website",
     siteName: site.name,
     url: site.url,
     title: `${site.name}: ${site.tagline}`,
     description: site.description,
-    images: [{ url: "/brand/social-card.png", width: 1240, height: 535 }],
   },
   twitter: {
     card: "summary_large_image",
     title: `${site.name}: ${site.tagline}`,
     description: site.description,
-    images: ["/brand/social-card.png"],
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#060810",
+};
+
+// Organization schema for search engines. Kept in sync with lib/site.ts.
+const orgJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: site.name,
+  url: site.url,
+  logo: `${site.url}/brand/logo-mark.png`,
+  description: site.description,
+  email: site.email,
+  contactPoint: {
+    "@type": "ContactPoint",
+    email: site.email,
+    contactType: "customer support",
+    availableLanguage: "English",
   },
 };
 
@@ -72,11 +108,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="flex min-h-full flex-col">
         <script dangerouslySetInnerHTML={{ __html: welcomeGuard }} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
+        />
         <SiteBackground />
         <SiteHeader />
         <main className="flex-1">{children}</main>
         <SiteFooter />
         <WelcomeIntro />
+        <CookieConsent />
       </body>
     </html>
   );

@@ -1,16 +1,17 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@/components/container";
 import { PageHero } from "@/components/page-hero";
 import { Reveal } from "@/components/reveal";
 import { SiteThumbnail } from "@/components/site-thumbnail";
 import { projects } from "@/content/work";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Work",
   description:
     "A look at what VantageLabsAI has shipped: live products designed, built, and launched end to end.",
-};
+  path: "/work",
+});
 
 // medicine4youth.ca -> medicine4youth.ca (drops protocol + www)
 function domain(url: string): string {

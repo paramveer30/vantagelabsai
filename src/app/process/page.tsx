@@ -1,15 +1,16 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@/components/container";
 import { PageHero } from "@/components/page-hero";
 import { Reveal } from "@/components/reveal";
 import { ProcessTimeline } from "@/components/process-timeline";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Process",
   description:
     "How we work: discovery call, plan and design, build and iterate, launch and support.",
-};
+  path: "/process",
+});
 
 export default function ProcessPage() {
   return (
