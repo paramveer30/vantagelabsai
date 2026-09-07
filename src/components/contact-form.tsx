@@ -1,20 +1,68 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 type Status = "idle" | "submitting" | "success" | "error";
+type Field = "name" | "email" | "message";
+type Errors = Partial<Record<Field, string>>;
 
 const fieldClass =
-  "mt-1.5 w-full rounded-lg border border-border bg-surface px-3.5 py-2.5 text-sm text-foreground outline-none transition-colors placeholder:text-muted/50 focus:border-brand focus:ring-2 focus:ring-brand/30";
+  "mt-1.5 w-full rounded-lg border bg-surface px-3.5 py-2.5 text-sm text-foreground outline-none transition-colors placeholder:text-muted/50 focus:ring-2 focus:ring-brand/30";
 const labelClass = "text-sm font-medium text-foreground";
+
+// Border colour swaps to danger once a field has an error.
+function inputClass(hasError: boolean) {
+  return `${fieldClass} ${
+    hasError
+      ? "border-danger focus:border-danger"
+      : "border-border focus:border-brand"
+  }`;
+}
+
+const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function validate(data: Record<string, string>): Errors {
+  const errors: Errors = {};
+  if (!data.name?.trim()) errors.name = "Please enter your name.";
+  if (!data.email?.trim()) errors.email = "Please enter your email address.";
+  else if (!emailRe.test(data.email.trim()))
+    errors.email = "That doesn't look like a valid email address.";
+  if (!data.message?.trim())
+    errors.message = "Tell us a little about what you need.";
+  return errors;
+}
 
 export function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<Errors>({});
+  // Once the form has been submitted once, re-check fields as they change
+  // so a corrected field clears its error without another submit.
+  const submitted = useRef(false);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  function currentData() {
+    return Object.fromEntries(
+      new FormData(formRef.current ?? undefined),
+    ) as Record<string, string>;
+  }
+
+  function revalidate() {
+    if (submitted.current) setErrors(validate(currentData()));
+  }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
+    submitted.current = true;
+
+    const found = validate(currentData());
+    setErrors(found);
+    if (Object.keys(found).length > 0) {
+      form.querySelector<HTMLElement>(`[name="${Object.keys(found)[0]}"]`)?.focus();
+      return;
+    }
+
     setStatus("submitting");
     setError(null);
 
@@ -33,6 +81,8 @@ export function ContactForm() {
       }
 
       form.reset();
+      submitted.current = false;
+      setErrors({});
       setStatus("success");
     } catch (err) {
       setStatus("error");
@@ -58,7 +108,13 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex h-full flex-col gap-4">
+    <form
+      ref={formRef}
+      onSubmit={handleSubmit}
+      onChange={revalidate}
+      noValidate
+      className="flex h-full flex-col gap-4"
+    >
       {/* Honeypot: hidden from people, catnip for bots. Submitted with the
           rest of the form; the API drops anything with this filled in. */}
       <div
@@ -86,8 +142,15 @@ export function ContactForm() {
             required
             autoComplete="name"
             placeholder="Jane Doe"
-            className={fieldClass}
+            aria-invalid={errors.name ? true : undefined}
+            aria-describedby={errors.name ? "name-error" : undefined}
+            className={inputClass(!!errors.name)}
           />
+          {errors.name && (
+            <p id="name-error" role="alert" className="mt-1.5 text-xs text-danger">
+              {errors.name}
+            </p>
+          )}
         </div>
 
         <div>
@@ -101,8 +164,19 @@ export function ContactForm() {
             required
             autoComplete="email"
             placeholder="jane@company.com"
-            className={fieldClass}
+            aria-invalid={errors.email ? true : undefined}
+            aria-describedby={errors.email ? "email-error" : undefined}
+            className={inputClass(!!errors.email)}
           />
+          {errors.email && (
+            <p
+              id="email-error"
+              role="alert"
+              className="mt-1.5 text-xs text-danger"
+            >
+              {errors.email}
+            </p>
+          )}
         </div>
       </div>
 
@@ -115,7 +189,7 @@ export function ContactForm() {
           name="company"
           autoComplete="organization"
           placeholder="Acme Inc."
-          className={fieldClass}
+          className={inputClass(false)}
         />
       </div>
 
@@ -129,8 +203,19 @@ export function ContactForm() {
           required
           rows={5}
           placeholder="A booking system, an internal tool, an AI assistant…"
-          className={`${fieldClass} flex-1 resize-y`}
+          aria-invalid={errors.message ? true : undefined}
+          aria-describedby={errors.message ? "message-error" : undefined}
+          className={`${inputClass(!!errors.message)} flex-1 resize-y`}
         />
+        {errors.message && (
+          <p
+            id="message-error"
+            role="alert"
+            className="mt-1.5 text-xs text-danger"
+          >
+            {errors.message}
+          </p>
+        )}
       </div>
 
       {status === "error" && (
