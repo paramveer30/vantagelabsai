@@ -65,6 +65,14 @@ export function SiteFooter() {
             &copy; {year} <Wordmark className="font-medium text-foreground/70" />.
             All rights reserved.
           </p>
+          <nav className="flex gap-4">
+            <Link href="/privacy" className="footer-link">
+              Privacy
+            </Link>
+            <Link href="/terms" className="footer-link">
+              Terms
+            </Link>
+          </nav>
           <p className="text-[0.68rem] uppercase tracking-[0.14em]">
             Custom software &middot; AI integration &middot; ongoing support
           </p>
