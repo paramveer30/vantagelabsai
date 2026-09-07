@@ -16,7 +16,9 @@
   --surface: #0c1120;
   --surface-2: #121a2e;
 
-  --brand: #2f6bff;
+  /* #2f66f0 clears WCAG AA (4.9:1) for white button text; the old #2f6bff
+     sat right on 4.4:1. Visually all but identical. */
+  --brand: #2f66f0;
   --brand-hover: #4f83ff;
   --brand-foreground: #ffffff;
   --accent: #3ad0ff;

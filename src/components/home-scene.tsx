@@ -214,7 +214,7 @@ function HomeAnimated() {
                 </span>
               </Link>
             </div>
-            <p className="mt-10 font-mono text-[0.68rem] uppercase tracking-[0.18em] text-foreground/30">
+            <p className="mt-10 font-mono text-[0.68rem] uppercase tracking-[0.18em] text-foreground/55">
               Custom software · AI automation · Ongoing support
             </p>
           </div>
