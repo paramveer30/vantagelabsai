@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@/components/container";
 import { IndustryMarquee } from "@/components/industry-marquee";
@@ -6,12 +5,14 @@ import { IndustryScene } from "@/components/industry-scene";
 import { PageHero } from "@/components/page-hero";
 import { Reveal } from "@/components/reveal";
 import { industries, type Industry } from "@/content/industries";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Industries",
   description:
     "Restaurants, retail, clinics, vets, trades, gyms, nonprofits, startups, and plenty that aren't on the list. If your business runs on manual work, we build the software that fits.",
-};
+  path: "/industries",
+});
 
 function IndustryCard({
   industry,

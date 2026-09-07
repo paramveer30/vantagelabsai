@@ -1,16 +1,17 @@
-import type { Metadata } from "next";
 import { BookingPanel } from "@/components/booking-panel";
 import { Container } from "@/components/container";
 import { ContactForm } from "@/components/contact-form";
 import { PageHero } from "@/components/page-hero";
 import { Reveal } from "@/components/reveal";
+import { pageMetadata } from "@/lib/seo";
 import { site } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Contact",
   description:
     "Book a free discovery call or send us a message about your project.",
-};
+  path: "/contact",
+});
 
 // Two matched routes to the same conversation; the numbers key the panel
 // headers to the "what to expect" strip below.
