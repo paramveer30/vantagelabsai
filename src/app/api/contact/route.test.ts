@@ -13,7 +13,7 @@ import { POST } from "./route";
 const validBody = {
   name: "Ada Lovelace",
   email: "ada@example.com",
-  budget: "Small project",
+  budget: "10000",
   message: "We need a scheduling tool for our workshop.",
 };
 
@@ -54,6 +54,26 @@ describe("POST /api/contact", () => {
       subject: "Thanks for reaching out to VantageLabsAI",
     });
     expect(mockSend.mock.calls[1][0].text).toMatch(/few days/i);
+    expect(mockSend.mock.calls[0][0].text).toContain("Budget: $10,000");
+  });
+
+  it("returns 422 when the budget isn't a number", async () => {
+    const res = await post(
+      { ...validBody, budget: "lots" },
+      { ip: "10.7.0.1" },
+    );
+
+    expect(res.status).toBe(422);
+    expect(mockSend).not.toHaveBeenCalled();
+  });
+
+  it("accepts a submission without a budget", async () => {
+    const { budget: _omit, ...rest } = validBody;
+    void _omit;
+    const res = await post(rest, { ip: "10.8.0.1" });
+
+    expect(res.status).toBe(200);
+    expect(mockSend.mock.calls[0][0].text).not.toContain("Budget:");
   });
 
   it("still returns ok when the auto-reply fails to send", async () => {

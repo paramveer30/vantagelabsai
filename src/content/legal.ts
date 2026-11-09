@@ -34,7 +34,7 @@ export const privacyPolicy: LegalDoc = {
     {
       heading: "Information we collect",
       body: [
-        "Information you give us. When you submit the contact form we receive your name, email address, your message, and an optional budget range. When you book a call we receive your name, email address, the time you choose, and anything else you add in the booking form.",
+        "Information you give us. When you submit the contact form we receive your name, email address, your message, and an optional budget figure. When you book a call we receive your name, email address, the time you choose, and anything else you add in the booking form.",
         "Information collected automatically. Our host keeps standard server logs (IP address, browser user-agent, timestamps, and the pages requested) for a short period, to keep the site running and to rate-limit abuse of the contact form. The site sets no analytics, advertising, or cross-site tracking cookies.",
       ],
     },

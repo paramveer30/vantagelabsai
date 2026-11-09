@@ -1,10 +1,10 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { budgetOptions } from "@/lib/site";
+import { isValidBudget } from "@/lib/budget";
 
 type Status = "idle" | "submitting" | "success" | "error";
-type Field = "name" | "email" | "message";
+type Field = "name" | "email" | "message" | "budget";
 type Errors = Partial<Record<Field, string>>;
 
 const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -17,13 +17,15 @@ function validate(data: Record<string, string>): Errors {
     errors.email = "Enter an email address like name@example.com.";
   if (!data.message?.trim())
     errors.message = "Tell us a little about what you need built.";
+  if (data.budget?.trim() && !isValidBudget(data.budget))
+    errors.budget = "Enter a number, like 10000.";
   return errors;
 }
 
 // Name, email, message, and an optional budget. Every field has a visible
 // label; errors are linked with aria-describedby and the first invalid
 // field receives focus on submit. Fully keyboard operable: no custom
-// widgets, the budget is a native select.
+// widgets; the budget is an optional free number.
 export function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
@@ -61,7 +63,7 @@ export function ContactForm() {
 
     try {
       const data = currentData();
-      if (data.budget === budgetOptions[0]) delete data.budget;
+      if (!data.budget?.trim()) delete data.budget;
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -192,11 +194,25 @@ export function ContactForm() {
         <label htmlFor="budget">
           Budget <span className="optional">(optional)</span>
         </label>
-        <select id="budget" name="budget" defaultValue={budgetOptions[0]}>
-          {budgetOptions.map((option) => (
-            <option key={option}>{option}</option>
-          ))}
-        </select>
+        <input
+          id="budget"
+          name="budget"
+          inputMode="decimal"
+          autoComplete="off"
+          placeholder="10000"
+          aria-invalid={errors.budget ? true : undefined}
+          aria-describedby={
+            errors.budget ? "budget-hint budget-error" : "budget-hint"
+          }
+        />
+        <p id="budget-hint" className="hint m-0">
+          A rough number is fine. Leave it blank if you&apos;re not sure yet.
+        </p>
+        {errors.budget && (
+          <p id="budget-error" className="error">
+            {errors.budget}
+          </p>
+        )}
       </div>
 
       {status === "error" && (

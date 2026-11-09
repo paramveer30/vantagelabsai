@@ -3,12 +3,13 @@ import { Resend } from "resend";
 import { z } from "zod";
 
 import { buildAutoReply, buildTeamNotification } from "@/lib/contact-email";
-import { budgetOptions } from "@/lib/site";
+import { budgetPattern, formatBudget } from "@/lib/budget";
 
 const schema = z.object({
   name: z.string().trim().min(1).max(100),
   email: z.email().max(200),
-  budget: z.enum(budgetOptions).optional(),
+  // Optional open number, e.g. "10000" or "$10,000".
+  budget: z.string().trim().max(20).regex(budgetPattern).optional(),
   message: z.string().trim().min(1).max(2000),
   // Honeypot: hidden in the form, so a value here means a bot filled it.
   website: z.string().max(100).optional(),
@@ -67,7 +68,12 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true });
   }
 
-  const submission = { name, email, budget, message };
+  const submission = {
+    name,
+    email,
+    budget: budget ? formatBudget(budget) : undefined,
+    message,
+  };
 
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.CONTACT_FROM_EMAIL;
@@ -77,10 +83,14 @@ export async function POST(req: Request) {
     // In production a missing config means we'd silently drop a real lead, so
     // fail loudly instead. In dev the submission is logged so it isn't lost.
     if (isProduction) {
-      console.error("contact: email is not configured; cannot deliver submission");
+      console.error(
+        "contact: email is not configured; cannot deliver submission",
+      );
       return NextResponse.json({ error: genericError }, { status: 500 });
     }
-    console.warn("contact: email not configured; logging the submission instead");
+    console.warn(
+      "contact: email not configured; logging the submission instead",
+    );
     console.info("contact submission (dev)", submission);
     return NextResponse.json({ ok: true });
   }

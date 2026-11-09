@@ -1,4 +1,5 @@
 import { FinalCta } from "@/components/final-cta";
+import { IndustryShowcase } from "@/components/industry-showcase";
 import { Marquee } from "@/components/marquee";
 import { PageHero } from "@/components/page-hero";
 import { industries } from "@/content/industries";
@@ -27,32 +28,17 @@ export default function IndustriesPage() {
         secondary={industries.flatMap((i) => i.builds.slice(0, 1))}
       />
 
-      <section className="section" data-inten="0.75" data-cap="0.3">
+      <section
+        className="section"
+        data-inten="0.75"
+        data-cap="0.3"
+        aria-labelledby="industries-pick"
+      >
         <div className="wrap">
-          <ul className="m-0 grid list-none gap-5 p-0 md:grid-cols-2">
-            {industries.map((industry, i) => (
-              <li
-                key={industry.slug}
-                id={industry.slug}
-                className={`card scroll-mt-8 ${
-                  industries.length % 2 === 1 && i === industries.length - 1
-                    ? "md:col-span-2"
-                    : ""
-                }`}
-              >
-                <div className="card-body gap-3 p-6 md:p-8">
-                  <h2 className="display text-[1.75rem]">{industry.name}</h2>
-                  <p className="m-0 text-lg text-text">{industry.summary}</p>
-                  <p className="copy">{industry.description}</p>
-                  <ul className="chip-list" aria-label="What we build">
-                    {industry.builds.map((build) => (
-                      <li key={build}>{build}</li>
-                    ))}
-                  </ul>
-                </div>
-              </li>
-            ))}
-          </ul>
+          <h2 id="industries-pick" className="kicker m-0">
+            Pick your industry to see what we&apos;d build
+          </h2>
+          <IndustryShowcase linkToPage={false} />
         </div>
       </section>
 
