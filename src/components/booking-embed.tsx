@@ -19,9 +19,9 @@ function withThemeParams(rawUrl: string): string {
   };
 
   if (host === "calendly.com" || host.endsWith(".calendly.com")) {
-    setIfAbsent("background_color", "0c1120");
-    setIfAbsent("text_color", "eef2fb");
-    setIfAbsent("primary_color", "2f6bff");
+    setIfAbsent("background_color", "0a1117");
+    setIfAbsent("text_color", "f2f5f7");
+    setIfAbsent("primary_color", "fc734d");
     setIfAbsent("hide_gdpr_banner", "1");
   } else {
     setIfAbsent("theme", "dark");
@@ -42,13 +42,13 @@ export function BookingEmbed({ url }: { url: string }) {
   }, []);
 
   return (
-    <div className="hud card-glow relative h-[560px] w-full rounded-2xl border border-border bg-surface sm:h-[600px]">
+    <div className="relative h-[560px] w-full overflow-hidden rounded-[10px] border border-line bg-black sm:h-[600px]">
       {!loaded && (
-        <div className="absolute inset-0 grid place-items-center rounded-2xl bg-surface">
+        <div className="absolute inset-0 grid place-items-center bg-black">
           <div className="flex flex-col items-center gap-3 text-muted">
             <span
               aria-hidden="true"
-              className="h-6 w-6 animate-spin rounded-full border-2 border-border border-t-accent motion-reduce:animate-none"
+              className="h-6 w-6 animate-spin rounded-full border-2 border-line-strong border-t-orange motion-reduce:animate-none"
             />
             <span className="text-sm">Loading the scheduler…</span>
           </div>
@@ -58,7 +58,7 @@ export function BookingEmbed({ url }: { url: string }) {
         src={src}
         title="Schedule a call with VantageLabsAI"
         onLoad={() => setLoaded(true)}
-        className="h-full w-full rounded-2xl border-0"
+        className="h-full w-full border-0"
       />
     </div>
   );

@@ -4,14 +4,14 @@
 export type ContactSubmission = {
   name: string;
   email: string;
-  company?: string;
+  budget?: string;
   message: string;
 };
 
 export function buildTeamNotification({
   name,
   email,
-  company,
+  budget,
   message,
 }: ContactSubmission): { subject: string; text: string } {
   return {
@@ -19,7 +19,7 @@ export function buildTeamNotification({
     text: [
       `Name: ${name}`,
       `Email: ${email}`,
-      company ? `Company: ${company}` : null,
+      budget ? `Budget: ${budget}` : null,
       "",
       message,
     ]

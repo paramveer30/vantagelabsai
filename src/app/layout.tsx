@@ -1,28 +1,32 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
+import {
+  Bricolage_Grotesque,
+  Fraunces,
+  Geist,
+  Geist_Mono,
+  Instrument_Serif,
+} from "next/font/google";
 import { CookieConsent } from "@/components/cookie-consent";
-import { SiteBackground } from "@/components/site-background";
+import { ScrollEffects } from "@/components/scroll-effects";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import { WelcomeIntro } from "@/components/welcome-intro";
+import { TextureBackground } from "@/components/texture-background";
 import { site } from "@/lib/site";
 import "./globals.css";
 
-// Runs while the HTML is parsing, before anything paints. Marks the
-// document as JS-capable (so CSS can keep scroll-reveal content visible
-// when JS is absent), then arms the first-load welcome so the page chrome
-// is hidden from the first frame. The welcome is skipped where there's no
-// particle V to form (reduced motion, narrow viewports); WelcomeIntro
-// clears the attributes when the sequence ends.
-const welcomeGuard = `(function(){try{var d=document.documentElement;
-d.classList.add('js');
-if(matchMedia('(prefers-reduced-motion: reduce)').matches||matchMedia('(max-width: 768px)').matches)return;
-d.setAttribute('data-welcome','pending');
-d.setAttribute('data-welcome-route',location.pathname==='/'?'home':'page');
-}catch(e){}})();`;
+// Runs before first paint. `anim` arms the entrance styles (words held
+// below their line, chart bars at zero); without JS, or under reduced
+// motion, it is never set and everything renders in its finished state.
+const motionGuard = `(function(){try{var d=document.documentElement;d.classList.add('js');if(!matchMedia('(prefers-reduced-motion: reduce)').matches)d.classList.add('anim');}catch(e){}})();`;
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-bricolage",
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+});
+
+const geist = Geist({
+  variable: "--font-geist",
   subsets: ["latin"],
 });
 
@@ -31,10 +35,19 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-display",
+// Brand face for a few of the client-style product screens in the
+// "Who we build for" switcher (a grocer, a vet, an accounting firm).
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
   subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  weight: ["500", "600"],
+});
+
+const instrument = Instrument_Serif({
+  variable: "--font-instrument",
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
 });
 
 export const metadata: Metadata = {
@@ -76,7 +89,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#060810",
+  themeColor: "#02070A",
 };
 
 // Organization schema for search engines. Kept in sync with lib/site.ts.
@@ -98,25 +111,35 @@ const orgJsonLd = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    // suppressHydrationWarning: the welcome guard adds data-welcome[-route]
-    // to <html> before hydration.
+    // suppressHydrationWarning: the motion guard adds classes to <html>
+    // before hydration.
     <html
       lang="en"
       data-scroll-behavior="smooth"
-      className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} h-full antialiased`}
+      className={`${bricolage.variable} ${geist.variable} ${geistMono.variable} ${instrument.variable} ${fraunces.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body className="flex min-h-full flex-col">
-        <script dangerouslySetInnerHTML={{ __html: welcomeGuard }} />
+        <script dangerouslySetInnerHTML={{ __html: motionGuard }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
         />
-        <SiteBackground />
-        <SiteHeader />
-        <main className="flex-1">{children}</main>
-        <SiteFooter />
-        <WelcomeIntro />
+        <a
+          href="#main"
+          className="btn btn-primary btn-sm fixed top-2 left-2 z-[70] -translate-y-24 focus:translate-y-0"
+        >
+          <span>Skip to content</span>
+        </a>
+        <TextureBackground />
+        <ScrollEffects />
+        <div className="site-layer flex min-h-full flex-1 flex-col">
+          <SiteHeader />
+          <main id="main" className="flex-1">
+            {children}
+          </main>
+          <SiteFooter />
+        </div>
         <CookieConsent />
       </body>
     </html>

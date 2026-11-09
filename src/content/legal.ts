@@ -3,7 +3,7 @@
 // site actually works today: a static marketing site with a contact form
 // (emailed via Resend), Cal.com for booking, hosted on Vercel, with no
 // analytics or advertising trackers. Revisit both documents whenever that
-// changes — and have a professional review them before relying on them.
+// changes, and have a professional review them before relying on them.
 
 import { site } from "@/lib/site";
 
@@ -22,7 +22,7 @@ export type LegalDoc = {
 export const legalEffectiveDate = "2026-09-06";
 
 export const legalDisclaimer =
-  "This page explains, in plain terms, how this website works and what happens to the limited information it collects. It is provided for transparency, not as legal advice — have a qualified professional review it before you rely on it for your business.";
+  "This page explains, in plain terms, how this website works and what happens to the limited information it collects. It is provided for transparency, not as legal advice. Have a qualified professional review it before you rely on it for your business.";
 
 export const privacyPolicy: LegalDoc = {
   slug: "privacy",
@@ -34,8 +34,8 @@ export const privacyPolicy: LegalDoc = {
     {
       heading: "Information we collect",
       body: [
-        "Information you give us. When you submit the contact form we receive your name, email address, an optional company name, and your message. When you book a call we receive your name, email address, the time you choose, and anything else you add in the booking form.",
-        "Information collected automatically. Our host keeps standard server logs — IP address, browser user-agent, timestamps, and the pages requested — for a short period, to keep the site running and to rate-limit abuse of the contact form. The site sets no analytics, advertising, or cross-site tracking cookies.",
+        "Information you give us. When you submit the contact form we receive your name, email address, your message, and an optional budget range. When you book a call we receive your name, email address, the time you choose, and anything else you add in the booking form.",
+        "Information collected automatically. Our host keeps standard server logs (IP address, browser user-agent, timestamps, and the pages requested) for a short period, to keep the site running and to rate-limit abuse of the contact form. The site sets no analytics, advertising, or cross-site tracking cookies.",
       ],
     },
     {
@@ -71,7 +71,7 @@ export const privacyPolicy: LegalDoc = {
       heading: "Your rights",
       body: [
         `You can ask us to access, correct, or delete the information you have sent us, or to stop using it. Email ${site.email} and we will respond within a reasonable time.`,
-        "Depending on where you live — for example under UK or EU GDPR, or California's privacy laws — you may have additional rights, including the right to complain to a data protection regulator.",
+        "Depending on where you live (for example under UK or EU GDPR, or California's privacy laws), you may have additional rights, including the right to complain to a data protection regulator.",
       ],
     },
     {

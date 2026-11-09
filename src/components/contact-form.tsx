@@ -1,43 +1,35 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { budgetOptions } from "@/lib/site";
 
 type Status = "idle" | "submitting" | "success" | "error";
 type Field = "name" | "email" | "message";
 type Errors = Partial<Record<Field, string>>;
 
-const fieldClass =
-  "mt-1.5 w-full rounded-lg border bg-surface px-3.5 py-2.5 text-sm text-foreground outline-none transition-colors placeholder:text-muted/50 focus:ring-2 focus:ring-brand/30";
-const labelClass = "text-sm font-medium text-foreground";
-
-// Border colour swaps to danger once a field has an error.
-function inputClass(hasError: boolean) {
-  return `${fieldClass} ${
-    hasError
-      ? "border-danger focus:border-danger"
-      : "border-border focus:border-brand"
-  }`;
-}
-
 const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function validate(data: Record<string, string>): Errors {
   const errors: Errors = {};
-  if (!data.name?.trim()) errors.name = "Please enter your name.";
-  if (!data.email?.trim()) errors.email = "Please enter your email address.";
+  if (!data.name?.trim()) errors.name = "Enter your name.";
+  if (!data.email?.trim()) errors.email = "Enter your email address.";
   else if (!emailRe.test(data.email.trim()))
-    errors.email = "That doesn't look like a valid email address.";
+    errors.email = "Enter an email address like name@example.com.";
   if (!data.message?.trim())
-    errors.message = "Tell us a little about what you need.";
+    errors.message = "Tell us a little about what you need built.";
   return errors;
 }
 
+// Name, email, message, and an optional budget. Every field has a visible
+// label; errors are linked with aria-describedby and the first invalid
+// field receives focus on submit. Fully keyboard operable: no custom
+// widgets, the budget is a native select.
 export function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
   const [errors, setErrors] = useState<Errors>({});
-  // Once the form has been submitted once, re-check fields as they change
-  // so a corrected field clears its error without another submit.
+  // After the first submit, re-check as fields change so a fixed field
+  // clears its error without another submit.
   const submitted = useRef(false);
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -58,8 +50,9 @@ export function ContactForm() {
 
     const found = validate(currentData());
     setErrors(found);
-    if (Object.keys(found).length > 0) {
-      form.querySelector<HTMLElement>(`[name="${Object.keys(found)[0]}"]`)?.focus();
+    const first = Object.keys(found)[0];
+    if (first) {
+      form.querySelector<HTMLElement>(`[name="${first}"]`)?.focus();
       return;
     }
 
@@ -67,17 +60,21 @@ export function ContactForm() {
     setError(null);
 
     try {
+      const data = currentData();
+      if (data.budget === budgetOptions[0]) delete data.budget;
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(Object.fromEntries(new FormData(form))),
+        body: JSON.stringify(data),
       });
 
       if (!res.ok) {
-        const body = (await res.json().catch(() => null)) as
-          | { error?: string }
-          | null;
-        throw new Error(body?.error ?? "Something went wrong. Try again.");
+        const body = (await res.json().catch(() => null)) as {
+          error?: string;
+        } | null;
+        throw new Error(
+          body?.error ?? "The message didn't send. Try again, or email us.",
+        );
       }
 
       form.reset();
@@ -86,26 +83,30 @@ export function ContactForm() {
       setStatus("success");
     } catch (err) {
       setStatus("error");
-      setError(err instanceof Error ? err.message : "Something went wrong.");
+      setError(
+        err instanceof Error
+          ? err.message
+          : "The message didn't send. Try again, or email us.",
+      );
     }
   }
 
   if (status === "success") {
     return (
-      <div className="flex h-full min-h-[280px] flex-col items-center justify-center gap-3 text-center">
-        <span
-          aria-hidden="true"
-          className="grid h-11 w-11 place-items-center rounded-full border border-accent/40 bg-accent/10 text-lg text-accent"
-        >
-          ✓
-        </span>
-        <p className="font-semibold">Thanks, we got your message.</p>
-        <p className="max-w-xs text-sm text-muted">
+      <div
+        className="grid min-h-[280px] place-content-center gap-3 text-center"
+        role="status"
+      >
+        <p className="display text-2xl">Thanks, we got your message.</p>
+        <p className="copy mx-auto max-w-xs">
           We&apos;ll get back to you within a business day.
         </p>
       </div>
     );
   }
+
+  const describedBy = (field: Field) =>
+    errors[field] ? `${field}-error` : undefined;
 
   return (
     <form
@@ -113,10 +114,10 @@ export function ContactForm() {
       onSubmit={handleSubmit}
       onChange={revalidate}
       noValidate
-      className="flex h-full flex-col gap-4"
+      className="grid gap-5"
     >
-      {/* Honeypot: hidden from people, catnip for bots. Submitted with the
-          rest of the form; the API drops anything with this filled in. */}
+      {/* Honeypot: hidden from people, filled in by bots. The API drops
+          anything with this set. */}
       <div
         aria-hidden="true"
         className="absolute -left-[9999px] h-0 w-0 overflow-hidden"
@@ -132,106 +133,88 @@ export function ContactForm() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <div>
-          <label htmlFor="name" className={labelClass}>
-            Name
-          </label>
+        <div className="field">
+          <label htmlFor="name">Name</label>
           <input
             id="name"
             name="name"
             required
             autoComplete="name"
-            placeholder="Jane Doe"
             aria-invalid={errors.name ? true : undefined}
-            aria-describedby={errors.name ? "name-error" : undefined}
-            className={inputClass(!!errors.name)}
+            aria-describedby={describedBy("name")}
           />
           {errors.name && (
-            <p id="name-error" role="alert" className="mt-1.5 text-xs text-danger">
+            <p id="name-error" className="error">
               {errors.name}
             </p>
           )}
         </div>
 
-        <div>
-          <label htmlFor="email" className={labelClass}>
-            Email
-          </label>
+        <div className="field">
+          <label htmlFor="email">Email</label>
           <input
             id="email"
             name="email"
             type="email"
             required
             autoComplete="email"
-            placeholder="jane@company.com"
+            inputMode="email"
             aria-invalid={errors.email ? true : undefined}
-            aria-describedby={errors.email ? "email-error" : undefined}
-            className={inputClass(!!errors.email)}
+            aria-describedby={describedBy("email")}
           />
           {errors.email && (
-            <p
-              id="email-error"
-              role="alert"
-              className="mt-1.5 text-xs text-danger"
-            >
+            <p id="email-error" className="error">
               {errors.email}
             </p>
           )}
         </div>
       </div>
 
-      <div>
-        <label htmlFor="company" className={labelClass}>
-          Company <span className="font-normal text-muted">(optional)</span>
-        </label>
-        <input
-          id="company"
-          name="company"
-          autoComplete="organization"
-          placeholder="Acme Inc."
-          className={inputClass(false)}
-        />
-      </div>
-
-      <div className="flex flex-1 flex-col">
-        <label htmlFor="message" className={labelClass}>
-          What are you looking to build?
-        </label>
+      <div className="field">
+        <label htmlFor="message">What do you want built?</label>
         <textarea
           id="message"
           name="message"
           required
           rows={5}
-          placeholder="A booking system, an internal tool, an AI assistant…"
+          placeholder="For example: a booking system for our clinic, or a way to stop retyping invoices."
           aria-invalid={errors.message ? true : undefined}
-          aria-describedby={errors.message ? "message-error" : undefined}
-          className={`${inputClass(!!errors.message)} flex-1 resize-y`}
+          aria-describedby={describedBy("message")}
         />
         {errors.message && (
-          <p
-            id="message-error"
-            role="alert"
-            className="mt-1.5 text-xs text-danger"
-          >
+          <p id="message-error" className="error">
             {errors.message}
           </p>
         )}
       </div>
 
+      <div className="field">
+        <label htmlFor="budget">
+          Budget <span className="optional">(optional)</span>
+        </label>
+        <select id="budget" name="budget" defaultValue={budgetOptions[0]}>
+          {budgetOptions.map((option) => (
+            <option key={option}>{option}</option>
+          ))}
+        </select>
+      </div>
+
       {status === "error" && (
-        <p className="text-sm text-danger" role="alert">
+        <p className="m-0 text-sm text-bad" role="alert">
           {error}
         </p>
       )}
 
-      <button
-        type="submit"
-        disabled={status === "submitting"}
-        aria-busy={status === "submitting"}
-        className="w-full rounded-full bg-brand px-6 py-3 text-sm font-medium text-brand-foreground transition-colors hover:bg-brand-hover disabled:opacity-60 sm:w-auto sm:self-start"
-      >
-        {status === "submitting" ? "Sending…" : "Send message"}
-      </button>
+      <div>
+        <button
+          type="submit"
+          disabled={status === "submitting"}
+          aria-busy={status === "submitting"}
+          className="btn btn-primary"
+        >
+          <span>{status === "submitting" ? "Sending…" : "Send message"}</span>
+        </button>
+      </div>
     </form>
   );
 }

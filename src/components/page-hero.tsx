@@ -1,37 +1,31 @@
-import { Container } from "@/components/container";
+import { SplitText } from "@/components/split-text";
 
+// Inner-page opener. Sits on a bright stretch of the texture with a dark
+// scrim on the text side; the title's last word can be set as the orange
+// serif accent.
 export function PageHero({
-  eyebrow,
+  kicker,
   title,
+  accent,
   subtitle,
 }: {
-  eyebrow: string;
+  kicker: string;
   title: string;
+  accent?: string;
   subtitle: string;
 }) {
   return (
-    <Container className="relative isolate py-28 md:py-36">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 -top-28 -z-10 mx-auto h-[300px] max-w-[1000px] blur-[80px] md:h-[440px] md:blur-[130px]"
-        style={{
-          background:
-            "radial-gradient(58% 58% at 50% 40%, rgba(58,208,255,0.20), rgba(47,107,255,0.10) 46%, transparent 74%)",
-        }}
-      />
-
-      <div className="flex items-center gap-4">
-        <span className="eyebrow">{eyebrow}</span>
-        <span className="h-px w-24 bg-gradient-to-r from-accent/70 to-transparent" />
+    <section className="page-hero" data-inten="1" data-cap="0.9">
+      <div className="wrap inner">
+        <span className="kicker">{kicker}</span>
+        <SplitText
+          as="h1"
+          className="display h1"
+          text={title}
+          accent={accent}
+        />
+        <p className="lede">{subtitle}</p>
       </div>
-
-      <h1 className="display mt-6 text-balance text-6xl font-semibold leading-[1] tracking-[-0.035em] sm:text-7xl md:text-8xl">
-        <span className="wordmark">{title}</span>
-      </h1>
-
-      <p className="mt-8 max-w-2xl text-lg leading-relaxed text-muted md:text-xl">
-        {subtitle}
-      </p>
-    </Container>
+    </section>
   );
 }

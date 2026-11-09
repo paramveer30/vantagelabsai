@@ -1,5 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
+import { BrandMark } from "./brand-mark";
 import { nav, site } from "@/lib/site";
 import { Wordmark } from "./wordmark";
 
@@ -7,76 +7,57 @@ export function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="site-footer bg-background/40 md:backdrop-blur-sm">
-      <div className="mx-auto max-w-6xl px-6 py-14">
-        <div className="grid gap-10 md:grid-cols-[1.5fr_1fr_1fr]">
-          <div className="max-w-xs">
-            <Link href="/" className="group inline-flex items-center gap-2.5">
-              <Image
-                src="/brand/logo-mark.png"
-                alt=""
-                width={28}
-                height={28}
-                className="logo-mark"
-              />
-              <Wordmark className="display text-[1.05rem] font-semibold tracking-tight" />
+    <footer className="site-footer" data-inten="0.5" data-cap="0.25">
+      <div className="wrap inner">
+        <div className="footer-cols">
+          <div className="grid content-start gap-3">
+            <Link href="/" className="brand">
+              <BrandMark size={30} />
+              <Wordmark />
             </Link>
-            <p className="mt-3 text-sm leading-relaxed text-muted">
-              {site.tagline}.
-            </p>
-            <a
-              href={site.bookingUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="footer-cta mt-5 inline-flex items-center gap-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.16em]"
-            >
-              Book a call
-              <span aria-hidden>&rarr;</span>
-            </a>
+            <p className="copy text-sm">{site.tagline}.</p>
           </div>
 
-          <nav className="flex flex-col gap-2.5">
-            <p className="footer-heading">Sitemap</p>
-            {nav.map((item) => (
-              <Link key={item.href} href={item.href} className="footer-link">
-                {item.label}
-              </Link>
-            ))}
+          <nav aria-labelledby="footer-pages">
+            <h2 id="footer-pages" className="footer-heading">
+              Pages
+            </h2>
+            <ul className="footer-list">
+              {nav.map((item) => (
+                <li key={item.href}>
+                  <Link href={item.href}>{item.label}</Link>
+                </li>
+              ))}
+            </ul>
           </nav>
 
-          <div className="flex flex-col gap-2.5">
-            <p className="footer-heading">Get in touch</p>
-            <a href={`mailto:${site.email}`} className="footer-link">
-              {site.email}
-            </a>
-            <a
-              href={site.bookingUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="footer-link"
-            >
-              Schedule a call
-            </a>
+          <div>
+            <h2 className="footer-heading">Get in touch</h2>
+            <ul className="footer-list">
+              <li>
+                <Link href="/contact">Book a call</Link>
+              </li>
+              <li>
+                <a href={`mailto:${site.email}`}>{site.email}</a>
+              </li>
+            </ul>
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col gap-3 border-t border-border pt-6 text-xs text-muted sm:flex-row sm:items-center sm:justify-between">
-          <p>
-            &copy; {year} <Wordmark className="font-medium text-foreground/70" />.
-            All rights reserved.
+        <div className="footer-base">
+          <p className="m-0">
+            &copy; {year} {site.name}
           </p>
-          <nav className="flex gap-4">
-            <Link href="/privacy" className="footer-link">
-              Privacy
-            </Link>
-            <Link href="/terms" className="footer-link">
-              Terms
-            </Link>
+          <nav aria-label="Legal">
+            <Link href="/privacy">Privacy Policy</Link>
+            <Link href="/terms">Terms and Conditions</Link>
           </nav>
-          <p className="text-[0.68rem] uppercase tracking-[0.14em]">
-            Custom software &middot; AI integration &middot; ongoing support
-          </p>
         </div>
+
+        {/* Decorative sign-off; the company name is already in the text above. */}
+        <p className="footer-wordmark" aria-hidden="true">
+          <Wordmark />
+        </p>
       </div>
     </footer>
   );

@@ -13,7 +13,7 @@ import { POST } from "./route";
 const validBody = {
   name: "Ada Lovelace",
   email: "ada@example.com",
-  company: "Analytical Engines",
+  budget: "Small project",
   message: "We need a scheduling tool for our workshop.",
 };
 

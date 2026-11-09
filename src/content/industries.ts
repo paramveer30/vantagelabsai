@@ -1,19 +1,5 @@
-// Picks which animated scene the industries page renders beside each
-// entry (see industry-scene.tsx).
-export type IndustryVariant =
-  | "restaurants"
-  | "retail"
-  | "healthcare"
-  | "veterinary"
-  | "professional"
-  | "trades"
-  | "fitness"
-  | "nonprofits"
-  | "startups";
-
 export type Industry = {
   slug: string;
-  variant: IndustryVariant;
   name: string;
   summary: string;
   description: string;
@@ -23,7 +9,6 @@ export type Industry = {
 export const industries: Industry[] = [
   {
     slug: "restaurants-cafes",
-    variant: "restaurants",
     name: "Restaurants & Cafés",
     summary:
       "Take orders, fill tables, and keep the kitchen moving without the paper pile.",
@@ -38,7 +23,6 @@ export const industries: Industry[] = [
   },
   {
     slug: "retail-local-shops",
-    variant: "retail",
     name: "Retail & Local Shops",
     summary:
       "Know what's on the shelf, what's selling, and what to reorder before it runs out.",
@@ -53,7 +37,6 @@ export const industries: Industry[] = [
   },
   {
     slug: "healthcare-clinics",
-    variant: "healthcare",
     name: "Healthcare & Clinics",
     summary:
       "Fill the schedule, collect intake up front, and cut the front-desk phone tag.",
@@ -68,7 +51,6 @@ export const industries: Industry[] = [
   },
   {
     slug: "veterinary-practices",
-    variant: "veterinary",
     name: "Veterinary Practices",
     summary:
       "Every pet's history in one place, and owners who actually show up for the recheck.",
@@ -83,7 +65,6 @@ export const industries: Industry[] = [
   },
   {
     slug: "professional-services",
-    variant: "professional",
     name: "Professional Services",
     summary:
       "Move a client from enquiry to invoice without work slipping between inboxes.",
@@ -98,7 +79,6 @@ export const industries: Industry[] = [
   },
   {
     slug: "trades-field-services",
-    variant: "trades",
     name: "Trades & Field Services",
     summary:
       "Dispatch the right crew, keep the customer posted, and quote from the van.",
@@ -113,7 +93,6 @@ export const industries: Industry[] = [
   },
   {
     slug: "fitness-wellness",
-    variant: "fitness",
     name: "Fitness & Wellness",
     summary:
       "Fill classes, handle memberships, and let the front desk coach instead of admin.",
@@ -128,7 +107,6 @@ export const industries: Industry[] = [
   },
   {
     slug: "nonprofits-community",
-    variant: "nonprofits",
     name: "Nonprofits & Community",
     summary:
       "Raise more with less overhead: donations, donors, and reporting in one system.",
@@ -143,7 +121,6 @@ export const industries: Industry[] = [
   },
   {
     slug: "startups-tech-teams",
-    variant: "startups",
     name: "Startups & Tech Teams",
     summary:
       "Ship the MVP, wire up the internal tools, and add the AI features on your roadmap.",

@@ -3,11 +3,12 @@ import { Resend } from "resend";
 import { z } from "zod";
 
 import { buildAutoReply, buildTeamNotification } from "@/lib/contact-email";
+import { budgetOptions } from "@/lib/site";
 
 const schema = z.object({
   name: z.string().trim().min(1).max(100),
   email: z.email().max(200),
-  company: z.string().trim().max(100).optional(),
+  budget: z.enum(budgetOptions).optional(),
   message: z.string().trim().min(1).max(2000),
   // Honeypot: hidden in the form, so a value here means a bot filled it.
   website: z.string().max(100).optional(),
@@ -59,14 +60,14 @@ export async function POST(req: Request) {
     );
   }
 
-  const { name, email, company, message, website } = parsed.data;
+  const { name, email, budget, message, website } = parsed.data;
 
   // Honeypot tripped: accept the request so the bot moves on, drop the message.
   if (website && website.trim()) {
     return NextResponse.json({ ok: true });
   }
 
-  const submission = { name, email, company, message };
+  const submission = { name, email, budget, message };
 
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.CONTACT_FROM_EMAIL;

@@ -4,7 +4,7 @@ import { site } from "@/lib/site";
 // The social preview card, generated at build time (1200x630, the size
 // every platform expects). Replaces the old hand-exported PNG so it stays
 // in sync with the tagline and never balloons in file size.
-export const alt = `${site.name} — ${site.tagline}`;
+export const alt = `${site.name}: ${site.tagline}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -22,8 +22,8 @@ export default function OpengraphImage() {
           justifyContent: "space-between",
           padding: 80,
           background:
-            "linear-gradient(135deg, #060810 0%, #0c1120 55%, #0b1830 100%)",
-          color: "#eef2fb",
+            "radial-gradient(70% 90% at 85% 40%, #0287DE 0%, #014B80 38%, #02070A 78%)",
+          color: "#F2F5F7",
         }}
       >
         <div style={{ display: "flex", alignItems: "center" }}>
@@ -46,7 +46,7 @@ export default function OpengraphImage() {
             }}
           >
             <span>VantageLabs</span>
-            <span style={{ color: "#3ad0ff" }}>AI</span>
+            <span style={{ color: "#3AA6EE" }}>AI</span>
           </div>
         </div>
 
@@ -68,7 +68,7 @@ export default function OpengraphImage() {
               display: "flex",
               marginTop: 26,
               fontSize: 27,
-              color: "#8b98b4",
+              color: "#C3CDD5",
             }}
           >
             Web apps · AI automation · Ongoing support
@@ -79,7 +79,7 @@ export default function OpengraphImage() {
           style={{
             display: "flex",
             fontSize: 25,
-            color: "#3ad0ff",
+            color: "#FC734D",
             letterSpacing: "0.02em",
           }}
         >

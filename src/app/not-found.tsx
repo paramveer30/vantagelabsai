@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Container } from "@/components/container";
+import { SplitText } from "@/components/split-text";
 
 export const metadata: Metadata = {
   title: "Page not found",
@@ -8,21 +8,23 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
   return (
-    <Container className="flex min-h-[70vh] flex-col items-center justify-center py-28 text-center">
-      <p className="eyebrow">404</p>
-      <h1 className="display text-gradient mt-5 text-5xl font-semibold md:text-6xl">
-        Page not found
-      </h1>
-      <p className="mt-5 max-w-md text-lg text-muted">
-        The page you are after has moved or never existed. Check the address, or
-        head back to the homepage.
-      </p>
-      <Link
-        href="/"
-        className="mt-8 inline-block rounded-full bg-brand px-6 py-3 text-sm font-medium text-brand-foreground transition-colors hover:bg-brand-hover"
-      >
-        Back to home
-      </Link>
-    </Container>
+    <section className="page-hero" data-inten="1" data-cap="0.9">
+      <div className="wrap inner min-h-[70vh] content-center">
+        <span className="kicker">404</span>
+        <SplitText as="h1" className="display h1" text="This page doesn't" accent="exist" />
+        <p className="lede">
+          It may have moved, or the address has a typo. Check it, or go back to
+          the homepage.
+        </p>
+        <div className="actions">
+          <Link href="/" className="btn btn-primary">
+            <span>Back to the homepage</span>
+          </Link>
+          <Link href="/contact" className="btn btn-ghost">
+            <span>Contact us</span>
+          </Link>
+        </div>
+      </div>
+    </section>
   );
 }

@@ -11,6 +11,17 @@ export const site = {
   bookingUrl: "https://cal.com/vantagelabs/30min",
 } as const;
 
+// Options for the optional budget field on the contact form. The API only
+// accepts these exact values.
+// TODO(budget): replace the three size labels with real ranges, for
+// example "Under $X", "$X to $Y", "Over $Y". Keep "Not sure yet" first.
+export const budgetOptions = [
+  "Not sure yet",
+  "Small project",
+  "Medium project",
+  "Large project",
+] as const;
+
 export const nav = [
   { label: "Services", href: "/services" },
   { label: "Industries", href: "/industries" },

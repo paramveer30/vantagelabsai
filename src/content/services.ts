@@ -1,11 +1,8 @@
-// Picks which animated product vignette the services page renders beside
-// each entry.
-export type ServiceVariant = "software" | "ai" | "support";
-
 export type Service = {
   slug: string;
-  variant: ServiceVariant;
   title: string;
+  // Home-page link into this service's example build on /services.
+  exampleLabel: string;
   summary: string;
   description: string;
   examples: string[];
@@ -14,7 +11,7 @@ export type Service = {
 export const services: Service[] = [
   {
     slug: "custom-software",
-    variant: "software",
+    exampleLabel: "See the dashboard example",
     title: "Custom Software & Web Apps",
     summary: "The tools your business runs on, built to fit exactly how you work.",
     description:
@@ -28,7 +25,7 @@ export const services: Service[] = [
   },
   {
     slug: "ai-automation",
-    variant: "ai",
+    exampleLabel: "See the chatbot example",
     title: "AI & Automation Integration",
     summary: "AI that clears the busywork: answering, sorting, summarising, around the clock.",
     description:
@@ -42,11 +39,11 @@ export const services: Service[] = [
   },
   {
     slug: "ongoing-support",
-    variant: "support",
+    exampleLabel: "See a monthly support report",
     title: "Ongoing Support & Maintenance",
     summary: "We stay on after launch, fixing, improving, and keeping it fast.",
     description:
-      "Software needs upkeep. You get a team on call for bug fixes, new features, and keeping everything running as you grow, not a contractor who disappears at handoff.",
+      "Software needs upkeep. You get a team on call for bug fixes, new features, and keeping everything running as you grow.",
     examples: [
       "Monitoring & uptime",
       "Bug fixes",
