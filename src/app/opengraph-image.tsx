@@ -83,7 +83,7 @@ export default function OpengraphImage() {
             letterSpacing: "0.02em",
           }}
         >
-          vantagelabsai.com
+          {site.domain}
         </div>
       </div>
     ),

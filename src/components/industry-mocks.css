@@ -4,8 +4,8 @@
  * .ind-shot so the screens keep their own look without touching site
  * styles, and each screen adapts to its own width via @container.
  */
-.ind-shot h4,
-.ind-shot h5 {
+.ind-shot .mh4,
+.ind-shot .mh5 {
   font-weight: 600;
 }
 .ind-shot {
@@ -111,7 +111,7 @@
   background: #f2b544;
 }
 .ind-shot .tk-h.r {
-  background: #ef5b4c;
+  background: #c93a2b;
   color: #fff;
 }
 .ind-shot .tk-sub {
@@ -137,7 +137,7 @@
 }
 .ind-shot .tk li .al {
   display: inline-block;
-  background: #ef5b4c;
+  background: #c93a2b;
   color: #fff;
   font-size: 10px;
   font-weight: 700;
@@ -204,7 +204,7 @@
   justify-content: space-between;
   align-items: center;
 }
-.ind-shot .inv-top h4 {
+.ind-shot .inv-top .mh4 {
   margin: 0;
   font-size: 17px;
 }
@@ -215,7 +215,7 @@
   border: 1px solid #dedfda;
   border-radius: 8px;
   padding: 7px 10px;
-  color: #6b7178;
+  color: #5a6066;
 }
 .ind-shot .inv-btn {
   background: #1f3b2f;
@@ -257,7 +257,7 @@
   padding: 10px 12px;
 }
 .ind-shot .inv-card small {
-  color: #6b7178;
+  color: #5a6066;
   display: block;
 }
 .ind-shot .inv-card strong {
@@ -265,7 +265,7 @@
 }
 .ind-shot .inv-card em {
   font-style: normal;
-  color: #2e8b57;
+  color: #1f7349;
   font-size: 11px;
   margin-left: 6px;
 }
@@ -282,7 +282,7 @@
 .ind-shot .inv-tbl th {
   text-align: left;
   font-weight: 500;
-  color: #6b7178;
+  color: #5a6066;
   font-size: 11px;
   padding: 8px 10px;
   border-bottom: 1px solid #ecede8;
@@ -309,7 +309,7 @@
 }
 .ind-shot .prod small {
   display: block;
-  color: #8a9097;
+  color: #5f656b;
   font-size: 10.5px;
 }
 .ind-shot .bar {
@@ -417,11 +417,11 @@
 }
 .ind-shot .cal-h small {
   display: block;
-  color: #6a7686;
+  color: #56626f;
   font-weight: 400;
 }
 .ind-shot .cal-t {
-  color: #8793a2;
+  color: #5a6676;
   font-size: 10.5px;
   text-align: right;
   padding-right: 6px;
@@ -461,7 +461,7 @@
   font-weight: 600;
 }
 .ind-shot .ap .no {
-  color: #b4541a;
+  color: #943f0c;
   font-weight: 600;
 }
 .ind-shot .ap.np {
@@ -491,7 +491,7 @@
   align-content: start;
   background: #fafbfd;
 }
-.ind-shot .cal-side h5 {
+.ind-shot .cal-side .mh5 {
   margin: 0;
   font-size: 14px;
 }
@@ -503,7 +503,7 @@
   border-bottom: 1px solid #edf1f5;
 }
 .ind-shot .cal-side .row span:first-child {
-  color: #6a7686;
+  color: #56626f;
 }
 .ind-shot .cal-side .msg {
   background: #e6f0fd;
@@ -557,7 +557,7 @@
   color: #5a3410;
   flex: none;
 }
-.ind-shot .vet-head h4 {
+.ind-shot .vet-head .mh4 {
   margin: 0;
   font-size: 18px;
   font-family: var(--font-fraunces), Georgia, serif;
@@ -565,7 +565,7 @@
 }
 .ind-shot .vet-head p {
   margin: 0;
-  color: #7a6a5a;
+  color: #675849;
 }
 .ind-shot .chips {
   display: flex;
@@ -589,7 +589,7 @@
   gap: 18px;
   padding: 0 16px;
   border-bottom: 1px solid #efe6db;
-  color: #8a7a6a;
+  color: #6b5c4d;
 }
 .ind-shot .vet-tabs span {
   padding: 9px 0;
@@ -616,10 +616,10 @@
   border-radius: 10px;
   padding: 12px;
 }
-.ind-shot .vbox h5 {
+.ind-shot .vbox .mh5 {
   margin: 0 0 8px;
   font-size: 12px;
-  color: #7a6a5a;
+  color: #675849;
   font-weight: 500;
   display: flex;
   justify-content: space-between;
@@ -639,7 +639,7 @@
 }
 .ind-shot .vacc small {
   display: block;
-  color: #8a7a6a;
+  color: #6b5c4d;
 }
 .ind-shot .sms {
   background: #f1f3f6;
@@ -664,7 +664,7 @@
   padding: 7px 10px;
 }
 .ind-shot .sms small {
-  color: #7a8593;
+  color: #5a6470;
   font-size: 10.5px;
   text-align: center;
 }
@@ -688,7 +688,7 @@
   letter-spacing: 0.01em;
 }
 .ind-shot .cp-top span {
-  color: #7c7466;
+  color: #5f574b;
 }
 .ind-shot .cp-body {
   padding: 18px;
@@ -704,7 +704,7 @@
 .ind-shot .cp-hi {
   grid-column: 1 / -1;
 }
-.ind-shot .cp-hi h4 {
+.ind-shot .cp-hi .mh4 {
   margin: 0;
   font-family: var(--font-fraunces), Georgia, serif;
   font-size: 22px;
@@ -712,7 +712,7 @@
 }
 .ind-shot .cp-hi p {
   margin: 2px 0 0;
-  color: #7c7466;
+  color: #5f574b;
 }
 .ind-shot .cpc {
   background: #fff;
@@ -723,7 +723,7 @@
   gap: 10px;
   align-content: start;
 }
-.ind-shot .cpc h5 {
+.ind-shot .cpc .mh5 {
   margin: 0;
   font-size: 13px;
 }
@@ -734,7 +734,7 @@
 }
 .ind-shot .cp-steps div {
   font-size: 11px;
-  color: #7c7466;
+  color: #5f574b;
 }
 .ind-shot .cp-steps div::before {
   content: "";
@@ -786,7 +786,7 @@
   flex: 1;
 }
 .ind-shot .doc small {
-  color: #7c7466;
+  color: #5f574b;
 }
 .ind-shot .up {
   border: 1px solid #1f5d4c;
@@ -1111,7 +1111,7 @@
   display: flex;
   justify-content: space-around;
   padding: 10px 0 14px;
-  color: #6e7177;
+  color: #94979d;
   font-size: 10px;
   border-top: 1px solid #1e1f23;
 }
@@ -1144,14 +1144,14 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #1c8a5a;
+  background: #156b45;
   display: inline-block;
   box-shadow: inset -5px -5px 0 #f2b544;
 }
 .ind-shot .crm-top .tabs2 {
   display: flex;
   gap: 14px;
-  color: #5e7268;
+  color: #4f6159;
 }
 .ind-shot .crm-top .tabs2 .on {
   color: #14261f;
@@ -1182,7 +1182,7 @@
   padding: 10px 12px;
 }
 .ind-shot .crm-k small {
-  color: #5e7268;
+  color: #4f6159;
   display: block;
 }
 .ind-shot .crm-k strong {
@@ -1190,7 +1190,7 @@
 }
 .ind-shot .crm-k em {
   font-style: normal;
-  color: #1c8a5a;
+  color: #156b45;
   font-size: 11px;
   margin-left: 6px;
 }
@@ -1210,11 +1210,11 @@
   border-radius: 10px;
   padding: 12px;
 }
-.ind-shot .crm-card h5 {
+.ind-shot .crm-card .mh5 {
   margin: 0 0 8px;
   font-size: 12px;
   font-weight: 500;
-  color: #5e7268;
+  color: #4f6159;
   display: flex;
   justify-content: space-between;
 }
@@ -1222,7 +1222,7 @@
   font-size: 18px;
 }
 .ind-shot .camp small {
-  color: #5e7268;
+  color: #4f6159;
 }
 .ind-shot .therm {
   height: 10px;
@@ -1235,7 +1235,7 @@
   display: block;
   width: 72.4%;
   height: 100%;
-  background: linear-gradient(90deg, #1c8a5a, #3fb77e);
+  background: linear-gradient(90deg, #156b45, #3fb77e);
 }
 .ind-shot .donors {
   list-style: none;
@@ -1265,7 +1265,7 @@
 }
 .ind-shot .donors small {
   display: block;
-  color: #5e7268;
+  color: #4f6159;
 }
 .ind-shot .dt {
   font-size: 10.5px;
@@ -1326,7 +1326,7 @@
   border: 1px solid #252b33;
   border-radius: 7px;
   padding: 6px 10px;
-  color: #6b7480;
+  color: #8f97a2;
   display: flex;
   justify-content: space-between;
 }
@@ -1341,15 +1341,15 @@
   padding: 12px 14px;
   min-width: 0;
 }
-.ind-shot .adm-main h4 {
+.ind-shot .adm-main .mh4 {
   margin: 0 0 10px;
   font-size: 14px;
   color: #fff;
   display: flex;
   justify-content: space-between;
 }
-.ind-shot .adm-main h4 span {
-  color: #6b7480;
+.ind-shot .adm-main .mh4 span {
+  color: #8f97a2;
   font-weight: 400;
   font-size: 12px;
 }
@@ -1360,7 +1360,7 @@
 .ind-shot .adm th {
   text-align: left;
   font-weight: 500;
-  color: #6b7480;
+  color: #8f97a2;
   font-size: 11px;
   padding: 7px 8px;
   border-bottom: 1px solid #1c2128;
@@ -1418,7 +1418,7 @@
   gap: 12px;
   align-content: start;
 }
-.ind-shot .adm-drawer h5 {
+.ind-shot .adm-drawer .mh5 {
   margin: 0;
   color: #fff;
   font-size: 14px;
@@ -1431,7 +1431,7 @@
   gap: 5px 12px;
 }
 .ind-shot .kv span:nth-child(odd) {
-  color: #6b7480;
+  color: #8f97a2;
 }
 .ind-shot .kv span:nth-child(even) {
   text-align: right;
@@ -1466,5 +1466,5 @@
 }
 .ind-shot .log small {
   display: block;
-  color: #6b7480;
+  color: #8f97a2;
 }

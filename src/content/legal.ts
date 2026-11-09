@@ -28,8 +28,8 @@ export const privacyPolicy: LegalDoc = {
   slug: "privacy",
   hero: "Privacy",
   title: "Privacy Policy",
-  description: `How ${site.name} handles the information collected through vantagelabsai.com.`,
-  intro: `This policy covers vantagelabsai.com. ${site.name} keeps data collection to the minimum the site needs to work and to let you get in touch.`,
+  description: `How ${site.name} handles the information collected through ${site.domain}.`,
+  intro: `This policy covers ${site.domain}. ${site.name} keeps data collection to the minimum the site needs to work and to let you get in touch.`,
   sections: [
     {
       heading: "Information we collect",
@@ -111,13 +111,13 @@ export const termsOfService: LegalDoc = {
   slug: "terms",
   hero: "Terms",
   title: "Terms & Conditions",
-  description: `The terms for using the ${site.name} website at vantagelabsai.com.`,
-  intro: `These terms govern your use of vantagelabsai.com. By using the site you agree to them; if you do not agree, please do not use the site.`,
+  description: `The terms for using the ${site.name} website at ${site.domain}.`,
+  intro: `These terms govern your use of ${site.domain}. By using the site you agree to them; if you do not agree, please do not use the site.`,
   sections: [
     {
       heading: "About this site",
       body: [
-        `vantagelabsai.com is an informational site that describes ${site.name}'s services and gives you ways to get in touch. Browsing the site or sending a message does not create a client relationship. Any paid work is governed by a separate written agreement between us.`,
+        `${site.domain} is an informational site that describes ${site.name}'s services and gives you ways to get in touch. Browsing the site or sending a message does not create a client relationship. Any paid work is governed by a separate written agreement between us.`,
       ],
     },
     {

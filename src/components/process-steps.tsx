@@ -4,7 +4,15 @@ import { processSteps } from "@/content/process";
 // it (ScrollEffects sets --p on [data-rail] and lights each step). The
 // numbers are real order, not decoration. `detailed` adds each step's
 // outputs for the Process page.
-export function ProcessSteps({ detailed = false }: { detailed?: boolean }) {
+export function ProcessSteps({
+  detailed = false,
+  headingLevel = 3,
+}: {
+  detailed?: boolean;
+  /** 3 under a section h2 (home); 2 directly under the page h1 (Process). */
+  headingLevel?: 2 | 3;
+}) {
+  const Heading = headingLevel === 2 ? "h2" : "h3";
   return (
     <div className="steps-wrap" data-rail>
       <div className="rail" aria-hidden="true">
@@ -17,10 +25,10 @@ export function ProcessSteps({ detailed = false }: { detailed?: boolean }) {
               {String(step.step).padStart(2, "0")}
             </span>
             <div>
-              <h3 className="h3">
+              <Heading className="h3">
                 <span className="sr-only">Step {step.step}: </span>
                 {step.title}
-              </h3>
+              </Heading>
               <p>{step.description}</p>
               <p className="deliverable">You get: {step.deliverable}</p>
               {detailed ? (

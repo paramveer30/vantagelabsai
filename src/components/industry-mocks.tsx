@@ -150,7 +150,7 @@ function InventoryApp() {
         </div>
         <div className="inv-main">
           <div className="inv-top">
-            <h4>Inventory</h4>
+            <p className="mh4">Inventory</p>
             <span className="inv-search">Search 1,284 products</span>
             <span className="inv-btn">Create purchase order</span>
           </div>
@@ -395,7 +395,7 @@ function ClinicSchedule() {
           </div>
         </div>
         <div className="cal-side">
-          <h5>Maya Chen</h5>
+          <p className="mh5">Maya Chen</p>
           <div className="row">
             <span>Visit</span>
             <span>New patient, 9:00</span>
@@ -436,7 +436,7 @@ function VetRecord() {
         <div className="vet-head">
           <div className="av">B</div>
           <div>
-            <h4>Biscuit</h4>
+            <p className="mh4">Biscuit</p>
             <p>
               Golden Retriever · male, neutered · 6 yrs · Owner: Jordan Reyes
             </p>
@@ -456,10 +456,10 @@ function VetRecord() {
         </div>
         <div className="vet-body">
           <div className="vbox">
-            <h5>
+            <p className="mh5">
               <span>Weight, last 12 months</span>
               <span>kg</span>
-            </h5>
+            </p>
             <svg
               viewBox="0 0 300 120"
               width="100%"
@@ -471,7 +471,7 @@ function VetRecord() {
                 <line x1="24" y1="60" x2="296" y2="60" />
                 <line x1="24" y1="100" x2="296" y2="100" />
               </g>
-              <g fill="#9A8A7A" fontSize="9" textAnchor="end">
+              <g fill="#73655a" fontSize="9" textAnchor="end">
                 <text x="20" y="23">
                   32
                 </text>
@@ -504,7 +504,7 @@ function VetRecord() {
               >
                 31.4
               </text>
-              <g fill="#9A8A7A" fontSize="9" textAnchor="middle">
+              <g fill="#73655a" fontSize="9" textAnchor="middle">
                 <text x="28" y="116">
                   Dec
                 </text>
@@ -516,10 +516,10 @@ function VetRecord() {
                 </text>
               </g>
             </svg>
-            <h5 style={{ marginTop: "12px" }}>
+            <p className="mh5" style={{ marginTop: "12px" }}>
               <span>Vaccines</span>
               <span></span>
-            </h5>
+            </p>
             <ul className="vacc">
               <li>
                 <span>
@@ -542,10 +542,10 @@ function VetRecord() {
             </ul>
           </div>
           <div className="vbox">
-            <h5>
+            <p className="mh5">
               <span>Text thread with owner</span>
               <span>(555) owner</span>
-            </h5>
+            </p>
             <div className="sms">
               <small>Mon 9:14 AM</small>
               <div className="in">
@@ -576,11 +576,11 @@ function ClientPortal() {
         </div>
         <div className="cp-body">
           <div className="cp-hi">
-            <h4>Good afternoon, Dana</h4>
+            <p className="mh4">Good afternoon, Dana</p>
             <p>Your 2025 corporate tax return is in review.</p>
           </div>
           <div className="cpc">
-            <h5>2025 corporate tax return</h5>
+            <p className="mh5">2025 corporate tax return</p>
             <div className="cp-steps">
               <div className="d">Documents</div>
               <div className="c">Review</div>
@@ -625,18 +625,18 @@ function ClientPortal() {
           </div>
           <div style={{ display: "grid", gap: "14px", alignContent: "start" }}>
             <div className="cpc">
-              <h5>Invoice #1042</h5>
+              <p className="mh5">Invoice #1042</p>
               <div className="inv-big num">$2,850.00</div>
-              <small style={{ color: "#7C7466" }}>
+              <small style={{ color: "#5f574b" }}>
                 Due Dec 1 · Bookkeeping, Q3
               </small>
               <div className="pay">Pay invoice</div>
             </div>
             <div className="cpc">
-              <h5>Messages</h5>
+              <p className="mh5">Messages</p>
               <div className="msgc">
-                <b>Priya Okafor</b>We&apos;re reviewing the payroll summary and will
-                be back to you Thursday with any questions.
+                <b>Priya Okafor</b>We&apos;re reviewing the payroll summary and
+                will be back to you Thursday with any questions.
               </div>
             </div>
           </div>
@@ -766,7 +766,7 @@ function DispatchBoard() {
                 </svg>
               </div>
               <div className="p">
-                <small style={{ color: "#6A7686" }}>Northline Heating</small>
+                <small style={{ color: "#56626f" }}>Northline Heating</small>
                 <b>Marco is 12 min away</b>
                 <span>Furnace not heating · arriving ~2:40 PM</span>
                 <div className="bar2">
@@ -950,10 +950,10 @@ function DonorCrm() {
           </div>
           <div className="crm-row">
             <div className="crm-card">
-              <h5>
+              <p className="mh5">
                 <span>Donations, last 12 weeks</span>
                 <span>$ thousands</span>
-              </h5>
+              </p>
               <svg
                 viewBox="0 0 320 130"
                 width="100%"
@@ -965,7 +965,7 @@ function DonorCrm() {
                   <line x1="22" y1="60" x2="316" y2="60" />
                   <line x1="22" y1="100" x2="316" y2="100" />
                 </g>
-                <g fill="#7C8F86" fontSize="9" textAnchor="end">
+                <g fill="#5b6b64" fontSize="9" textAnchor="end">
                   <text x="18" y="23">
                     15
                   </text>
@@ -978,16 +978,16 @@ function DonorCrm() {
                 </g>
                 <path
                   d="M26 84 L52 80 L78 86 L104 72 L130 70 L156 74 L182 60 L208 52 L234 56 L260 40 L286 34 L312 30 L312 120 L26 120 Z"
-                  fill="#1C8A5A"
+                  fill="#156b45"
                   opacity=".12"
                 />
                 <path
                   d="M26 84 L52 80 L78 86 L104 72 L130 70 L156 74 L182 60 L208 52 L234 56 L260 40 L286 34 L312 30"
                   fill="none"
-                  stroke="#1C8A5A"
+                  stroke="#156b45"
                   strokeWidth="2.2"
                 />
-                <circle cx="312" cy="30" r="4" fill="#1C8A5A" />
+                <circle cx="312" cy="30" r="4" fill="#156b45" />
                 <line
                   x1="182"
                   y1="12"
@@ -1009,13 +1009,13 @@ function DonorCrm() {
               </div>
             </div>
             <div className="crm-card">
-              <h5>
+              <p className="mh5">
                 <span>Needs attention</span>
                 <span>Donors</span>
-              </h5>
+              </p>
               <ul className="donors">
                 <li>
-                  <span className="in" style={{ background: "#1C8A5A" }}>
+                  <span className="in" style={{ background: "#156b45" }}>
                     MG
                   </span>
                   <span>
@@ -1024,7 +1024,7 @@ function DonorCrm() {
                   <span className="dt m">Monthly</span>
                 </li>
                 <li>
-                  <span className="in" style={{ background: "#C77D18" }}>
+                  <span className="in" style={{ background: "#94590d" }}>
                     EL
                   </span>
                   <span>
@@ -1071,12 +1071,12 @@ function AdminPanel() {
             <span>Search accounts, users, invoices</span>
             <kbd>⌘K</kbd>
           </span>
-          <span style={{ color: "#6B7480" }}>sam@northpine.io</span>
+          <span style={{ color: "#8f97a2" }}>sam@northpine.io</span>
         </div>
         <div className="adm-main">
-          <h4>
+          <p className="mh4">
             Accounts <span>2,184 total</span>
-          </h4>
+          </p>
           <table>
             <thead>
               <tr>
@@ -1167,7 +1167,7 @@ function AdminPanel() {
           </table>
         </div>
         <div className="adm-drawer">
-          <h5>fernwood-bakery</h5>
+          <p className="mh5">fernwood-bakery</p>
           <div className="kv">
             <span>Owner</span>
             <span>dana@fernwood.co</span>

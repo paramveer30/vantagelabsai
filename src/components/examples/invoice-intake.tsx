@@ -169,10 +169,13 @@ export function InvoiceIntake() {
               >
                 <b className="font-semibold">
                   {m.unread ? (
-                    <span
-                      className="mr-1.5 inline-block size-1.5 rounded-full bg-orange align-middle"
-                      aria-label="Unread"
-                    />
+                    <>
+                      <span
+                        className="mr-1.5 inline-block size-1.5 rounded-full bg-orange align-middle"
+                        aria-hidden="true"
+                      />
+                      <span className="sr-only">Unread: </span>
+                    </>
                   ) : null}
                   {m.from}
                 </b>

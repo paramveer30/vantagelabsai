@@ -3,7 +3,11 @@ export const site = {
   tagline: "Custom software for any business that needs it",
   description:
     "VantageLabsAI builds custom software, AI integrations, and ongoing support for businesses of any size, from local shops to technical founders.",
-  url: "https://vantagelabsai.com",
+  // The live address. Everything that names the site (canonical URLs,
+  // sitemap, social cards, legal pages) reads from here, so switching to
+  // a custom domain later is a change to these two lines.
+  domain: "vantagelabs.vercel.app",
+  url: "https://vantagelabs.vercel.app",
   email: "vantage.labs@outlook.ca",
   // Paste a Cal.com (cal.com/your-handle/intro) or Calendly
   // (calendly.com/your-handle/30min) link here. Empty → the contact page

@@ -22,7 +22,7 @@ export default function ProcessPage() {
 
       <section className="section section-tight-top" data-inten="0.75" data-cap="0.3">
         <div className="wrap">
-          <ProcessSteps detailed />
+          <ProcessSteps detailed headingLevel={2} />
         </div>
       </section>
 

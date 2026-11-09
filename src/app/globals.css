@@ -95,6 +95,12 @@
     color: var(--blue-tint);
     text-underline-offset: 3px;
   }
+  /* A link inside running text is underlined, so it never relies on
+     colour alone to stand out. */
+  :where(p, figcaption) a:not(.btn):not(.link) {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+  }
   @media (prefers-reduced-motion: no-preference) {
     html {
       scroll-behavior: smooth;

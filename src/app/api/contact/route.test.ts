@@ -34,8 +34,8 @@ beforeEach(() => {
   mockSend.mockReset();
   mockSend.mockResolvedValue({ data: { id: "email_1" }, error: null });
   vi.stubEnv("RESEND_API_KEY", "test_key");
-  vi.stubEnv("CONTACT_FROM_EMAIL", "hello@vantagelabsai.com");
-  vi.stubEnv("CONTACT_TO_EMAIL", "inbox@vantagelabsai.com");
+  vi.stubEnv("CONTACT_FROM_EMAIL", "hello@example.com");
+  vi.stubEnv("CONTACT_TO_EMAIL", "inbox@example.com");
 });
 
 describe("POST /api/contact", () => {
@@ -46,7 +46,7 @@ describe("POST /api/contact", () => {
     await expect(res.json()).resolves.toEqual({ ok: true });
     expect(mockSend).toHaveBeenCalledTimes(2);
     expect(mockSend.mock.calls[0][0]).toMatchObject({
-      to: "inbox@vantagelabsai.com",
+      to: "inbox@example.com",
       replyTo: "ada@example.com",
     });
     expect(mockSend.mock.calls[1][0]).toMatchObject({
