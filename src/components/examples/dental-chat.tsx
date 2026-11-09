@@ -37,6 +37,7 @@ export function DentalChat({ variant = "full" }: { variant?: ExampleVariant }) {
   const [typing, setTyping] = useState(false);
   const timers = useRef<number[]>([]);
   const chatRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
   const played = useRef(false);
 
   const play = useCallback(() => {
@@ -88,10 +89,17 @@ export function DentalChat({ variant = "full" }: { variant?: ExampleVariant }) {
 
   const count = shown ?? messages.length;
 
+  // In the compact (fixed-height) version the list scrolls; keep the
+  // newest message in view as the conversation plays.
+  useEffect(() => {
+    const list = listRef.current;
+    if (list && !full) list.scrollTop = list.scrollHeight;
+  }, [count, typing, full]);
+
   const widget = (
     <div
       ref={chatRef}
-      className={`flex flex-col overflow-hidden rounded-[14px] bg-white ${full ? "mx-4 mb-4 md:absolute md:right-4 md:bottom-4 md:m-0 md:w-[360px]" : "mx-auto w-full max-w-[400px]"}`}
+      className={`flex flex-col overflow-hidden rounded-[14px] bg-white ${full ? "mx-4 mb-4 md:absolute md:right-4 md:bottom-4 md:m-0 md:w-[360px]" : "chat-fit mx-auto w-full max-w-[400px]"}`}
       style={{ boxShadow: "0 12px 40px rgba(14,58,49,.18), 0 0 0 1px #DCE5E1" }}
     >
       <div
@@ -113,7 +121,8 @@ export function DentalChat({ variant = "full" }: { variant?: ExampleVariant }) {
         </div>
       </div>
       <div
-        className="grid min-h-[380px] content-start gap-2 p-3"
+        ref={listRef}
+        className={`grid content-start gap-2 p-3 ${full ? "min-h-[380px]" : "min-h-0 flex-1 overflow-y-auto"}`}
         style={{ background: "#FAFCFB" }}
         aria-live="off"
       >
@@ -260,7 +269,7 @@ export function DentalChat({ variant = "full" }: { variant?: ExampleVariant }) {
         </div>
       ) : (
         <div
-          className="p-4 text-[13px] sm:p-8"
+          className="chat-fit-wrap p-4 text-[13px] sm:p-6"
           style={{ background: "#F6F8F7", color: "#18302A" }}
         >
           {widget}

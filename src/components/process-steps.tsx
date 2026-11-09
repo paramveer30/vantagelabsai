@@ -1,6 +1,6 @@
 import { processSteps } from "@/content/process";
 
-// The four-step process with a rail that fills orange as you scroll past
+// The four-step process with a rail that fills with the accent as you scroll past
 // it (ScrollEffects sets --p on [data-rail] and lights each step). The
 // numbers are real order, not decoration. `detailed` adds each step's
 // outputs for the Process page.

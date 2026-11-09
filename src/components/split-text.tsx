@@ -18,7 +18,7 @@ export function SplitText({
 }: {
   as?: Tag;
   text: string;
-  /** Last word(s) set in the orange italic serif. */
+  /** Last word(s) set in the accent-coloured italic serif. */
   accent?: string;
   /** Extra node rendered inside the heading after the words (e.g. a rotating word). */
   after?: ReactNode;

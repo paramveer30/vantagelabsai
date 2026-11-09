@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 
 // The site's signature: a fluted (ribbed) glass panel over a slowly
-// drifting Electric Blue and Cantaloupe blur, with film grain. One WebGL
+// drifting Electric Blue and neon mint blur, with film grain. One WebGL
 // quad, fixed behind every page.
 //
 // Brightness follows the sections on screen. Elements carry data-inten
@@ -36,8 +36,8 @@ vec3 field(vec2 p){
   c += vec3(.004, .29, .50) * g(p, vec2((.80 + .06 * sin(t * .07)) * a, .48 + .10 * cos(t * .05) + sc * .10), .62) * 1.1;
   c += vec3(.008, .53, .87) * g(p, vec2((.70 + .09 * sin(t * .09 + 1.)) * a, .55 + .12 * sin(t * .06) - sc * .18), .40) * 1.05;
   c += vec3(.31, .70, .95) * g(p, vec2((.62 + .07 * cos(t * .11)) * a, .72 + .08 * sin(t * .08 + 2.) - sc * .12), .20) * .55;
-  c += vec3(.99, .45, .30) * g(p, vec2((.86 + .07 * cos(t * .08 + 3.)) * a, .32 + .10 * sin(t * .07) + sc * .22), .24) * 1.05;
-  c += vec3(.99, .55, .36) * g(p, vec2((.30 + .20 * sin(t * .05 + 4.)) * a, .12 + .08 * cos(t * .09) + sc * .3), .16) * .65;
+  c += vec3(.17, .96, .60) * g(p, vec2((.86 + .07 * cos(t * .08 + 3.)) * a, .32 + .10 * sin(t * .07) + sc * .22), .24) * .7;
+  c += vec3(.35, .98, .70) * g(p, vec2((.30 + .20 * sin(t * .05 + 4.)) * a, .12 + .08 * cos(t * .09) + sc * .3), .16) * .45;
   c += vec3(.008, .40, .70) * g(p, vec2((.18 + .10 * cos(t * .06)) * a, .85 - sc * .25), .30) * .6;
   return c;
 }
@@ -153,11 +153,11 @@ void main(){
         face += vec3(.14) * smoothstep(.25, 0., vl);
         face *= 1. - .28 * smoothstep(.5, 1., vl);
         // Warm toward the point of the V.
-        face = mix(face, face * vec3(1.35, .85, .7) + vec3(.16, .05, 0.), smoothstep(-2., -11., po.y) * .75);
+        face = mix(face, face * vec3(.75, 1.25, .95) + vec3(0., .10, .05), smoothstep(-2., -11., po.y) * .75);
         face *= .78 + .4 * diff;
 
         // Sides: deep blue glass, lit from the upper left.
-        vec3 side = mix(vec3(.01, .16, .34), vec3(.30, .10, .05), smoothstep(-2., -11., po.y));
+        vec3 side = mix(vec3(.01, .16, .34), vec3(.03, .26, .16), smoothstep(-2., -11., po.y));
         side *= .45 + 1.1 * diff;
 
         vec3 col = mix(side, face, smoothstep(.55, .85, abs(no.z)));

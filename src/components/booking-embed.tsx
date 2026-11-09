@@ -48,7 +48,7 @@ export function BookingEmbed({ url }: { url: string }) {
           <div className="flex flex-col items-center gap-3 text-muted">
             <span
               aria-hidden="true"
-              className="h-6 w-6 animate-spin rounded-full border-2 border-line-strong border-t-orange motion-reduce:animate-none"
+              className="h-6 w-6 animate-spin rounded-full border-2 border-line-strong border-t-accent motion-reduce:animate-none"
             />
             <span className="text-sm">Loading the scheduler…</span>
           </div>

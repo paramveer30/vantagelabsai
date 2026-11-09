@@ -193,7 +193,7 @@ export function OrderDashboard({
                     width={BAR_W}
                     height={d.orders * SCALE}
                     rx="3"
-                    fill={d.orders === peak ? "#FC734D" : "#0287DE"}
+                    fill={d.orders === peak ? "#2BF59A" : "#0287DE"}
                   />
                 ))}
               </g>

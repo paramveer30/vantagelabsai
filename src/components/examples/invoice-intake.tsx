@@ -171,7 +171,7 @@ export function InvoiceIntake() {
                   {m.unread ? (
                     <>
                       <span
-                        className="mr-1.5 inline-block size-1.5 rounded-full bg-orange align-middle"
+                        className="mr-1.5 inline-block size-1.5 rounded-full bg-accent align-middle"
                         aria-hidden="true"
                       />
                       <span className="sr-only">Unread: </span>
@@ -204,8 +204,8 @@ export function InvoiceIntake() {
                   style={
                     i === activeStep
                       ? {
-                          borderColor: "var(--orange)",
-                          color: "var(--orange)",
+                          borderColor: "var(--accent)",
+                          color: "var(--accent)",
                           background: "var(--s3)",
                         }
                       : {
@@ -217,7 +217,7 @@ export function InvoiceIntake() {
                   {s}
                 </span>
                 {i < steps.length - 1 ? (
-                  <span className="text-orange" aria-hidden="true">
+                  <span className="text-accent" aria-hidden="true">
                     →
                   </span>
                 ) : null}

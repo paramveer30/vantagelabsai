@@ -73,7 +73,7 @@ src/
 ## How the visuals work
 
 - `components/texture-background.tsx`: one fixed WebGL canvas. A fragment
-  shader draws drifting Electric Blue and Cantaloupe blurs seen through
+  shader draws drifting Electric Blue and neon mint blurs seen through
   fluted glass, plus grain. Sections set `data-inten` and `data-cap`; the
   shader blends them by how much of the viewport each covers, and the cap
   keeps body text above WCAG AA contrast. The hero's `[data-glass-v]`

@@ -3,9 +3,9 @@
 /*
  * Design tokens. Midnight Black base with an animated fluted-glass field
  * behind every page (TextureBackground). Electric Blue carries structure,
- * Cantaloupe Orange is the accent. Contrast notes:
- *   - filled buttons use black text: 7.42:1 on orange, 5.32:1 on blue
- *     (white would be 2.73 / 3.80 and fail AA)
+ * Neon mint is the accent. Contrast notes:
+ *   - filled buttons use black text: 14.1:1 on mint, 5.32:1 on blue
+ *     (white on blue would be 3.80 and fail AA)
  *   - --text-2 is for secondary copy that sits on the texture; the texture
  *     is brightness-capped behind body copy so it stays above 5.4:1
  *   - --muted is only for copy on solid panels (6.18:1 on --s2)
@@ -23,8 +23,8 @@
   --muted: #8d9ba7;
   --blue: #0287de;
   --blue-tint: #3aa6ee;
-  --orange: #fc734d;
-  --orange-soft: #ffb199;
+  --accent: #2bf59a;
+  --accent-soft: #9dfccf;
   --ok: #3fb77e;
   --warn: #e5a43b;
   --bad: #ef6a5e;
@@ -60,7 +60,7 @@
   --color-muted: var(--muted);
   --color-blue: var(--blue);
   --color-blue-tint: var(--blue-tint);
-  --color-orange: var(--orange);
+  --color-accent: var(--accent);
   --color-ok: var(--ok);
   --color-warn: var(--warn);
   --color-bad: var(--bad);
@@ -85,7 +85,7 @@
     overflow-x: clip;
   }
   ::selection {
-    background: color-mix(in oklab, var(--orange) 40%, transparent);
+    background: color-mix(in oklab, var(--accent) 40%, transparent);
   }
   :focus-visible {
     outline: 2px solid var(--blue-tint);
@@ -156,7 +156,7 @@
     letter-spacing: -0.01em;
   }
   .accent-word {
-    color: var(--orange);
+    color: var(--accent);
   }
   .h1 {
     font-size: clamp(2.6rem, 8vw, 5.4rem);
@@ -200,7 +200,7 @@
     font-size: 0.75rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--orange);
+    color: var(--accent);
   }
   .mono-meta {
     font-family: var(--font-geist-mono), monospace;
@@ -223,7 +223,7 @@
     position: absolute;
     inset: auto 0 0 0;
     height: 2px;
-    background: var(--orange);
+    background: var(--accent);
     transform-origin: left;
     transform: scaleX(0.35);
     transition: transform 0.35s var(--ease);
@@ -234,7 +234,7 @@
   }
   .arrow {
     display: inline-block;
-    color: var(--orange);
+    color: var(--accent);
     transition: transform 0.35s var(--ease);
   }
   .link:hover .arrow,
@@ -265,7 +265,7 @@
     font-size: 0.875rem;
   }
   .btn-primary {
-    background: var(--orange);
+    background: var(--accent);
     color: var(--black);
   }
   .btn-primary .arrow {
@@ -275,7 +275,7 @@
     content: "";
     position: absolute;
     inset: 0;
-    background: var(--orange-soft);
+    background: var(--accent-soft);
     transform: translateY(101%);
     transition: transform 0.4s var(--ease);
   }
@@ -292,7 +292,7 @@
     background: rgb(2 7 10 / 0.6);
   }
   .btn-ghost:hover {
-    border-color: var(--orange);
+    border-color: var(--accent);
   }
 
   /* ---------- header ---------- */
@@ -344,7 +344,7 @@
     right: var(--s-3);
     bottom: 2px;
     height: 2px;
-    background: var(--orange);
+    background: var(--accent);
     transform: scaleX(0);
     transform-origin: left;
     transition: transform 0.3s var(--ease);
@@ -410,7 +410,7 @@
   .scroll-progress span {
     display: block;
     height: 100%;
-    background: var(--orange);
+    background: var(--accent);
     transform-origin: left;
     transform: scaleX(0);
   }
@@ -485,7 +485,7 @@
        line height doesn't change. */
     height: 1.25em;
     margin-bottom: -0.15em;
-    color: var(--orange);
+    color: var(--accent);
     white-space: nowrap;
     transition: width 0.6s var(--ease);
   }
@@ -503,13 +503,13 @@
   }
   @keyframes word-in {
     from {
-      transform: translateY(110%);
+      transform: translateY(40%);
       opacity: 0;
     }
   }
   @keyframes word-out {
     to {
-      transform: translateY(-110%);
+      transform: translateY(-40%);
       opacity: 0;
     }
   }
@@ -640,7 +640,7 @@
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background: var(--orange);
+    background: var(--accent);
   }
 
   /* page hero */
@@ -683,46 +683,130 @@
     }
   }
 
-  /* ---------- home: service showcase ---------- */
-  .showcase {
+  /* ---------- home: services as tabs + one product ---------- */
+  .svc {
     display: grid;
-    gap: var(--s-9);
-    margin-top: var(--s-8);
+    gap: var(--s-5);
+    margin-top: var(--s-6);
   }
-  .showcase-row {
-    display: grid;
-    gap: var(--s-6);
-    align-items: center;
+  .svc-tabs {
+    display: flex;
+    gap: var(--s-2);
+    border-bottom: 1px solid var(--line-on-tex);
   }
-  @media (min-width: 960px) {
-    .showcase {
-      gap: var(--s-10);
-    }
-    .showcase-row {
-      grid-template-columns: 5fr 7fr;
-      gap: var(--s-8);
-    }
-    .showcase-row.flip {
-      grid-template-columns: 7fr 5fr;
-    }
-    .showcase-row.flip .showcase-text {
-      order: 2;
-    }
-  }
-  .showcase-text {
-    display: grid;
-    gap: var(--s-4);
-    align-content: center;
-    min-width: 0;
-  }
-  .showcase-title {
+  .svc-tab {
+    position: relative;
+    flex: 0 1 auto;
+    margin-right: var(--s-7);
+    white-space: nowrap;
+    display: flex;
+    align-items: baseline;
+    gap: var(--s-3);
+    padding: var(--s-4) var(--s-2) var(--s-4) 0;
+    text-align: left;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    color: var(--text-2);
     font-family: var(--font-bricolage), sans-serif;
     font-weight: 650;
-    font-size: clamp(2rem, 3.6vw, 2.6rem);
-    letter-spacing: -0.03em;
-    line-height: 1.04;
-    text-wrap: balance;
-    margin: 0;
+    font-size: clamp(1.15rem, 1.9vw, 1.5rem);
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    transition: color 0.3s var(--ease);
+  }
+  .svc-tab i {
+    font-style: normal;
+    font-family: var(--font-geist-mono), monospace;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .svc-tab::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: var(--s-4);
+    bottom: -1px;
+    height: 3px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.45s var(--ease);
+  }
+  .svc-tab:hover,
+  .svc-tab[aria-selected="true"] {
+    color: var(--text);
+  }
+  .svc-tab[aria-selected="true"] i {
+    color: var(--accent);
+  }
+  .svc-tab[aria-selected="true"]::after {
+    transform: scaleX(1);
+  }
+  /* Phones: a sideways-scrolling row of chips, like the industry list. */
+  @media (max-width: 959px) {
+    .svc-tabs {
+      overflow-x: auto;
+      border-bottom: 0;
+      padding-bottom: var(--s-2);
+    }
+    .svc-tab {
+      flex: none;
+      margin-right: 0;
+      padding: 8px 14px;
+      font-size: 15px;
+      white-space: nowrap;
+      border: 1px solid rgb(242 245 247 / 0.2);
+      border-radius: 999px;
+      background: rgb(2 7 10 / 0.6);
+    }
+    .svc-tab i,
+    .svc-tab::after {
+      display: none;
+    }
+    .svc-tab[aria-selected="true"] {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--black);
+    }
+  }
+  .svc-grid {
+    display: grid;
+    gap: var(--s-6);
+  }
+  @media (min-width: 960px) {
+    .svc-grid {
+      grid-template-columns: 5fr 7fr;
+      gap: var(--s-8);
+      align-items: start;
+    }
+  }
+  .svc-text {
+    display: grid;
+    gap: var(--s-4);
+    align-content: start;
+    padding-top: var(--s-6);
+    min-width: 0;
+  }
+  .svc-product {
+    min-width: 0;
+  }
+  /* One fixed frame on desktop so the whole section fits one screen. */
+  @media (min-width: 960px) {
+    .svc-product .mock {
+      min-height: clamp(380px, 52vh, 470px);
+    }
+  }
+  .chat-fit-wrap {
+    height: 460px;
+  }
+  @media (min-width: 960px) {
+    .chat-fit-wrap {
+      height: clamp(380px, 52vh, 470px);
+    }
+  }
+  .chat-fit {
+    height: 100%;
   }
   .showcase-summary {
     font-size: 1.25rem;
@@ -752,14 +836,11 @@
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background: var(--orange);
+    background: var(--accent);
   }
-  .showcase-text .link {
+  .svc-text .link {
     justify-self: start;
-    margin-top: var(--s-3);
-  }
-  .showcase-example {
-    min-width: 0;
+    margin-top: var(--s-2);
   }
 
   /* ---------- marquee band ---------- */
@@ -782,7 +863,7 @@
   }
   .marquee-row i {
     font-style: normal;
-    color: var(--orange);
+    color: var(--accent);
     padding-right: 0.4em;
   }
   .marquee-row.outline {
@@ -828,7 +909,7 @@
     text-decoration: none;
   }
   .card:hover {
-    border-color: var(--orange);
+    border-color: var(--accent);
     transform: translateY(-4px);
   }
   .shot {
@@ -860,7 +941,7 @@
   .card-meta {
     font-family: var(--font-geist-mono), monospace;
     font-size: 0.75rem;
-    color: var(--orange);
+    color: var(--accent);
     margin: 0;
   }
 
@@ -880,7 +961,7 @@
   .rail span {
     position: absolute;
     inset: 0;
-    background: var(--orange);
+    background: var(--accent);
     transform-origin: top;
     transform: scaleY(var(--p, 0));
   }
@@ -935,8 +1016,8 @@
       color 0.4s;
   }
   .steps li.lit .step-dot {
-    background: var(--orange);
-    border-color: var(--orange);
+    background: var(--accent);
+    border-color: var(--accent);
     color: var(--black);
   }
   .steps p {
@@ -964,7 +1045,7 @@
   }
   .steps .outputs li::before {
     content: "+ ";
-    color: var(--orange);
+    color: var(--accent);
   }
 
   /* ---------- pills / chips ---------- */
@@ -1008,8 +1089,8 @@
       border-color 0.3s;
   }
   .tag-links a:hover {
-    background: var(--orange);
-    border-color: var(--orange);
+    background: var(--accent);
+    border-color: var(--accent);
     color: var(--black);
   }
 
@@ -1069,7 +1150,7 @@
     transform: translateX(10px);
   }
   .ind-list button[aria-pressed="true"] i {
-    color: var(--orange);
+    color: var(--accent);
   }
   /* Narrow screens: a sideways-scrolling row of chips. */
   @media (max-width: 999px) {
@@ -1097,8 +1178,8 @@
     }
     .ind-list button[aria-pressed="true"] {
       transform: none;
-      background: var(--orange);
-      border-color: var(--orange);
+      background: var(--accent);
+      border-color: var(--accent);
       color: var(--black);
     }
   }
@@ -1142,7 +1223,7 @@
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background: var(--orange);
+    background: var(--accent);
   }
 
   /* ---------- final CTA ---------- */
@@ -1237,7 +1318,7 @@
     text-decoration: none;
   }
   .footer-list a:hover {
-    color: var(--orange);
+    color: var(--accent);
   }
   .footer-base {
     display: flex;
@@ -1273,7 +1354,7 @@
     user-select: none;
   }
   .footer-wordmark .brand-ai {
-    color: var(--orange);
+    color: var(--accent);
   }
 
   /* ---------- panels ---------- */
@@ -1364,7 +1445,7 @@
     cursor: pointer;
   }
   .replay:hover {
-    border-color: var(--orange);
+    border-color: var(--accent);
   }
 
   /* shared mock pieces */
@@ -1442,7 +1523,7 @@
     transition: background 0.5s;
   }
   .tbl tr.flash {
-    background: rgb(252 115 77 / 0.12);
+    background: rgb(43 245 154 / 0.12);
   }
   .pill {
     display: inline-flex;
@@ -1474,7 +1555,7 @@
     background: var(--bad);
   }
   .pill.reading::before {
-    background: var(--orange);
+    background: var(--accent);
     animation: blink 1s infinite;
   }
   @keyframes blink {
@@ -1623,9 +1704,9 @@
   .field input:focus,
   .field textarea:focus,
   .field select:focus {
-    outline: 2px solid var(--orange);
+    outline: 2px solid var(--accent);
     outline-offset: 1px;
-    border-color: var(--orange);
+    border-color: var(--accent);
   }
   .field [aria-invalid="true"] {
     border-color: var(--bad);
@@ -1650,7 +1731,7 @@
     display: grid;
     gap: 2px;
     padding-left: var(--s-4);
-    border-left: 2px solid var(--orange);
+    border-left: 2px solid var(--accent);
   }
   .expect-list span {
     color: var(--muted);

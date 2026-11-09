@@ -79,7 +79,7 @@ export default function OpengraphImage() {
           style={{
             display: "flex",
             fontSize: 25,
-            color: "#FC734D",
+            color: "#2BF59A",
             letterSpacing: "0.02em",
           }}
         >

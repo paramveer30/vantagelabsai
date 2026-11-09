@@ -16,7 +16,7 @@ export function GlassV() {
           <linearGradient id="glass-v-fill" x1="0" y1="0" x2="0.4" y2="1">
             <stop offset="0" stopColor="#3AA6EE" />
             <stop offset="0.55" stopColor="#0287DE" />
-            <stop offset="1" stopColor="#FC734D" />
+            <stop offset="1" stopColor="#2BF59A" />
           </linearGradient>
           <pattern
             id="glass-v-ribs"
